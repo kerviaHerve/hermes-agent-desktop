@@ -10,10 +10,10 @@
  * fully intact.
  *
  * This module is the desktop half of the migration: at enumeration time,
- * when a served page contains legacy unowned rows AND the owner is a single
- * match (see `resolveLegacyOwnerBackfillScope`), ask that backend — over the
- * existing session-update REST surface — to stamp its own legacy rows with
- * its own serving-profile identity. Ambiguous topologies are left alone
+ * when a LOCAL owner is a single match (see `resolveLegacyOwnerBackfillScope`),
+ * ask that backend — over the existing session-update REST surface — to stamp
+ * its own legacy rows with its own serving-profile identity. This private fork
+ * does not automatically migrate remote stores. Ambiguous topologies are left alone
  * (fail closed); the read-only stored-transcript path keeps their history
  * reachable.
  *
@@ -26,7 +26,7 @@
  * lifetime — retrying either every enumeration is a request storm the backend
  * will keep refusing.
  */
-import { getApiRequestConnection, hermesApi } from '@/api/client'
+import { ambientOwnerConnectionId, getApiRequestConnection, hermesApi } from '@/api/client'
 import { isMissingRestEndpoint, isOfflineMaintenance } from '@/lib/gateway-rpc'
 import { resolveLegacyOwnerBackfillScope } from '@/lib/session-owner-stamp'
 import { $connectionsRegistry, hasRegistryTopology } from '@/store/connection-registry-state'
@@ -48,6 +48,12 @@ function scopeKey(connectionId: null | string, profile: null | string): string {
  * attempted) and never blocks or fails the list request that triggered it.
  */
 export function maybeBackfillLegacySessionOwners(): void {
+  // This private Desktop must not mutate a remote gateway just because its
+  // conversation list opened. Local legacy rows can still be migrated.
+  if (ambientOwnerConnectionId() !== 'local') {
+    return
+  }
+
   const scope = resolveLegacyOwnerBackfillScope({
     hasRegistryTopology: hasRegistryTopology(),
     registryConnectionIds: ($connectionsRegistry.get()?.connections ?? []).map(

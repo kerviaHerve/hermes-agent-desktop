@@ -3,9 +3,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { resolveLegacyOwnerBackfillScope } from './session-owner-stamp'
 
 const api = vi.fn<(request: unknown) => Promise<unknown>>()
+let servingConnectionId = 'local'
 
 vi.mock('@/api/client', () => ({
-  getApiRequestConnection: () => 'gw-b',
+  ambientOwnerConnectionId: () => servingConnectionId,
+  getApiRequestConnection: () => servingConnectionId,
   hermesApi: (request: unknown) => api(request)
 }))
 vi.mock('@/store/connection-registry-state', () => ({
@@ -27,8 +29,15 @@ async function enumerateTwice(): Promise<number> {
 describe('maybeBackfillLegacySessionOwners (one-shot per scope)', () => {
   beforeEach(async () => {
     api.mockReset()
+    api.mockResolvedValue({ ok: true, profile: 'default', stamped: 0 })
+    servingConnectionId = 'local'
     const { resetLegacyOwnerBackfillAttempts } = await import('./legacy-session-owner-backfill')
     resetLegacyOwnerBackfillAttempts()
+  })
+
+  it('does not run the automatic migration against a remote gateway', async () => {
+    servingConnectionId = 'gw-b'
+    expect(await enumerateTwice()).toBe(0)
   })
 
   it('treats the owning gateway\'s 409 maintenance refusal as terminal, like version skew', async () => {

@@ -50,6 +50,19 @@ is URL based; closing a URL connection does not run the SSH-managed remote
 backend teardown. Local separation does not make remote actions harmless:
 test connectivity with read-only checks first, and do not run update, reset,
 configuration, or destructive agent actions against the live remote service.
+This private Desktop does not run the automatic legacy-session owner migration
+against remote gateways when it lists conversations.
+
+For development against a local Hermes, run:
+
+```bash
+bash scripts/run-private-desktop-local.sh
+```
+
+This provisions the checkout's Python runtime inside an ignored
+`.hermes-local-sandbox/` and starts a second Desktop identity with separate
+settings and gateway data. It does not use the remote test profile or copy the
+installed Hermes configuration. The first run may take several minutes.
 
 Before installing a custom build outside the development launcher, give it a
 distinct app identity and update feed; see `apps/desktop/product-identity.cjs`
