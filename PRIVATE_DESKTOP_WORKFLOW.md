@@ -36,7 +36,10 @@ This uses a persistent, ignored `.hermes-sandbox/` with its own `HERMES_HOME`,
 Electron `userData`, app name, and single-instance lock. It pins the backend
 source to this checkout and clears inherited remote and packaged-build
 overrides. It also leaves the installed app as the handler for `hermes://`
-links. It does not copy the installed Desktop's configuration; do not use
+links. The launcher builds the renderer and runs it from local files: the
+remote gateway can refuse WebSockets from Vite's `127.0.0.1` development
+origin even when its HTTP connection test succeeds. It does not copy the
+installed Desktop's configuration; do not use
 the sandbox's `--from` option for this workflow. The installed Hermes Desktop
 and its local installation remain separate and can stay open.
 
