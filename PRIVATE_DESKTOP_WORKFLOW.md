@@ -25,18 +25,32 @@ transport or shared types need to change. Keep agent and gateway behavior on
 the official implementation unless the feature requires a backend change.
 
 Read the root and Desktop `AGENTS.md` files before editing. Install JavaScript
-dependencies from the repository root with `npm install`. Run Desktop against
-an isolated development home, following `apps/desktop/README.md`:
+dependencies from the repository root with `npm install`. On the current Mac,
+launch the test Desktop from the repository root with:
 
 ```bash
-cd apps/desktop
-../../scripts/dev-sandbox.sh npm run dev
+bash scripts/run-private-desktop-dev.sh
 ```
 
-The sandbox command keeps development settings and user data away from a live
-Hermes installation. Before installing a custom build, give it a distinct app
-identity and update feed; see `apps/desktop/product-identity.cjs` and
-`apps/desktop/BUILDING.md`.
+This uses a persistent, ignored `.hermes-sandbox/` with its own `HERMES_HOME`,
+Electron `userData`, app name, and single-instance lock. It pins the backend
+source to this checkout and clears inherited remote and packaged-build
+overrides. It also leaves the installed app as the handler for `hermes://`
+links. It does not copy the installed Desktop's configuration; do not use
+the sandbox's `--from` option for this workflow. The installed Hermes Desktop
+and its local installation remain separate and can stay open.
+
+The test Desktop can be given its own connection to the existing remote
+gateway through its Connections UI. Enter the connection there rather than
+copying the installed app's credential files. The current installed connection
+is URL based; closing a URL connection does not run the SSH-managed remote
+backend teardown. Local separation does not make remote actions harmless:
+test connectivity with read-only checks first, and do not run update, reset,
+configuration, or destructive agent actions against the live remote service.
+
+Before installing a custom build outside the development launcher, give it a
+distinct app identity and update feed; see `apps/desktop/product-identity.cjs`
+and `apps/desktop/BUILDING.md`.
 
 ## Bringing in an official update
 
