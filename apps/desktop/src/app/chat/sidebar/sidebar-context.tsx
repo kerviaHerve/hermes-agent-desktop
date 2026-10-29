@@ -1,8 +1,8 @@
 import { LOCAL_CONNECTION_ID } from '@hermes/shared'
 import { useStore } from '@nanostores/react'
+import { ChevronDown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Codicon } from '@/components/ui/codicon'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -69,7 +69,7 @@ export function SidebarContext() {
               variant="outline"
             >
               <span className="max-w-22 truncate">{profileName}</span>
-              <Codicon aria-hidden="true" name="chevron-down" size="0.75rem" />
+              <ChevronDown aria-hidden="true" className="size-3" strokeWidth={1.75} />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="min-w-40">

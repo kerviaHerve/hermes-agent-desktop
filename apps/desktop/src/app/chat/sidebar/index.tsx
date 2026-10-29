@@ -1,6 +1,7 @@
 import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { useStore } from '@nanostores/react'
+import { Blocks, CalendarClock, Files, MessagesSquare, Plus } from 'lucide-react'
 import type * as React from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router'
@@ -213,21 +214,21 @@ const SIDEBAR_NAV: SidebarNavItem[] = [
   {
     id: 'new-session',
     label: '',
-    icon: props => <Codicon name="add" {...props} />,
+    icon: props => <Plus strokeWidth={1.75} {...props} />,
     action: 'new-session',
     keybindActionId: 'session.new'
   },
   {
     id: 'capabilities',
     label: '',
-    icon: props => <Codicon name="symbol-misc" {...props} />,
+    icon: props => <Blocks strokeWidth={1.75} {...props} />,
     route: CAPABILITIES_ROUTE,
     keybindActionId: 'nav.capabilities'
   },
   {
     id: 'messaging',
     label: '',
-    icon: props => <Codicon name="comment" {...props} />,
+    icon: props => <MessagesSquare strokeWidth={1.75} {...props} />,
     route: MESSAGING_ROUTE,
     keybindActionId: 'nav.messaging'
   },
@@ -236,7 +237,7 @@ const SIDEBAR_NAV: SidebarNavItem[] = [
   {
     id: 'artifacts',
     label: '',
-    icon: props => <Codicon name="files" {...props} />,
+    icon: props => <Files strokeWidth={1.75} {...props} />,
     route: ARTIFACTS_ROUTE,
     keybindActionId: 'nav.artifacts',
     tier: 'advanced'
@@ -244,7 +245,7 @@ const SIDEBAR_NAV: SidebarNavItem[] = [
   {
     id: 'cron',
     label: '',
-    icon: props => <Codicon name="watch" {...props} />,
+    icon: props => <CalendarClock strokeWidth={1.75} {...props} />,
     route: CRON_ROUTE,
     keybindActionId: 'nav.cron',
     tier: 'advanced'
