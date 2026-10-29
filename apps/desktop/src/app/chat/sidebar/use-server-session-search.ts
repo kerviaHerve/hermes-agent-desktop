@@ -1,6 +1,8 @@
+import { useStore } from '@nanostores/react'
 import { useEffect, useState } from 'react'
 
 import { searchSessions, type SessionSearchResult } from '@/hermes'
+import { $activeConnectionId } from '@/store/connections'
 import { ALL_PROFILES, normalizeProfileKey } from '@/store/profile'
 
 const SEARCH_DEBOUNCE_MS = 200
@@ -17,13 +19,15 @@ export interface ServerSessionSearch {
  * profile is on screen. "All profiles" asks the primary as before.
  */
 export function useServerSessionSearch(query: string, profileScope: string): ServerSessionSearch {
-  const [serverMatches, setServerMatches] = useState<SessionSearchResult[]>([])
+  const connectionId = useStore($activeConnectionId)
+  const [result, setResult] = useState<{ key: string; matches: SessionSearchResult[] } | null>(null)
   const [searchPending, setSearchPending] = useState(false)
   const profile = profileScope === ALL_PROFILES ? null : normalizeProfileKey(profileScope)
+  const key = JSON.stringify([connectionId, profile, query])
 
   useEffect(() => {
     if (!query) {
-      setServerMatches([])
+      setResult(null)
       setSearchPending(false)
 
       return
@@ -37,7 +41,7 @@ export function useServerSessionSearch(query: string, profileScope: string): Ser
       void searchSessions(query, profile)
         .then(res => {
           if (!cancelled) {
-            setServerMatches(res.results)
+            setResult({ key, matches: res.results })
           }
         })
         .catch(() => undefined)
@@ -52,7 +56,9 @@ export function useServerSessionSearch(query: string, profileScope: string): Ser
       cancelled = true
       window.clearTimeout(id)
     }
-  }, [query, profile])
+  }, [connectionId, key, profile, query])
 
-  return { searchPending, serverMatches }
+  // The previous connection's results must disappear on the first render of a
+  // switch, before the effect above has a chance to start a new request.
+  return { searchPending, serverMatches: result?.key === key ? result.matches : [] }
 }

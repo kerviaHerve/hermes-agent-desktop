@@ -1127,6 +1127,37 @@
   }
 }
 
+/* A quiet thread through one agent's conversations. Each row paints its own
+   segment so selected-row fills cannot mask the line. The status dot remains
+   above it and retains semantic colors while a turn is running or blocked. */
+[data-agent-session-rail] [data-sidebar-session-row]::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: 0.9375rem;
+  width: 1px;
+  background: var(--ui-stroke-tertiary);
+  pointer-events: none;
+}
+
+[data-agent-session-rail] [data-selected='true'] [data-dot-state='idle'] > span:last-child {
+  background: var(--theme-primary) !important;
+  animation: selected-session-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes selected-session-pulse {
+  50% {
+    opacity: 0.68;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-agent-session-rail] [data-selected='true'] [data-dot-state='idle'] > span:last-child {
+    animation: none;
+  }
+}
+
 /* Pure-CSS edge fade for a scroller (FadeScroll). From each edge inward the
    mask is `pad` of fully hidden content, then `size` of gradient up to fully
    visible. The pad is for the scroller's own padding, so the gradient starts

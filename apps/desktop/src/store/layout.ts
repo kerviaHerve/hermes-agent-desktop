@@ -30,6 +30,7 @@ import { $paneStates, ensurePaneRegistered, setPaneOpen, setPaneWidthOverride } 
 import { $showAllProfiles, setShowAllProfiles } from './profile'
 import type { PullRequestBucket } from './pull-requests'
 import type { SessionStatusBucket } from './session-dot-state'
+import { clearSidebarGroupSessionOrders } from './sidebar-group-session-order'
 
 export const SIDEBAR_DEFAULT_WIDTH = 237
 export const SIDEBAR_MAX_WIDTH = 360
@@ -892,6 +893,7 @@ export function setSidebarOrdering(ordering: SidebarOrdering) {
   // has to drop the saved sequence as well as the flag.
   setSidebarSessionOrderManual(false)
   setSidebarSessionOrderIds([])
+  clearSidebarGroupSessionOrders()
   $sidebarSortKey.set(ordering)
 }
 

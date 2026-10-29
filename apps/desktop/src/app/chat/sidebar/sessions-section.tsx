@@ -74,7 +74,12 @@ function SidebarSectionHeader({
   const labelBody = (
     <>
       {icon}
-      <SidebarPanelLabel>{label}</SidebarPanelLabel>
+      <SidebarPanelLabel
+        className="pl-1 text-[0.6875rem] tracking-[0.08em] text-(--ui-text-tertiary)"
+        dotClassName="hidden"
+      >
+        {label}
+      </SidebarPanelLabel>
       {meta && <SidebarSectionMeta>{meta}</SidebarSectionMeta>}
     </>
   )
@@ -263,8 +268,8 @@ export function SidebarSessionsSection({
   const showEmptyState =
     forceEmptyState || (!hasGroupedSessions && !hasProjectOverview && !hasProjectContent && sessions.length === 0)
 
-  // The flat recents/pinned list is the only place sessions reorder by hand;
-  // grouped/tree views always sort by creation date and never drag.
+  // Flat recents/pinned keep their existing reorder path. Agent groups below
+  // provide a separate drag path scoped to each group; project lanes stay static.
   const sessionsDraggable = sortable && !!onReorderSessions
 
   // Only Pinned arrives pre-ordered as a flat sequence. Recents keeps its
@@ -379,11 +384,25 @@ export function SidebarSessionsSection({
     [dividerLabels, dividerToggle, renderRow]
   )
 
-  // Sessions inside repos/worktrees are date-ordered and static.
+  // Project lanes remain static. Agent groups pass a reorder callback, so
+  // their conversations use the same row gesture and sortable primitive as
+  // flat recents, without moving a conversation into another agent.
   const renderRows = useCallback(
-    (items: SessionInfo[]) =>
-      flattenSessionsWithBranches(items).map(({ branchStem, session }) => renderRow(session, false, branchStem)),
-    [renderRow]
+    (items: SessionInfo[], onReorder?: (ids: string[]) => void) => {
+      const entries = flattenSessionsWithBranches(items, { preserveOrder: Boolean(onReorder) })
+      const ids = entries.filter(entry => !entry.branchStem).map(entry => entry.session.id)
+      const draggable = Boolean(onReorder && ids.length > 1)
+      const rows = entries.map(({ branchStem, session }) => renderRow(session, draggable, branchStem))
+
+      return draggable && onReorder ? (
+        <ReorderableList ids={ids} onReorder={onReorder} sensors={dndSensors}>
+          {rows}
+        </ReorderableList>
+      ) : (
+        rows
+      )
+    },
+    [dndSensors, renderRow]
   )
 
   // Limit complete groups, not sessions, so a burst and its branches stay

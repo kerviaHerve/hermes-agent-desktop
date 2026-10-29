@@ -135,6 +135,7 @@ import { $workingSessionIds } from '@/store/session-states'
 import { ackAllSessionsRead } from '@/store/session-unread'
 import { markSessionUnread } from '@/store/session-unread-remote'
 import { $archivedSessions, loadArchivedSessions } from '@/store/sidebar-archive'
+import { $sidebarGroupSessionOrders } from '@/store/sidebar-group-session-order'
 import { applySidebarNavPrefs, SIDEBAR_NAV_PREFS_AREA } from '@/store/sidebar-nav'
 import { $sidebarSessionRankIds } from '@/store/sidebar-sort'
 
@@ -190,6 +191,7 @@ import {
 } from './section-states'
 import { buildSessionByAnyId, resolvePinnedSessions } from './session-index'
 import { SidebarSessionsSection, VIRTUALIZE_THRESHOLD } from './sessions-section'
+import { SidebarContext } from './sidebar-context'
 import { CONTEXT_SPLIT_KIT, SplitSubmenu } from './split-submenu'
 import { useEnteredProjectSessions } from './use-entered-project-sessions'
 import { useServerSessionSearch } from './use-server-session-search'
@@ -211,7 +213,7 @@ const SIDEBAR_NAV: SidebarNavItem[] = [
   {
     id: 'new-session',
     label: '',
-    icon: props => <Codicon name="robot" {...props} />,
+    icon: props => <Codicon name="add" {...props} />,
     action: 'new-session',
     keybindActionId: 'session.new'
   },
@@ -521,6 +523,7 @@ export function ChatSidebar({
   const messagingProfile = sidebarProfileForScope(profileScope)
   const agentOrderIds = useStore($sidebarSessionOrderIds)
   const agentOrderManual = useStore($sidebarSessionOrderManual)
+  const groupSessionOrders = useStore($sidebarGroupSessionOrders)
   const workspaceOrderIds = useStore($sidebarWorkspaceOrderIds)
   const workspaceParentOrderIds = useStore($sidebarWorkspaceParentOrderIds)
   const projectOrderIds = useStore($sidebarProjectOrderIds)
@@ -761,7 +764,7 @@ export function ChatSidebar({
       agentOrderManual
     )
 
-    if (!next.length && agentOrderManual) {
+    if (!next.length && agentOrderManual && Object.keys(groupSessionOrders).length === 0) {
       setSidebarSessionOrderManual(false)
     }
 
@@ -774,7 +777,7 @@ export function ChatSidebar({
     if (next.length && !sameIds(next, agentOrderIds)) {
       setSidebarSessionOrderIds(next)
     }
-  }, [agentOrderIds, agentOrderManual, unpinnedAgentSessions])
+  }, [agentOrderIds, agentOrderManual, groupSessionOrders, unpinnedAgentSessions])
 
   // Recents render in recency order. The hand-picked order is layered on per
   // date group inside the section (orderRowsWithinGroups) rather than baked
@@ -1570,9 +1573,10 @@ export function ChatSidebar({
       data-tour="sessions-sidebar"
     >
       <SidebarContent className="gap-0 overflow-hidden bg-transparent px-2.5">
-        <SidebarGroup className="shrink-0 p-0 pb-2 pt-[calc(var(--titlebar-height)+0.375rem)]">
+        <SidebarGroup className="shrink-0 p-0 pb-1 pt-[calc(var(--titlebar-height)+0.375rem)]">
           <SidebarGroupContent>
-            <SidebarMenu className="gap-px">
+            <SidebarContext />
+            <SidebarMenu className="grid grid-cols-2 gap-1">
               {navItems.map(item => {
                 const isInteractive = Boolean(item.action) || Boolean(item.route)
 
@@ -1601,7 +1605,10 @@ export function ChatSidebar({
                       active &&
                         'border-(--ui-stroke-tertiary) bg-(--ui-control-active-background) text-foreground shadow-none hover:border-(--ui-stroke-tertiary)!',
                       !isInteractive &&
-                        'cursor-default hover:border-transparent hover:bg-transparent hover:text-inherit'
+                        'cursor-default hover:border-transparent hover:bg-transparent hover:text-inherit',
+                      isNewSession
+                        ? 'h-8 justify-center bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
+                        : 'h-6 min-w-0 gap-1.5 px-1.5 text-[0.6875rem] text-(--ui-text-tertiary)'
                     )}
                     // A tip anchored to the label points at the end of the
                     // word; the row is what it's actually about.
@@ -1677,7 +1684,7 @@ export function ChatSidebar({
                 // New session + route-backed pages can open in a split —
                 // right-click for the directional "Open in split" submenu.
                 return (
-                  <SidebarMenuItem key={item.id}>
+                  <SidebarMenuItem className={cn('min-w-0', isNewSession && 'col-span-2 mb-0.5')} key={item.id}>
                     {isNewSession || item.route ? (
                       <ContextMenu>
                         <ContextMenuTrigger asChild>{button}</ContextMenuTrigger>

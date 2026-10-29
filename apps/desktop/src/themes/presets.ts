@@ -418,6 +418,39 @@ export const monoTheme: DesktopTheme = {
   ...THEME_PRESET_PALETTES.mono
 }
 
+/** Graphite chrome with a clear citron accent, kept inside the theme picker. */
+export const citronTheme: DesktopTheme = {
+  name: 'citron',
+  label: 'Graphite Citron',
+  description: 'Quiet graphite with a citron accent',
+  colors: {
+    ...THEME_PRESET_PALETTES.mono.colors,
+    background: '#181c19',
+    foreground: '#eef1ec',
+    card: '#202622',
+    cardForeground: '#eef1ec',
+    muted: '#252b26',
+    mutedForeground: '#a0aaa1',
+    popover: '#202521',
+    popoverForeground: '#eef1ec',
+    primary: '#d7ff00',
+    primaryForeground: '#171b16',
+    secondary: '#2a302b',
+    secondaryForeground: '#d4dcd2',
+    accent: '#303923',
+    accentForeground: '#ecf8b1',
+    border: '#343c35',
+    input: '#343c35',
+    ring: '#d7ff00',
+    midground: '#d7ff00',
+    midgroundForeground: '#171b16',
+    sidebarBackground: '#141916',
+    sidebarBorder: '#303831',
+    userBubble: '#252d25',
+    userBubbleBorder: '#364336'
+  }
+}
+
 /** Neon green on black. Matches the CLI cyberpunk skin and dashboard theme. */
 export const cyberpunkTheme: DesktopTheme = {
   name: 'cyberpunk',
@@ -452,6 +485,7 @@ export const BUILTIN_THEMES: Record<string, DesktopTheme> = {
   midnight: midnightTheme,
   ember: emberTheme,
   mono: monoTheme,
+  citron: citronTheme,
   slate: slateTheme,
   cyberpunk: cyberpunkTheme
 }
