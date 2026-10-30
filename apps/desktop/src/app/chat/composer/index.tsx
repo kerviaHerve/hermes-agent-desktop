@@ -6,7 +6,6 @@ import {
   type KeyboardEvent,
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef
 } from 'react'
@@ -211,9 +210,8 @@ export function ChatBar({
       ? sessionOwner
       : profile
 
-  const { collapsed: statusDrawerCollapsed, toggle: toggleStatusDrawer } = useStatusDrawer(activeQueueSessionKey)
-  const statusDrawerId = useId()
-  const codingDrawerId = useId()
+  const statusDrawer = useStatusDrawer(activeQueueSessionKey)
+  const { codingDrawerId, collapsed: statusDrawerCollapsed, statusDrawerId, toggle: toggleStatusDrawer } = statusDrawer
 
   const requestBusyConfig = useCallback<GatewayRequester>(
     (method, params) => (gateway ? gateway.request(method, params) : Promise.reject(new Error('Gateway unavailable'))),

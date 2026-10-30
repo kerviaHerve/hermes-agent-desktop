@@ -34,4 +34,6 @@ Une publication doit joindre au même GitHub Release public : le DMG, le ZIP, le
 
 Le dépôt garde deux remotes : `origin` pour Kervia et `upstream` pour Nous Research, dont le push est désactivé. Noter pour chaque version le SHA officiel importé. Comparer les changements de `apps/desktop`, `apps/shared` et des contrats de passerelle avant de reporter les correctifs. Les choix d'interface restent dans des modules et styles Desktop ; les adaptations de protocole sont testées avec une passerelle locale isolée et une connexion distante de test. Ne jamais mettre à niveau un serveur distant à partir de ce processus.
 
+Base officielle intégrée pour la préparation de la version 0.1.0 : `e864515d2651ea0b3420482d5e00ca0eb3586b24` (30 octobre 2026).
+
 Le dépôt initial a été importé comme instantané ; son historique Git n'a pas le même ancêtre que celui d'`upstream/main`. Une synchronisation doit appliquer ou intégrer explicitement les différences entre l'ancien SHA officiel et le nouveau, puis enregistrer le nouveau SHA dans le journal de version. Un `git pull upstream main` direct n'est donc pas une procédure de mise à jour fiable pour ce fork.
