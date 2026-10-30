@@ -4,6 +4,12 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
+## Kervia 0.1.5 · Hermes source `5057eaa3a4d0cbef0e30078418a5115faa62889e`
+
+**FR** — Corrige les notes de mise à jour : le client Kervia affiche désormais les versions et changements de ce dépôt, tandis que les mises à jour du moteur Hermes continuent de renvoyer vers Nous Research. Le parcours 0.1.3 → 0.1.4 a été vérifié dans une copie isolée de l'application : détection, téléchargement et installation du ZIP signé, sans modifier l'application installée dans Applications. Aucun changement au moteur Hermes.
+
+**EN** — Fixes update notes: the Kervia client now links to this repository's releases and changes, while Hermes engine updates continue to link to Nous Research. The 0.1.3 → 0.1.4 path was verified in an isolated app copy: detection, download, and installation of the signed ZIP without changing the app installed in Applications. No Hermes engine changes.
+
 ## Kervia 0.1.4 · Hermes source `5057eaa3a4d0cbef0e30078418a5115faa62889e`
 
 **FR** — Les sections de la barre latérale (Épinglées, Agents ou Sessions, plateformes de messagerie et tâches planifiées) peuvent être déplacées avec le menu discret de leur en-tête. Leur ordre est enregistré séparément pour chaque passerelle Hermes et conservé quand une section disparaît temporairement. La liste des agents garde une hauteur adaptée lorsqu'une section est placée après elle. Cette version intègre également les 30 commits Hermes suivants : formulaire unique pour les questions de clarification, indication plus juste lorsqu'un serveur de modèle local est arrêté, corrections des raccourcis et de la configuration distante. Les fonctionnalités dépendantes de la passerelle restent soumises à ses capacités.

@@ -1,6 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
-import { extractReleaseHighlights, latestMergedPrTitles, updateNotesSource } from './update-notes'
+import {
+  extractReleaseHighlights,
+  fetchUpdateNoteItems,
+  latestMergedPrTitles,
+  updateNotesSource,
+  updateNotesUrl,
+  updateReleaseTag
+} from './update-notes'
 
 describe('update notes', () => {
   it('summarizes a release as its highlight headlines, and falls back to the first bullet list', () => {
@@ -61,5 +68,37 @@ describe('update notes', () => {
     expect(updateNotesSource({ branch: 'my-feature', channel: 'main' })).toBeNull()
     expect(updateNotesSource({ channel: 'main' })).toEqual({ kind: 'prs' })
     expect(updateNotesSource({ channel: 'stable', rollback: true, sourceVersion: '0.21.0' })).toBeNull()
+  })
+
+  it('links packaged Kervia updates to the Kervia release and keeps Hermes source links separate', () => {
+    const status = { channel: 'stable', sourceVersion: '0.1.5' }
+    const kervia = updateNotesSource(status, true)
+
+    expect(kervia).toEqual({ kind: 'release', tag: 'kervia-v0.1.5' })
+    expect(updateNotesUrl(kervia!, status, true)).toBe(
+      'https://github.com/kerviaHerve/hermes-agent-desktop/releases/tag/kervia-v0.1.5'
+    )
+    expect(updateReleaseTag({ ...status, latestTag: 'v0.1.5' }, true)).toBe('kervia-v0.1.5')
+    expect(updateReleaseTag({ ...status, latestTag: 'kervia-v0.1.5' }, true)).toBe('kervia-v0.1.5')
+    expect(updateNotesUrl(updateNotesSource(status, false)!, status, false)).toBe(
+      'https://github.com/NousResearch/hermes-agent/releases/tag/v0.1.5'
+    )
+  })
+
+  it('fetches client and backend release notes from their respective repositories', async () => {
+    const fetch = vi.fn(async (_url: string) => new Response(JSON.stringify({ body: '- Release note' }), { status: 200 }))
+    vi.stubGlobal('fetch', fetch)
+
+    try {
+      const status = { channel: 'stable', sourceVersion: '99.99.99' }
+      expect(await fetchUpdateNoteItems(updateNotesSource(status, true)!, status, true)).toEqual(['Release note'])
+      expect(await fetchUpdateNoteItems(updateNotesSource(status, false)!, status, false)).toEqual(['Release note'])
+      expect(fetch.mock.calls.map(([url]) => url)).toEqual([
+        'https://api.github.com/repos/kerviaHerve/hermes-agent-desktop/releases/tags/kervia-v99.99.99',
+        'https://api.github.com/repos/NousResearch/hermes-agent/releases/tags/v99.99.99'
+      ])
+    } finally {
+      vi.unstubAllGlobals()
+    }
   })
 })

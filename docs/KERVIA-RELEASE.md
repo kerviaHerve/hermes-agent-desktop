@@ -49,7 +49,7 @@ Cette deuxième commande crée une branche locale `sync/hermes-AAAA-MM-JJ-SHA`, 
 
 Avant de publier un client seul, vérifier les nouvelles fonctions dont le serveur doit disposer. Une API apparue dans l'amont peut manquer sur un serveur Hermes déjà installé : l'interface doit rester utilisable et les fonctions non prises en charge doivent être masquées ou expliquées. Passer les tests Desktop, les tests des contrats partagés, une compilation, puis les parcours de connexion et de conversation sur la passerelle de test. Après ces validations, augmenter la version Kervia, inscrire le nouveau SHA dans `kervia-release.json` et `CHANGELOG-KERVIA.md`, puis suivre le circuit de signature et de publication ci-dessus. Garder le DMG installé en production sur sa version actuelle jusqu'à la publication d'une version vérifiée.
 
-Base officielle des versions 0.1.0 à 0.1.2 : `b1d7c5b296d46f75d870583362640acc0cf8d6cb` (30 octobre 2026). La version 0.1.3 intègre `bff22bde93db8d9fd57b63ee1bcb47947ed04fd2` et la version 0.1.4 intègre `5057eaa3a4d0cbef0e30078418a5115faa62889e` (30 octobre 2026).
+Base officielle des versions 0.1.0 à 0.1.2 : `b1d7c5b296d46f75d870583362640acc0cf8d6cb` (30 octobre 2026). La version 0.1.3 intègre `bff22bde93db8d9fd57b63ee1bcb47947ed04fd2` ; les versions 0.1.4 et 0.1.5 intègrent `5057eaa3a4d0cbef0e30078418a5115faa62889e` (30 octobre 2026).
 
 Le numéro de l'application est celui de Kervia. La révision Hermes intégrée est déclarée dans `apps/desktop/kervia-release.json`, affichée dans « À propos » et consignée dans `CHANGELOG-KERVIA.md`. Ne pas confondre ce SHA avec une étiquette de version Hermes : le `package.json` officiel du Desktop indique `0.0.0`.
 

@@ -6,9 +6,11 @@
  * caller keeps the commit changelog when nothing comes back.
  */
 
-const REPOSITORY = 'NousResearch/hermes-agent'
-const API = `https://api.github.com/repos/${REPOSITORY}`
-const SITE = `https://github.com/${REPOSITORY}`
+const KERVIA_EDITION = import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1'
+
+const repository = (kerviaEdition: boolean) =>
+  kerviaEdition ? 'kerviaHerve/hermes-agent-desktop' : 'NousResearch/hermes-agent'
+
 const MAX_ITEMS = 5
 // Recent merges move constantly; re-read them, but not on every dialog open.
 const PULLS_TTL_MS = 10 * 60_000
@@ -34,18 +36,24 @@ interface PullRow {
 }
 
 /** The release a stable update installs: packaged feeds name a tag, source checks a version. */
-export function updateReleaseTag(status: NotesStatus): null | string {
-  return status.latestTag || (status.channel === 'stable' && status.sourceVersion ? `v${status.sourceVersion}` : null)
+export function updateReleaseTag(status: NotesStatus, kerviaEdition = KERVIA_EDITION): null | string {
+  if (status.latestTag) {
+    return kerviaEdition && /^v\d/.test(status.latestTag) ? `kervia-${status.latestTag}` : status.latestTag
+  }
+
+  return status.channel === 'stable' && status.sourceVersion
+    ? `${kerviaEdition ? 'kervia-v' : 'v'}${status.sourceVersion}`
+    : null
 }
 
 /** Which notes describe this update; null when neither fits (custom branch, canary, rollback). */
-export function updateNotesSource(status: NotesStatus): null | UpdateNotesSource {
+export function updateNotesSource(status: NotesStatus, kerviaEdition = KERVIA_EDITION): null | UpdateNotesSource {
   if (status.rollback) {
     return null
   }
 
   if (status.channel === 'stable') {
-    return { kind: 'release', tag: updateReleaseTag(status) }
+    return { kind: 'release', tag: updateReleaseTag(status, kerviaEdition) }
   }
 
   // A named branch decides on its own; only a branch-less status (packaged feed) goes by channel.
@@ -55,14 +63,16 @@ export function updateNotesSource(status: NotesStatus): null | UpdateNotesSource
 const isSha = (value?: string): value is string => Boolean(value && /^[0-9a-f]{7,40}$/i.test(value))
 
 /** Where "more info" lives: the release page, or the compare view of exactly this update. */
-export function updateNotesUrl(source: UpdateNotesSource, status: NotesStatus): string {
+export function updateNotesUrl(source: UpdateNotesSource, status: NotesStatus, kerviaEdition = KERVIA_EDITION): string {
+  const site = `https://github.com/${repository(kerviaEdition)}`
+
   if (source.kind === 'release') {
-    return source.tag ? `${SITE}/releases/tag/${encodeURIComponent(source.tag)}` : `${SITE}/releases/latest`
+    return source.tag ? `${site}/releases/tag/${encodeURIComponent(source.tag)}` : `${site}/releases/latest`
   }
 
   return isSha(status.currentSha) && isSha(status.targetSha)
-    ? `${SITE}/compare/${status.currentSha}...${status.targetSha}`
-    : `${SITE}/commits/main`
+    ? `${site}/compare/${status.currentSha}...${status.targetSha}`
+    : `${site}/commits/main`
 }
 
 // Full text: the dialog clamps the display and keeps the whole item for hover.
@@ -152,33 +162,40 @@ async function getJson(url: string): Promise<unknown> {
 }
 
 const releases = new Map<string, Promise<string[]>>()
-let pulls: null | { at: number; rows: Promise<readonly PullRow[]> } = null
+const pulls = new Map<string, { at: number; rows: Promise<readonly PullRow[]> }>()
 
-function recentPulls(): Promise<readonly PullRow[]> {
-  if (!pulls || Date.now() - pulls.at > PULLS_TTL_MS) {
+function recentPulls(kerviaEdition: boolean): Promise<readonly PullRow[]> {
+  const repo = repository(kerviaEdition)
+  let cached = pulls.get(repo)
+
+  if (!cached || Date.now() - cached.at > PULLS_TTL_MS) {
     // Recently updated closed PRs hold the newest merges; one request, no auth.
-    const rows = getJson(`${API}/pulls?state=closed&base=main&sort=updated&direction=desc&per_page=100`).then(
+    const rows = getJson(`https://api.github.com/repos/${repo}/pulls?state=closed&base=main&sort=updated&direction=desc&per_page=100`).then(
       (json): readonly PullRow[] => (Array.isArray(json) ? json : [])
     )
 
-    pulls = { at: Date.now(), rows }
+    cached = { at: Date.now(), rows }
+    pulls.set(repo, cached)
     rows.catch(() => {
-      pulls = null
+      pulls.delete(repo)
     })
   }
 
-  return pulls.rows
+  return cached.rows
 }
 
-function releaseHighlights(tag: null | string): Promise<string[]> {
-  const key = tag ?? 'latest'
+function releaseHighlights(tag: null | string, kerviaEdition: boolean): Promise<string[]> {
+  const repo = repository(kerviaEdition)
+  const key = `${repo}:${tag ?? 'latest'}`
   const cached = releases.get(key)
 
   if (cached) {
     return cached
   }
 
-  const pending = getJson(tag ? `${API}/releases/tags/${encodeURIComponent(tag)}` : `${API}/releases/latest`).then(
+  const api = `https://api.github.com/repos/${repo}`
+
+  const pending = getJson(tag ? `${api}/releases/tags/${encodeURIComponent(tag)}` : `${api}/releases/latest`).then(
     release => extractReleaseHighlights(String((release as { body?: unknown })?.body ?? ''))
   )
 
@@ -189,11 +206,15 @@ function releaseHighlights(tag: null | string): Promise<string[]> {
 }
 
 /** The notes' items; [] when GitHub is unreachable or has none. Merged PRs are filtered per status. */
-export function fetchUpdateNoteItems(source: UpdateNotesSource, status: NotesStatus): Promise<string[]> {
+export function fetchUpdateNoteItems(
+  source: UpdateNotesSource,
+  status: NotesStatus,
+  kerviaEdition = KERVIA_EDITION
+): Promise<string[]> {
   const items =
     source.kind === 'release'
-      ? releaseHighlights(source.tag)
-      : recentPulls().then(rows => latestMergedPrTitles(rows, status.commits ?? [], status.behind))
+      ? releaseHighlights(source.tag, kerviaEdition)
+      : recentPulls(kerviaEdition).then(rows => latestMergedPrTitles(rows, status.commits ?? [], status.behind))
 
   return items.catch(() => [])
 }

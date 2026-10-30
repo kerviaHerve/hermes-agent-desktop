@@ -62,13 +62,14 @@ function totalItems(groups: readonly CommitGroup[]) {
 }
 
 /** Release notes (stable) or the latest merged PRs (main); undefined while loading. */
-function useUpdateNotes(status: DesktopUpdateStatus | null, updateAvailable: boolean) {
+function useUpdateNotes(status: DesktopUpdateStatus | null, updateAvailable: boolean, target: UpdateTarget) {
   const enabled = Boolean(status?.supported && !status.error && updateAvailable)
-  const source = status && enabled ? updateNotesSource(status) : null
+  const kerviaEdition = target === 'client' && import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1'
+  const source = status && enabled ? updateNotesSource(status, kerviaEdition) : null
   const [items, setItems] = useState<{ for: DesktopUpdateStatus; items: string[] } | null>(null)
 
   useEffect(() => {
-    const notesSource = status && enabled ? updateNotesSource(status) : null
+    const notesSource = status && enabled ? updateNotesSource(status, kerviaEdition) : null
 
     if (!status || !notesSource) {
       return
@@ -76,17 +77,17 @@ function useUpdateNotes(status: DesktopUpdateStatus | null, updateAvailable: boo
 
     let live = true
 
-    void fetchUpdateNoteItems(notesSource, status).then(next => live && setItems({ for: status, items: next }))
+    void fetchUpdateNoteItems(notesSource, status, kerviaEdition).then(next => live && setItems({ for: status, items: next }))
 
     return () => {
       live = false
     }
-  }, [enabled, status])
+  }, [enabled, kerviaEdition, status])
 
   return {
     items: items?.for === status ? items.items : undefined,
     kind: source?.kind,
-    url: source && status ? updateNotesUrl(source, status) : null
+    url: source && status ? updateNotesUrl(source, status, kerviaEdition) : null
   }
 }
 
@@ -307,7 +308,7 @@ function IdleView({
 }) {
   const { t } = useI18n()
   const u = t.updates
-  const notes = useUpdateNotes(status, updateAvailable)
+  const notes = useUpdateNotes(status, updateAvailable, target)
 
   if (!status && checking) {
     return (

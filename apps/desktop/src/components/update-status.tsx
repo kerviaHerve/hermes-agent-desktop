@@ -25,7 +25,12 @@ import {
   type UpdateTarget
 } from '@/store/updates'
 
-const RELEASE_NOTES_URL = 'https://github.com/NousResearch/hermes-agent/releases'
+const UPSTREAM_RELEASE_NOTES_URL = 'https://github.com/NousResearch/hermes-agent/releases'
+
+const CLIENT_RELEASE_NOTES_URL = import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1'
+  ? 'https://github.com/kerviaHerve/hermes-agent-desktop/releases'
+  : UPSTREAM_RELEASE_NOTES_URL
+
 const INSTALLER_URL = 'https://hermes-agent.nousresearch.com/'
 
 export type UpdateStatusTone = 'idle' | 'available' | 'error' | 'unsupported'
@@ -353,6 +358,7 @@ function UpdateStatusCardBody({
   const { t } = useI18n()
   const u = t.updates
   const isBackend = target === 'backend'
+  const releaseNotesUrl = isBackend ? UPSTREAM_RELEASE_NOTES_URL : CLIENT_RELEASE_NOTES_URL
   const status = useStore(isBackend ? $backendUpdateStatus : $updateStatus)
   const checking = useStore(isBackend ? $backendUpdateChecking : $updateChecking)
   const apply = useStore(isBackend ? $backendUpdateApply : $updateApply)
@@ -419,10 +425,10 @@ function UpdateStatusCardBody({
           {showReleaseNotes && (
             <Button asChild className="ml-auto" size="sm" variant="text">
               <a
-                href={RELEASE_NOTES_URL}
+                href={releaseNotesUrl}
                 onClick={event => {
                   event.preventDefault()
-                  void window.hermesDesktop?.openExternal?.(RELEASE_NOTES_URL)
+                  void window.hermesDesktop?.openExternal?.(releaseNotesUrl)
                 }}
                 rel="noreferrer"
                 target="_blank"
