@@ -35,8 +35,8 @@ Le fichier de mot de passe P12 et le P12 ne doivent jamais être ajoutés au dé
 
 Le dépôt garde deux remotes : `origin` pour Kervia et `upstream` pour Nous Research, dont le push est désactivé. Noter pour chaque version le SHA officiel importé. Comparer les changements de `apps/desktop`, `apps/shared` et des contrats de passerelle avant de reporter les correctifs. Les choix d'interface restent dans des modules et styles Desktop ; les adaptations de protocole sont testées avec une passerelle locale isolée et une connexion distante de test. Ne jamais mettre à niveau un serveur distant à partir de ce processus.
 
-Base officielle intégrée pour la préparation de la version 0.1.0 : `b1d7c5b296d46f75d870583362640acc0cf8d6cb` (30 octobre 2026).
+Base officielle intégrée pour les versions 0.1.0 et 0.1.1 : `b1d7c5b296d46f75d870583362640acc0cf8d6cb` (30 octobre 2026).
 
-Le numéro de l'application (`0.1.0`) est celui de Kervia. La révision Hermes intégrée est déclarée dans `apps/desktop/kervia-release.json`, affichée dans « À propos » et consignée dans `CHANGELOG-KERVIA.md`. Ne pas confondre ce SHA avec une étiquette de version Hermes : le `package.json` officiel du Desktop indique `0.0.0`.
+Le numéro de l'application (`0.1.1` pour cette correction) est celui de Kervia. La révision Hermes intégrée est déclarée dans `apps/desktop/kervia-release.json`, affichée dans « À propos » et consignée dans `CHANGELOG-KERVIA.md`. Ne pas confondre ce SHA avec une étiquette de version Hermes : le `package.json` officiel du Desktop indique `0.0.0`.
 
 Le dépôt initial a été importé comme instantané ; son historique Git n'a pas le même ancêtre que celui d'`upstream/main`. Une synchronisation doit appliquer ou intégrer explicitement les différences entre l'ancien SHA officiel et le nouveau, puis enregistrer le nouveau SHA dans le journal de version. Un `git pull upstream main` direct n'est donc pas une procédure de mise à jour fiable pour ce fork.

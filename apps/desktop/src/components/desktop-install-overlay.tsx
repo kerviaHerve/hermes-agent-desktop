@@ -52,6 +52,8 @@ interface DesktopInstallOverlayProps {
   /** When false, the overlay never renders -- useful for dev when we want
    * to suppress it entirely. */
   enabled?: boolean
+  /** This edition connects to an existing backend and never installs one. */
+  desktopOnly?: boolean
 }
 
 interface StageRowProps {
@@ -293,7 +295,10 @@ function applyEvent(state: DesktopBootstrapState, ev: DesktopBootstrapEvent): De
   return state
 }
 
-export function DesktopInstallOverlay({ enabled = true }: DesktopInstallOverlayProps) {
+export function DesktopInstallOverlay({
+  enabled = true,
+  desktopOnly = import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1'
+}: DesktopInstallOverlayProps) {
   const { t } = useI18n()
   const copy = t.install
 
@@ -444,6 +449,7 @@ export function DesktopInstallOverlay({ enabled = true }: DesktopInstallOverlayP
   if (state.setupChoice) {
     const localState = state.setupChoice.local
     const localPres = localCardPresentation(localState)
+    const showLocalOption = !desktopOnly || localState !== 'none'
 
     return (
       <div className="fixed inset-0 z-(--z-setup) flex items-center justify-center bg-background/90 p-4 backdrop-blur-md">
@@ -453,12 +459,16 @@ export function DesktopInstallOverlay({ enabled = true }: DesktopInstallOverlayP
             <div className="min-w-0">
               <h2 className="text-xl font-semibold tracking-tight">{copy.setupChoiceTitle}</h2>
               <p className="mt-1.5 text-sm text-muted-foreground">
-                {localState === 'none' ? copy.setupChoiceDesc : copy.setupChoiceDescLocal}
+                {desktopOnly && localState === 'none'
+                  ? copy.connectExistingDesc
+                  : localState === 'none'
+                    ? copy.setupChoiceDesc
+                    : copy.setupChoiceDescLocal}
               </p>
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <div className={cn('mt-6 grid gap-3', showLocalOption && 'sm:grid-cols-2')}>
             <button
               className="rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) p-4 text-left transition hover:bg-(--chrome-action-hover)"
               onClick={() => setRemoteOpen(true)}
@@ -471,36 +481,38 @@ export function DesktopInstallOverlay({ enabled = true }: DesktopInstallOverlayP
               <p className="mt-2 text-sm leading-5 text-muted-foreground">{copy.connectExistingDesc}</p>
             </button>
 
-            <button
-              className="rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) p-4 text-left transition hover:bg-(--chrome-action-hover) disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={localStarting}
-              onClick={async () => {
-                setLocalStart({ root: activeRoot, starting: true, error: null })
+            {showLocalOption && (
+              <button
+                className="rounded-lg border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) p-4 text-left transition hover:bg-(--chrome-action-hover) disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={localStarting}
+                onClick={async () => {
+                  setLocalStart({ root: activeRoot, starting: true, error: null })
 
-                try {
-                  const desktop = window.hermesDesktop
+                  try {
+                    const desktop = window.hermesDesktop
 
-                  if (!desktop || typeof desktop.continueBootstrapLocal !== 'function') {
-                    throw new Error(copy.localStartUnavailable)
+                    if (!desktop || typeof desktop.continueBootstrapLocal !== 'function') {
+                      throw new Error(copy.localStartUnavailable)
+                    }
+
+                    await desktop.continueBootstrapLocal()
+                  } catch (err) {
+                    setLocalStart({ root: activeRoot, starting: false, error: errorMessage(err) })
                   }
-
-                  await desktop.continueBootstrapLocal()
-                } catch (err) {
-                  setLocalStart({ root: activeRoot, starting: false, error: errorMessage(err) })
-                }
-              }}
-              type="button"
-            >
-              <div className="flex items-center gap-2 text-sm font-medium">
-                {localStarting ? (
-                  <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                ) : (
-                  <Monitor className="size-4 text-muted-foreground" />
-                )}
-                <span>{copy[localPres.title]}</span>
-              </div>
-              <p className="mt-2 text-sm leading-5 text-muted-foreground">{copy[localPres.desc]}</p>
-            </button>
+                }}
+                type="button"
+              >
+                <div className="flex items-center gap-2 text-sm font-medium">
+                  {localStarting ? (
+                    <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                  ) : (
+                    <Monitor className="size-4 text-muted-foreground" />
+                  )}
+                  <span>{copy[localPres.title]}</span>
+                </div>
+                <p className="mt-2 text-sm leading-5 text-muted-foreground">{copy[localPres.desc]}</p>
+              </button>
+            )}
           </div>
 
           {localStartError ? (
@@ -510,7 +522,7 @@ export function DesktopInstallOverlay({ enabled = true }: DesktopInstallOverlayP
             </div>
           ) : null}
 
-          {localPres.showInstallTo ? (
+          {showLocalOption && localPres.showInstallTo ? (
             <div className="mt-6 text-xs text-muted-foreground">
               {copy.installTo}{' '}
               <code className="font-mono text-(--ui-text-secondary)">{state.setupChoice.activeRoot}</code>

@@ -1323,6 +1323,7 @@ const DESKTOP_CONNECTION_CONFIG_PATH = path.join(app.getPath('userData'), 'conne
 // profile keep working; the registry imports from it once and then owns its
 // own file. Same secret posture as connection.json (encrypted tokens, 0600).
 const DESKTOP_CONNECTIONS_REGISTRY_PATH = path.join(app.getPath('userData'), 'connections.json')
+const KERVIA_LOCAL_CHOICE_PATH = path.join(app.getPath('userData'), 'kervia-local-choice.json')
 const DESKTOP_INSTALLATION_PATH = path.join(app.getPath('userData'), 'desktop-installation.json')
 const DESKTOP_UPDATE_CONFIG_PATH = path.join(app.getPath('userData'), 'updates.json')
 const DESKTOP_WINDOW_STATE_PATH = path.join(app.getPath('userData'), 'window-state.json')
@@ -2580,6 +2581,7 @@ function getFirstRunSetupGate() {
     firstRunSetupGate = createFirstRunSetupGate({
       hideChoice: hideFirstRunSetupChoice,
       log: rememberLog,
+      requireExplicitLocalChoice: PRODUCT_IDENTITY.kerviaEdition && !kerviaLocalChoiceConfirmed(),
       onStuck: (_backend, stuckAfterMs) => {
         updateBootProgress(
           {
@@ -2597,6 +2599,14 @@ function getFirstRunSetupGate() {
   }
 
   return firstRunSetupGate
+}
+
+function kerviaLocalChoiceConfirmed(): boolean {
+  try {
+    return JSON.parse(fs.readFileSync(KERVIA_LOCAL_CHOICE_PATH, 'utf8')).enabled === true
+  } catch {
+    return false
+  }
 }
 
 async function waitForFirstRunSetupChoice(backend) {
@@ -2621,7 +2631,22 @@ async function waitForFirstRunSetupChoice(backend) {
 }
 
 function continueFirstRunLocalBootstrap() {
-  getFirstRunSetupGate().continueLocal()
+  const gate = getFirstRunSetupGate()
+  const localChoice = bootstrapState.setupChoice?.local
+
+  if (PRODUCT_IDENTITY.kerviaEdition && gate.hasWaiter()) {
+    if (localChoice !== 'installed') {
+      throw new Error('Kervia Edition requires an existing local Hermes runtime')
+    }
+
+    fs.writeFileSync(KERVIA_LOCAL_CHOICE_PATH, '{"enabled":true}\n', { mode: 0o600 })
+  }
+
+  gate.continueLocal()
+
+  if (PRODUCT_IDENTITY.kerviaEdition && localChoice === 'installed') {
+    broadcastBootstrapEvent({ type: 'dismissed' })
+  }
 }
 
 function abandonFirstRunSetupChoiceForRemoteApply() {

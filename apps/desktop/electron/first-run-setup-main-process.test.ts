@@ -7,12 +7,15 @@ import { createFirstRunSetupGate } from './first-run-setup-gate'
 import { runPrimaryBackendStartup } from './primary-backend-startup'
 import { rehomePrimaryConnection } from './primary-connection-rehome'
 
-test('a first-run bootstrap-needed remote apply connects without ensuring or bootstrapping locally', async () => {
-  const gate = createFirstRunSetupGate({ stuckAfterMs: 0 })
+test.each([
+  ['missing runtime', { kind: 'bootstrap-needed', local: 'none' as const }, false],
+  ['installed runtime', { kind: 'python', local: 'installed' as const }, true]
+])('a first-run %s remote apply connects without starting the local Hermes', async (_label, backend, requireChoice) => {
+  const gate = createFirstRunSetupGate({ requireExplicitLocalChoice: Boolean(requireChoice), stuckAfterMs: 0 })
 
   const bootstrapBackend = {
     activeRoot: '/tmp/hermes-home/hermes-agent',
-    kind: 'bootstrap-needed',
+    ...backend,
     platform: 'linux'
   }
 

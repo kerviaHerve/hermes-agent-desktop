@@ -30,6 +30,28 @@ test('first-run setup gate skips non-bootstrap backends', async () => {
   assert.equal(gate.hasWaiter(), false)
 })
 
+test('an explicit local choice gate holds an already installed runtime until the user chooses', async () => {
+  const prompts: unknown[] = []
+
+  const gate = createFirstRunSetupGate({
+    promptChoice: backend => prompts.push(backend),
+    requireExplicitLocalChoice: true,
+    stuckAfterMs: 0
+  })
+
+  const installed = { kind: 'python', local: 'installed' as const, activeRoot: '/tmp/hermes' }
+
+  const pending = gate.wait(installed)
+
+  assert.equal(prompts.length, 1)
+  assert.equal(gate.hasWaiter(), true)
+  assert.equal(await settledState(pending), 'pending')
+
+  gate.continueLocal()
+
+  assert.equal(await pending, 'continue-local')
+})
+
 test('first-run setup gate prompts once for concurrent waits', async () => {
   const prompts = []
   const gate = createFirstRunSetupGate({ promptChoice: backend => prompts.push(backend), stuckAfterMs: 0 })

@@ -4,6 +4,12 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
+## Kervia 0.1.1 · Hermes source `b1d7c5b296d46f75d870583362640acc0cf8d6cb`
+
+**FR** — Corrige le premier démarrage : si un Hermes local existe déjà sur le Mac, l'application demande explicitement s'il faut l'utiliser ou se connecter à un Hermes distant. Elle ne lance plus automatiquement le Hermes local et son accueil guidé. L'édition Kervia ne propose pas d'installer un nouveau moteur Hermes. Le choix d'utiliser le Hermes local est mémorisé uniquement dans les données de l'application Kervia.
+
+**EN** — Fixes first launch: when a local Hermes already exists on the Mac, the app explicitly asks whether to use it or connect to a remote Hermes. It no longer automatically opens the local Hermes and its guided onboarding. Kervia Edition does not offer to install a new Hermes backend. Opting into the existing local Hermes is saved only in Kervia app data.
+
 ## Kervia 0.1.0 · Hermes source `b1d7c5b296d46f75d870583362640acc0cf8d6cb`
 
 Première version macOS publique de **Hermes Desktop · Kervia Edition**. Le DMG contient uniquement le client Desktop et se connecte à une passerelle Hermes existante. L'application et ses données sont séparées du client officiel.

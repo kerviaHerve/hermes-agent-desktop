@@ -11,6 +11,7 @@ interface FirstRunSetupGateOptions {
   log?: (message: string) => void
   onStuck?: (backend: FirstRunSetupBackend, stuckAfterMs: number) => void
   promptChoice?: (backend: FirstRunSetupBackend) => void
+  requireExplicitLocalChoice?: boolean
   stuckAfterMs?: number
 }
 
@@ -21,6 +22,7 @@ export function createFirstRunSetupGate({
   log,
   onStuck,
   promptChoice,
+  requireExplicitLocalChoice = false,
   stuckAfterMs = 120000
 }: FirstRunSetupGateOptions = {}) {
   let localBootstrapConfirmed = false
@@ -60,7 +62,11 @@ export function createFirstRunSetupGate({
   }
 
   const shouldGate = (backend?: FirstRunSetupBackend | null) =>
-    Boolean(backend && backend.kind === 'bootstrap-needed' && !localBootstrapConfirmed)
+    Boolean(
+      backend &&
+      (backend.kind === 'bootstrap-needed' || (requireExplicitLocalChoice && backend.local === 'installed')) &&
+      !localBootstrapConfirmed
+    )
 
   const wait = async (backend?: FirstRunSetupBackend | null) => {
     if (!shouldGate(backend)) {

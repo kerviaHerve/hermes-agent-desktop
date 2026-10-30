@@ -92,6 +92,20 @@ afterEach(() => {
 })
 
 describe('DesktopInstallOverlay first-run setup', () => {
+  it('offers only remote setup when a desktop-only edition has no local Hermes', async () => {
+    installDesktopMock(
+      bootstrapState({
+        setupChoice: { platform: 'darwin', activeRoot: '/tmp/hermes', local: 'none', bundled: false }
+      })
+    )
+
+    render(<DesktopInstallOverlay desktopOnly />)
+
+    expect(await screen.findByText('Connect to existing Hermes')).toBeTruthy()
+    expect(screen.queryByText('Install Hermes locally')).toBeNull()
+    expect(screen.queryByText(/Will install to/i)).toBeNull()
+  })
+
   it('shows the remote/local choice without installer progress', async () => {
     installDesktopMock(
       bootstrapState({
