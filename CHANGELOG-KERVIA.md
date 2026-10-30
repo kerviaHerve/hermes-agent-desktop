@@ -4,6 +4,12 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
+## Kervia 0.1.2 · Hermes source `b1d7c5b296d46f75d870583362640acc0cf8d6cb`
+
+**FR** — Rend la barre latérale utilisable avec de nombreuses conversations épinglées : quatre sont affichées au départ, ainsi que la conversation active si elle est épinglée plus bas. Un bouton permet d'afficher toutes les autres, puis de réduire la liste. Le nombre total reste visible et l'ordre des épinglées est conservé. Les discussions et les groupes d'agents ne sont pas supprimés ni modifiés sur le serveur.
+
+**EN** — Keeps the sidebar usable with many pinned chats: four appear initially, plus the active chat if it is pinned further down. A button reveals every other pin and then reduces the list. The total count stays visible and pin order is preserved. No chats or agent groups are deleted or changed on the server.
+
 ## Kervia 0.1.1 · Hermes source `b1d7c5b296d46f75d870583362640acc0cf8d6cb`
 
 **FR** — Corrige le premier démarrage : si un Hermes local existe déjà sur le Mac, l'application demande explicitement s'il faut l'utiliser ou se connecter à un Hermes distant. Elle ne lance plus automatiquement le Hermes local et son accueil guidé. L'édition Kervia ne propose pas d'installer un nouveau moteur Hermes. Le choix d'utiliser le Hermes local est mémorisé uniquement dans les données de l'application Kervia.

@@ -542,3 +542,50 @@ describe('ChatSidebar messaging owners', () => {
     expect(within(row('default-1')).queryByRole('img', { name: /^Profile:/ })).toBeNull()
   })
 })
+
+describe('ChatSidebar with many pinned conversations', () => {
+  beforeEach(() => {
+    $profiles.set([
+      { name: 'default', is_default: true },
+      { name: 'work', is_default: false }
+    ] as typeof $profiles.value)
+    $sessions.set([
+      ...Array.from({ length: 17 }, (_, index) =>
+        makeSessionInfo({
+          id: `pin-${index + 1}`,
+          last_active: 100 - index,
+          pinned: true,
+          profile: index < 9 ? 'default' : 'work',
+          title: `Pinned ${index + 1}`
+        })
+      ),
+      makeSessionInfo({ id: 'recent-default', profile: 'default', title: 'Recent default' }),
+      makeSessionInfo({ id: 'recent-work', profile: 'work', title: 'Recent work' })
+    ])
+    setShowAllProfiles(true)
+    setSidebarGrouping('profile')
+  })
+
+  afterEach(() => {
+    cleanup()
+    setSidebarGrouping('date')
+    setShowAllProfiles(false)
+    $sessions.set([])
+    $profiles.set([])
+  })
+
+  it('keeps agent groups reachable while allowing every pin to be revealed', () => {
+    renderSidebar('/', 'chat')
+
+    expect(screen.getByText('Pinned 1')).toBeTruthy()
+    expect(screen.queryByText('Pinned 17')).toBeNull()
+    expect(screen.getByText('Recent default')).toBeTruthy()
+    expect(screen.getByText('Recent work')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show 13 more in Pinned' }))
+
+    expect(screen.getByText('Pinned 17')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'Collapse Pinned' }))
+    expect(screen.queryByText('Pinned 17')).toBeNull()
+  })
+})

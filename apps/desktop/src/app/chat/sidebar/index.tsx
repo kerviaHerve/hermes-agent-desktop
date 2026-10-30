@@ -167,6 +167,7 @@ import { SidebarFilterMenu } from './filter-menu'
 import { buildGatewaySessionGroups, scopeGatewaySessionGroups, useGatewaySessionGroups } from './gateway-group-model'
 import { SidebarLoadMoreRow } from './load-more-row'
 import { orderByIds, reconcileOrderIds, resolveManualSessionOrderIds, sameIds } from './order'
+import { PINNED_PREVIEW_LIMIT, pinnedPreview } from './pinned-preview'
 import { filterSessionsByProfileScope } from './profile-scope'
 import { ProfileRail } from './profile-switcher'
 import { ProjectDialog } from './project-dialog'
@@ -379,6 +380,7 @@ export function ChatSidebar({
 
   const panesFlipped = useStore($panesFlipped)
   const [toolsOpen, setToolsOpen] = useState(false)
+  const [showAllPinned, setShowAllPinned] = useState(false)
   const grouping = useStore($sidebarGrouping)
   const ordering = useStore($sidebarOrdering)
   const statusFilter = useStore($sidebarStatusFilter)
@@ -421,6 +423,8 @@ export function ChatSidebar({
   const profiles = useStore($profiles)
   const profileScope = useStore($profileScope)
   const activeConnectionId = useStore($activeConnectionId)
+
+  useEffect(() => setShowAllPinned(false), [activeConnectionId])
 
   // Toggle the persisted read-state watermark from a row menu. The row's own
   // `unread` prop mirrors what the dot paints; flip it and let the backend
@@ -635,6 +639,13 @@ export function ChatSidebar({
       ),
     [pinnedSessionIds, sessionByAnyId, visibleSessions, cronSessions, messagingSessions, unconfirmedPinWrites]
   )
+
+  const visiblePinnedSessions = useMemo(
+    () => pinnedPreview(pinnedSessions, activeSidebarSessionId, showAllPinned),
+    [pinnedSessions, activeSidebarSessionId, showAllPinned]
+  )
+
+  const hiddenPinnedCount = pinnedSessions.length - visiblePinnedSessions.length
 
   // Every id a pin is reachable under: the raw stored ids, plus BOTH identities
   // of each session we resolved one to. A pin is stored on the durable lineage
@@ -1762,7 +1773,19 @@ export function ChatSidebar({
                 contentClassName="flex flex-col gap-px rounded-lg pb-2 pt-1"
                 dndSensors={dndSensors}
                 emptyState={null}
+                footer={
+                  pinnedSessions.length > PINNED_PREVIEW_LIMIT ? (
+                    <button
+                      className="ml-2 mt-1 rounded-md px-2 py-1 text-left text-xs text-(--ui-text-secondary) transition-colors hover:bg-(--ui-control-hover-background) hover:text-foreground"
+                      onClick={() => setShowAllPinned(expanded => !expanded)}
+                      type="button"
+                    >
+                      {showAllPinned ? `${t.common.collapse} ${s.pinned}` : s.showMoreIn(hiddenPinnedCount, s.pinned)}
+                    </button>
+                  ) : null
+                }
                 label={s.pinned}
+                labelMeta={pinnedSessions.length > PINNED_PREVIEW_LIMIT ? pinnedSessions.length : undefined}
                 onArchiveSession={onArchiveSession}
                 onBranchSession={onBranchSession}
                 onDeleteSession={onDeleteSession}
@@ -1774,7 +1797,7 @@ export function ChatSidebar({
                 open={pinsOpen}
                 pinned
                 rootClassName="shrink-0 p-0 pb-2"
-                sessions={pinnedSessions}
+                sessions={visiblePinnedSessions}
                 showProfileTags={showAllProfiles}
                 sortable={pinnedSessions.length > 1}
               />
