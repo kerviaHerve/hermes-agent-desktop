@@ -30,6 +30,8 @@ Une publication doit joindre au même GitHub Release public : le DMG, le ZIP, le
 6. Créer le tag `kervia-vX.Y.Z` sur le commit vérifié et publier les cinq fichiers du dossier `apps/desktop/release` dans un GitHub Release public. Ne pas remplacer une version publiée : augmenter la version à chaque fois.
 7. Depuis une version antérieure signée, vérifier que « Check for Updates… » détecte la nouvelle version, télécharge le ZIP et relance cette édition sans toucher au client officiel.
 
+Le workflow manuel GitHub Actions `Kervia Desktop macOS release` automatise les étapes 4 à 6 depuis `main` une fois cinq secrets configurés : `KERVIA_CSC_LINK` (certificat Developer ID Application exporté en P12 puis encodé en base64), `KERVIA_CSC_KEY_PASSWORD`, `KERVIA_APPLE_API_KEY_P8`, `KERVIA_APPLE_API_KEY_ID` et `KERVIA_APPLE_API_ISSUER`. Il refuse une version déjà publiée, un paquet sale, non signé ou non notarié. Ne lancer ce workflow qu'après avoir relu la version à publier.
+
 ## Synchroniser l'amont
 
 Le dépôt garde deux remotes : `origin` pour Kervia et `upstream` pour Nous Research, dont le push est désactivé. Noter pour chaque version le SHA officiel importé. Comparer les changements de `apps/desktop`, `apps/shared` et des contrats de passerelle avant de reporter les correctifs. Les choix d'interface restent dans des modules et styles Desktop ; les adaptations de protocole sont testées avec une passerelle locale isolée et une connexion distante de test. Ne jamais mettre à niveau un serveur distant à partir de ce processus.
