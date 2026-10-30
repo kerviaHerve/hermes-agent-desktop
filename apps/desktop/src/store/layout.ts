@@ -53,6 +53,7 @@ const SIDEBAR_CRON_OPEN_STORAGE_KEY = 'hermes.desktop.sidebarCronOpen'
 const SIDEBAR_MESSAGING_OPEN_STORAGE_KEY = 'hermes.desktop.sidebarMessagingOpen'
 const SIDEBAR_SESSION_ORDER_STORAGE_KEY = 'hermes.desktop.sessionOrder'
 const SIDEBAR_SESSION_ORDER_MANUAL_STORAGE_KEY = 'hermes.desktop.sessionOrder.manual'
+const SIDEBAR_SECTION_ORDER_STORAGE_KEY = 'hermes.desktop.sidebarSectionOrder'
 const SIDEBAR_GROUPING_STORAGE_KEY = 'hermes.desktop.sidebarGrouping'
 const SIDEBAR_ALL_PROFILES_GROUPING_STORAGE_KEY = 'hermes.desktop.sidebarGrouping.allProfiles'
 const SIDEBAR_ALL_PROFILES_AGENTS_GROUPED_STORAGE_KEY = 'hermes.desktop.sidebarAgentsGrouped.allProfiles'
@@ -139,6 +140,14 @@ export const $sidebarSessionOrderManual = connectionScopedAtom(
   SIDEBAR_SESSION_ORDER_MANUAL_STORAGE_KEY,
   false,
   Codecs.bool
+)
+// Section placement is a presentation preference for one gateway. Keep it
+// across profile switches, including temporarily absent platform sections.
+export const $sidebarSectionOrderIds = connectionScopedAtom(
+  SIDEBAR_SECTION_ORDER_STORAGE_KEY,
+  [] as string[],
+  Codecs.stringArray,
+  { includeProfile: false }
 )
 export const $sidebarWorkspaceOrderIds = persistentAtom(
   SIDEBAR_WORKSPACE_ORDER_STORAGE_KEY,
@@ -971,6 +980,10 @@ function setOrderIds($atom: WritableAtom<string[]>, ids: string[]) {
 
 export function setSidebarSessionOrderIds(ids: string[]) {
   setOrderIds($sidebarSessionOrderIds, ids)
+}
+
+export function setSidebarSectionOrderIds(ids: string[]) {
+  setOrderIds($sidebarSectionOrderIds, ids)
 }
 
 export function setSidebarSessionOrderManual(manual: boolean) {

@@ -3,7 +3,14 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import type { HermesConnection } from '@/global'
 import { readKey } from '@/lib/storage'
 
-import { $pinnedSessionIds, $sidebarSessionOrderIds, $sidebarSessionOrderManual, pinSession } from './layout'
+import {
+  $pinnedSessionIds,
+  $sidebarSectionOrderIds,
+  $sidebarSessionOrderIds,
+  $sidebarSessionOrderManual,
+  pinSession,
+  setSidebarSectionOrderIds
+} from './layout'
 import { getRememberedSessionId, setConnection, setRememberedSessionId } from './session'
 
 // Two Desktop windows share one renderer origin (and therefore one
@@ -38,6 +45,7 @@ beforeEach(() => {
   $pinnedSessionIds.set([])
   $sidebarSessionOrderIds.set([])
   $sidebarSessionOrderManual.set(false)
+  $sidebarSectionOrderIds.set([])
 })
 
 describe('connection-scoped sidebar lists (#77318)', () => {
@@ -127,6 +135,23 @@ describe('connection-scoped sidebar lists (#77318)', () => {
     expect($pinnedSessionIds.get()).toEqual(['a-1'])
     expect($sidebarSessionOrderIds.get()).toEqual([])
     expect($sidebarSessionOrderManual.get()).toBe(false)
+  })
+
+  it('keeps the section layout per gateway across profile switches', () => {
+    setSidebarSectionOrderIds(['main', 'pinned', 'cron'])
+
+    setConnection(remoteA)
+    expect($sidebarSectionOrderIds.get()).toEqual([])
+    setSidebarSectionOrderIds(['pinned', 'cron', 'main'])
+
+    setConnection({ ...remoteA, profile: 'other' } as unknown as HermesConnection)
+    expect($sidebarSectionOrderIds.get()).toEqual(['pinned', 'cron', 'main'])
+
+    setConnection(remoteB)
+    expect($sidebarSectionOrderIds.get()).toEqual([])
+
+    setConnection(localConn)
+    expect($sidebarSectionOrderIds.get()).toEqual(['main', 'pinned', 'cron'])
   })
 
   it('scopes the manual session order and its flag per connection', () => {

@@ -1,6 +1,7 @@
 import { createCronTriggerController, type CronTriggerController } from '@hermes/shared'
 import { useStore } from '@nanostores/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 
 import { usePaneVisible } from '@/components/pane-shell/pane-visibility'
 import { ActionsContextMenu, type MenuKit, renderActionItem } from '@/components/ui/actions-menu'
@@ -68,6 +69,7 @@ function formatRunTime(seconds?: null | number): string {
 }
 
 interface SidebarCronJobsSectionProps {
+  headerAction?: ReactNode
   jobs: CronJob[]
   label: string
   max?: number
@@ -85,6 +87,7 @@ interface SidebarCronJobsSectionProps {
 }
 
 export function SidebarCronJobsSection({
+  headerAction,
   jobs,
   label,
   max = 50,
@@ -194,6 +197,7 @@ export function SidebarCronJobsSection({
             open={open}
           />
         </button>
+        {headerAction}
       </div>
       {open && (
         <SidebarGroupContent className="scrollbar-fade flex max-h-72 flex-col gap-px overflow-x-hidden overflow-y-auto overscroll-contain pb-1.75 compact:max-h-none compact:overflow-visible">
