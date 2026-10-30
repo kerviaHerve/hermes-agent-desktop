@@ -229,7 +229,7 @@ export function PreviewAttachment({ target }: { target: string }) {
     return (
       <div className="flex w-full max-w-160 items-center gap-2 rounded-lg border border-(--ui-stroke-tertiary) bg-card/55 px-2.5 py-1.5 text-sm">
         <span className="grid size-6 shrink-0 place-items-center rounded-md bg-muted/55 text-muted-foreground/85">
-          <MonitorPlay className="size-3.5" />
+          <MonitorPlay className="size-4" />
         </span>
         <span className="min-w-0 flex-1 truncate text-[0.78rem] font-medium text-foreground/90" title={target}>
           {name}
@@ -250,7 +250,7 @@ export function PreviewAttachment({ target }: { target: string }) {
   return (
     <div className="flex w-full max-w-160 items-center gap-2 rounded-lg border border-(--ui-stroke-tertiary) bg-card/55 px-2.5 py-1.5 text-sm">
       <span className="grid size-6 shrink-0 place-items-center rounded-md bg-muted/55 text-muted-foreground/85">
-        <MonitorPlay className="size-3.5" />
+        <MonitorPlay className="size-4" />
       </span>
       <span className="min-w-0 flex-1 truncate text-[0.78rem] font-medium text-foreground/90" title={target}>
         {name}

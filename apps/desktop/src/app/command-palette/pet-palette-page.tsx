@@ -60,7 +60,7 @@ export function PetPalettePage({ search, onGenerate }: PetPalettePageProps) {
   }
 
   if (status === 'loading' && !gallery) {
-    return <StatusRow icon={<Loader2 className="size-3.5 animate-spin" />} text={copy.loading} />
+    return <StatusRow icon={<Loader2 className="size-4 animate-spin" />} text={copy.loading} />
   }
 
   if (status === 'stale') {
@@ -142,7 +142,7 @@ export function PetPalettePage({ search, onGenerate }: PetPalettePageProps) {
                 {isBusy ? (
                   <Loader2 className="size-3 animate-spin" />
                 ) : isActive ? (
-                  <Check className="size-3.5 text-foreground" />
+                  <Check className="size-4 text-foreground" />
                 ) : null}
               </span>
             </button>

@@ -200,26 +200,26 @@ function statusGlyph(status: ToolStatus, copy: ToolStatusCopy): ReactNode {
     return (
       <GlyphSpinner
         ariaLabel={copy.statusRunning}
-        className="size-3.5 shrink-0 text-[0.95rem] text-(--ui-text-tertiary)"
+        className="size-4 shrink-0 text-[0.95rem] text-(--ui-text-tertiary)"
         spinner="breathe"
       />
     )
   }
 
   if (status === 'error') {
-    return <AlertCircle aria-label={copy.statusError} className="size-3.5 shrink-0 text-destructive" />
+    return <AlertCircle aria-label={copy.statusError} className="size-4 shrink-0 text-destructive" />
   }
 
   if (status === 'warning') {
     return (
-      <AlertCircle aria-label={copy.statusRecovered} className="size-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
+      <AlertCircle aria-label={copy.statusRecovered} className="size-4 shrink-0 text-amber-600 dark:text-amber-400" />
     )
   }
 
   return (
     <CheckCircle2
       aria-label={copy.statusDone}
-      className="size-3.5 shrink-0 text-emerald-600/85 dark:text-emerald-400/85"
+      className="size-4 shrink-0 text-emerald-600/85 dark:text-emerald-400/85"
     />
   )
 }
@@ -244,12 +244,12 @@ function ToolGlyph({
   const node = status ? (
     statusGlyph(status, copy)
   ) : filePath ? (
-    <FileTypeIcon className="text-(--ui-text-tertiary)" path={filePath} size="0.875rem" />
+    <FileTypeIcon className="text-(--ui-text-tertiary)" path={filePath} size="1rem" />
   ) : icon ? (
     <ToolIcon
       className={legendary ? 'text-(--tool-memory-legendary-icon)' : 'text-(--ui-text-tertiary)'}
       name={icon}
-      size="0.875rem"
+      size="1rem"
     />
   ) : null
 

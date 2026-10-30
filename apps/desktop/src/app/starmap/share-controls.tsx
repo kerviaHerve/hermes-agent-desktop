@@ -84,7 +84,7 @@ export function ShareControls({ imported = false, onImport, onResetMap, shareCod
               size="icon"
               variant="ghost"
             >
-              <Upload className="size-3.5" />
+              <Upload className="size-4" />
             </Button>
           </DialogTrigger>
         </Tip>

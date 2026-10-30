@@ -6,13 +6,14 @@
 // (tool JSON, shell commands) as the session name.
 import { describe, expect, it } from 'vitest'
 
-import { searchResultToSession } from './index'
+import { searchResultToSession } from './search-results'
 
 describe('searchResultToSession', () => {
   it('uses the backend-provided title for the synthesized row', () => {
     const s = searchResultToSession({
       lineage_root: 'root-1',
       model: 'deepseek-v4-flash',
+      profile: 'forky',
       role: 'tool',
       session_id: '20260725_132',
       session_started: 1753450000,
@@ -23,6 +24,7 @@ describe('searchResultToSession', () => {
 
     expect(s.title).toBe('Fact-checking PR review comments')
     expect(s.id).toBe('20260725_132')
+    expect(s.profile).toBe('forky')
   })
 
   it('keeps the FTS snippet as the preview with markers stripped', () => {

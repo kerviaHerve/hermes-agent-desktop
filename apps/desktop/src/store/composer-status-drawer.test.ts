@@ -16,12 +16,14 @@ it('restores the hidden choice without sharing it with another session or owner'
   store.setStatusDrawerCollapsed(key, true)
   store.setStatusDrawerCollapsed(otherSession, true)
   store.setStatusDrawerCollapsed(otherSession, false)
+  store.setStatusDrawerExpanded(key, true)
   vi.resetModules()
 
   const restored = await import('./composer-status-drawer')
   expect(restored.$collapsedStatusDrawers.get()).toEqual([key])
   expect(restored.$collapsedStatusDrawers.get()).not.toContain(otherProfile)
   expect(restored.$collapsedStatusDrawers.get()).not.toContain(otherConnection)
+  expect(restored.$expandedStatusDrawers.get()).toEqual([key])
 })
 
 it('follows local profile renames and scopes profile removal to the exact owner', async () => {
@@ -33,10 +35,15 @@ it('follows local profile renames and scopes profile removal to the exact owner'
 
   store.setStatusDrawerCollapsed(local, true)
   store.setStatusDrawerCollapsed(remote, true)
+  store.setStatusDrawerExpanded(local, true)
+  store.setStatusDrawerExpanded(remote, true)
   store.migrateStatusDrawersForProfile('coder', 'work')
   expect(store.$collapsedStatusDrawers.get()).toEqual([renamed, remote])
+  expect(store.$expandedStatusDrawers.get()).toEqual([renamed, remote])
   store.dropStatusDrawersForProfile('work')
   expect(store.$collapsedStatusDrawers.get()).toEqual([remote])
+  expect(store.$expandedStatusDrawers.get()).toEqual([remote])
   store.dropStatusDrawersForProfile('coder', { connectionId: 'remote', profile: 'coder', targetProfile: 'coder' })
   expect(store.$collapsedStatusDrawers.get()).toEqual([])
+  expect(store.$expandedStatusDrawers.get()).toEqual([])
 })

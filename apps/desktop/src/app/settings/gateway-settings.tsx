@@ -148,19 +148,19 @@ function ModeCard({
       type="button"
     >
       <div className="flex items-center gap-1.5">
-        <Icon className="size-3.5 shrink-0 text-muted-foreground" />
+        <Icon className="size-4 shrink-0 text-muted-foreground" />
         <span className="min-w-0 text-[length:var(--conversation-text-font-size)] font-medium">{title}</span>
         {hint ? (
           <Tip label={hint}>
             <span
-              className="grid size-3.5 shrink-0 cursor-help place-items-center text-(--ui-text-tertiary) hover:text-(--ui-text-secondary)"
+              className="grid size-4 shrink-0 cursor-help place-items-center text-(--ui-text-tertiary) hover:text-(--ui-text-secondary)"
               onClick={event => event.stopPropagation()}
             >
-              <HelpCircle className="size-3.5" />
+              <HelpCircle className="size-4" />
             </span>
           </Tip>
         ) : null}
-        {active ? <Check className="ml-auto size-3.5 shrink-0 text-primary" /> : null}
+        {active ? <Check className="ml-auto size-4 shrink-0 text-primary" /> : null}
       </div>
       <p className="mt-1.5 flex-1 text-[length:var(--conversation-caption-font-size)] leading-(--conversation-caption-line-height) text-(--ui-text-tertiary)">
         {description}

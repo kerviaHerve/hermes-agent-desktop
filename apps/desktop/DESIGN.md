@@ -227,7 +227,9 @@ context-dependent (e.g. "Show" / "Hide"). Never hardcode combos; always use
 Notes:
 - Text buttons are square (no radius) and sized by padding + line-height (no
   fixed heights). Only icon buttons carry the shared 4px radius.
-- SVGs inherit `size-3.5` (`size-3` at `xs`). Don't re-set icon size.
+- Ordinary action SVGs use 16px (`size-4`) across buttons, menus, and desktop chrome.
+  Small `xs` labels use 14px; micro metadata and tiny indicators may use 12px.
+  Keep the hit target size separate from the glyph size.
 - Polymorph with `asChild` when the button must render as a link/Slot.
 
 ## Badges — one component
@@ -242,6 +244,8 @@ The profile rail keeps its create/import actions outside the scrolling squares.
 Clipped horizontal edges reuse `edgeMask(edges, 'x')` from `fade-scroll.tsx`;
 the default axis remains vertical for `FadeScroll`. Fitting content is unmasked,
 and profile drag gestures temporarily remove the mask so the dragged square stays legible.
+Create, import, manage, and gateway actions share one menu at the end of the
+rail. Direct profile switching and drag ordering remain on the strip.
 
 ## Context-sensitive dialogs
 
@@ -458,6 +462,9 @@ from their root base tokens; do not multiply the global tokens or nest CSS zoom.
 - **Tabler** is the default component/chrome set. Import its curated aliases and
   `iconSize` scale from `src/lib/icons.ts`; do not import icon packages directly
   in feature code.
+- Ordinary actions in navigation, menus, toolbars, settings, and previews use
+  16px glyphs. Keep 12–14px only for dense metadata, chevrons, and state marks;
+  those are subordinate indicators, not primary actions.
 - **`Codicon`** is the compact editor/tool/status vocabulary. Use
   `src/components/ui/codicon.tsx`, including `codiconIcon()` where a
   Tabler-shaped component is required.

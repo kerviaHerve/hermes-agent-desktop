@@ -584,7 +584,7 @@ function EditControls({
         onClick={onCancel}
         type="button"
       >
-        <X className="size-3" />
+        <X className="size-4" />
         {t.common.cancel}
       </button>
       <button
@@ -593,7 +593,7 @@ function EditControls({
         onClick={onSave}
         type="button"
       >
-        <Check className="size-3" />
+        <Check className="size-4" />
         {saving ? t.common.saving : t.common.save}
       </button>
     </>
@@ -1266,7 +1266,7 @@ export function LocalFilePreview({
                   onClick={beginEdit}
                   type="button"
                 >
-                  <Pencil className="size-3" />
+                  <Pencil className="size-4" />
                   {t.preview.edit}
                 </button>
               </Tip>

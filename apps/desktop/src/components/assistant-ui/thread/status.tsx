@@ -290,7 +290,7 @@ export const BackgroundResumeNotice: FC = () => {
 
   return (
     <StatusRow className="pl-(--message-text-indent)" data-slot="aui_background-resume" label={label}>
-      <Codicon name="sync" size="0.875rem" />
+      <Codicon name="sync" size="1rem" />
       <span className={cn(SCAFFOLD_LABEL_CLASS, 'min-w-0 truncate')}>{label}</span>
     </StatusRow>
   )

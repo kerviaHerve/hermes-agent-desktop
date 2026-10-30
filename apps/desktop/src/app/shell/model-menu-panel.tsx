@@ -84,7 +84,7 @@ export function ModelMenuPanel({ onFollowDefaultModel, ...props }: ModelMenuPane
               className={cn(dropdownMenuRow, 'text-(--ui-text-tertiary)')}
               onSelect={onFollowDefaultModel}
             >
-              <Codicon name="discard" size="0.75rem" />
+              <Codicon name="discard" size="1rem" />
               {copy.followDefault}
             </DropdownMenuItem>
           )}
@@ -96,7 +96,7 @@ export function ModelMenuPanel({ onFollowDefaultModel, ...props }: ModelMenuPane
               void refreshModels()
             }}
           >
-            <Codicon name="sync" size="0.75rem" spinning={refreshing} />
+            <Codicon name="sync" size="1rem" spinning={refreshing} />
             {copy.refreshModels}
           </DropdownMenuItem>
         </>

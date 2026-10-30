@@ -93,6 +93,16 @@ function MenuChoice() {
   return <button onClick={() => close?.()}>Choose model</button>
 }
 
+it('keeps the active model discoverable and selectable in the desktop icon', async () => {
+  render(<ModelPill disabled={false} iconOnly model={modelState({ modelMenuContent: <MenuChoice /> })} />)
+
+  const button = screen.getByRole('button', { name: /gpt-6/ })
+
+  expect(screen.queryByText('gpt-6')).toBeNull()
+  fireEvent.pointerDown(button, { button: 0, pointerType: 'mouse' })
+  expect(await screen.findByText('Choose model')).toBeTruthy()
+})
+
 it('returns to the exact caret or backward selection after the model menu closes', async () => {
   const surface = document.createElement('div')
   surface.dataset.composerTarget = 'main'

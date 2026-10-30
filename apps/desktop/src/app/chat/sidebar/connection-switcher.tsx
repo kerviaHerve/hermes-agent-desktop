@@ -264,7 +264,7 @@ function ConnectionSwitcherTrigger({
           <span className="truncate">{title}</span>
         )}
       </span>
-      <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="0.875rem" />
+      <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="1rem" />
     </Button>
   )
 }
@@ -272,7 +272,7 @@ function ConnectionSwitcherTrigger({
 function ManageGatewaysLabel({ label }: { label: string }) {
   return (
     <span className="flex min-w-0 items-center gap-1.5 text-(--ui-text-secondary)">
-      <Codicon aria-hidden="true" name="settings-gear" size="0.875rem" />
+      <Codicon aria-hidden="true" name="settings-gear" size="1rem" />
       <span className="truncate">{label}</span>
     </span>
   )

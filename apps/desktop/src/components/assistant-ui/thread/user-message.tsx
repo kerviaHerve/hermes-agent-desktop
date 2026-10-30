@@ -83,7 +83,7 @@ export const USER_ACTION_ICON_BUTTON_CLASS =
   'grid place-items-center rounded-md bg-transparent text-(--ui-text-secondary) transition-colors hover:bg-(--ui-control-active-background) hover:text-foreground disabled:cursor-default disabled:text-(--ui-text-quaternary) disabled:opacity-70'
 
 export const USER_ACTION_ICON_SIZE = '0.6875rem'
-export const StopGlyph = <StopFilled aria-hidden className="size-3.5 -translate-y-px" />
+export const StopGlyph = <StopFilled aria-hidden className="size-4 -translate-y-px" />
 
 // Agent-to-agent deliveries ("Message from 🤖 <sender>: …", the Bot Mode /
 // multi-profile convention; optional "(@<handle>)" carries the sender's
@@ -322,7 +322,7 @@ const UserBubbleActions: FC<UserBubbleActionsProps> = ({
             }}
             type="button"
           >
-            <Codicon name="discard" size="0.875rem" />
+            <Codicon name="discard" size="1rem" />
           </button>
         </Tip>
       ) : null}
@@ -543,6 +543,7 @@ export const UserMessage: FC<{
 
   const bubbleClassName = cn(
     USER_BUBBLE_BASE_CLASS,
+    'ml-auto w-fit max-w-[min(78%,37rem)]',
     'cursor-pointer pr-9 text-[length:var(--conversation-text-font-size)] leading-(--dt-line-height) text-foreground/95 transition-colors',
     'border-(--ui-stroke-tertiary) hover:border-(--ui-stroke-secondary)'
   )
@@ -592,6 +593,12 @@ export const UserMessage: FC<{
       >
         <ActionBarPrimitive.Root className="relative w-full max-w-full" data-slot="aui_user-bubble-actions">
           <div className="human-message-with-todos-wrapper flex w-full flex-col gap-0">
+            <div
+              className="mb-1 flex justify-end pr-1 text-[0.6875rem] font-medium text-(--ui-text-tertiary)"
+              data-slot="aui_user-role-label"
+            >
+              {copy.you}
+            </div>
             <ReactionPicker
               onOpenChange={setPickerOpen}
               onSelect={pickEmoji}

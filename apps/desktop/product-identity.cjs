@@ -23,8 +23,12 @@ const variants = {
 }
 
 const variant = process.env.HERMES_DESKTOP_VARIANT || ''
+const kerviaEdition = process.env.KERVIA_DESKTOP_EDITION === '1'
 if (!['', 'light', 'bundled', 'store'].includes(variant)) {
   throw new Error(`Unknown HERMES_DESKTOP_VARIANT ${variant}. expected one of (empty), light, bundled, store`)
+}
+if (kerviaEdition && variant !== 'light') {
+  throw new Error('Kervia Edition is a Desktop-only light client')
 }
 
 // 'store' is a Store-submission packaging identity layered on the bundled
@@ -33,7 +37,9 @@ if (!['', 'light', 'bundled', 'store'].includes(variant)) {
 // MSIX package identity. The Store re-signs on submission.
 const store = variant === 'store'
 const light = variant === 'light'
-const name = variants[store ? 'bundled' : (variant || '')]
+const name = kerviaEdition
+  ? { display: 'Hermes Desktop · Kervia Edition', kebab: 'hermes-desktop', pascal: 'HermesDesktopKerviaEdition' }
+  : variants[store ? 'bundled' : (variant || '')]
 
 // The electron-updater feed channel this build PUBLISHES to. A canary
 // tag (vX.Y.Z+canary.YYYYMMDDTHHMMSSZ) writes canary.yml / light-canary.yml;
@@ -65,10 +71,12 @@ if (store && (canary || buildCommit)) {
 const identity = {
   store,
   light,
+  kerviaEdition,
   displayName,
-  appId: `com.nousresearch.${name.kebab}${kebabSuffix}`,
+  appId: kerviaEdition ? 'ch.kervia.hermes-desktop' : `com.nousresearch.${name.kebab}${kebabSuffix}`,
   // Store and commit builds do not publish a release feed.
-  channel: store || buildCommit ? null : light ? (canary ? 'light-canary' : 'light') : (canary ? 'canary' : 'latest'),
+  channel: store || buildCommit ? null : kerviaEdition ? 'stable' : light ? (canary ? 'light-canary' : 'light') : (canary ? 'canary' : 'latest'),
+  ...(kerviaEdition ? { updateFeedUrl: 'https://github.com/kerviaHerve/hermes-agent-desktop/releases/latest/download/' } : {}),
   appNamePascal: `${name.pascal}${pascalSuffix}`,
   artifactNamePascal: name.pascal,
   windowsExecutableName: kebabSuffix ? cliName : displayName,

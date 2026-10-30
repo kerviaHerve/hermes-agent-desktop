@@ -114,7 +114,7 @@ export function KeepGoingOnCreditsRow({ enabled }: { enabled: boolean }) {
         {stepUp.verification && (
           <Button onClick={stepUp.openVerification} size="sm" type="button" variant="outline">
             {copy.openAgain}
-            <ExternalLink className="size-3.5" />
+            <ExternalLink className="size-4" />
           </Button>
         )}
         <Button

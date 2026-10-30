@@ -23,11 +23,13 @@ import { useVoiceEngineName, VoiceEngineRows } from './voice-engine-rows'
 export function StartVoiceButton({
   disabled,
   label,
-  onStart
+  onStart,
+  quiet = false
 }: {
   disabled: boolean
   label: string
   onStart: () => void
+  quiet?: boolean
 }) {
   const { t } = useI18n()
   const engine = useVoiceEngineName()
@@ -37,7 +39,7 @@ export function StartVoiceButton({
       <Tip label={engine ? `${label} — ${engine}` : label} placement="control">
         <Button
           aria-label={label}
-          className={cn(PRIMARY_ICON_BTN, engine && 'rounded-r-none')}
+          className={cn(quiet ? GHOST_ICON_BTN : PRIMARY_ICON_BTN, engine && 'rounded-r-none')}
           disabled={disabled}
           onClick={() => {
             triggerHaptic('open')
@@ -46,8 +48,9 @@ export function StartVoiceButton({
           }}
           size="icon"
           type="button"
+          variant={quiet ? 'ghost' : 'default'}
         >
-          <AudioLines className={iconSize.sm} />
+          <AudioLines className={iconSize.md} />
         </Button>
       </Tip>
       {engine ? (

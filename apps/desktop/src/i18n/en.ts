@@ -324,6 +324,7 @@ export const en: Translations = {
   common: {
     apply: 'Apply',
     back: 'Back',
+    returnToChat: 'Return to conversation',
     save: 'Save',
     saving: 'Saving…',
     cancel: 'Cancel',
@@ -3175,15 +3176,29 @@ export const en: Translations = {
       actions: 'Group actions'
     },
     profileRail: 'Profile rail',
+    localHermes: 'Local Hermes',
     nav: {
       'new-session': 'New session',
+      conversations: 'Conversations',
+      tools: 'Tools',
       capabilities: 'Capabilities',
       messaging: 'Messaging',
       artifacts: 'Artifacts',
       cron: 'Scheduled jobs'
     },
-    searchAria: 'Search sessions',
-    searchPlaceholder: 'Search sessions…',
+    searchAria: 'Search this Hermes',
+    searchPlaceholder: 'Search here…',
+    searchIn: hermes => `In ${hermes}`,
+    searchFilters: {
+      title: 'Search filters',
+      agent: 'Agent',
+      technical: 'Include tool and sub-agent activity',
+      allAgents: 'All agents',
+      date: 'Last activity',
+      anyDate: 'Any time',
+      lastWeek: 'Last 7 days',
+      lastMonth: 'Last 30 days'
+    },
     clearSearch: 'Clear search',
     noMatch: query => `No sessions match “${query}”.`,
     results: 'Results',
@@ -3282,7 +3297,25 @@ export const en: Translations = {
   },
 
   composer: {
+    add: 'Add',
+    ready: 'ready',
+    context: 'Context',
+    writeToAgent: agent => `Write to ${agent}…`,
     message: 'Message',
+    height: 'Input height',
+    heightCompact: 'Compact',
+    heightComfort: 'Comfortable',
+    heightExpanded: 'Expanded',
+    threadWidth: 'Conversation width',
+    threadWidthFocused: 'Focused',
+    threadWidthBalanced: 'Balanced',
+    threadWidthWide: 'Wide',
+    threadWidthFull: 'Full width',
+    activityAndQueue: 'Activity and queue',
+    threadLayoutEditorial: 'Editorial',
+    threadLayoutDialogue: 'Dialogue',
+    threadLayoutToggle: (current, next) => `Thread layout: ${current}. Switch to ${next}`,
+    contextTokens: 'Context tokens used',
     wakingProfile: profile => `Waking up ${profile}…`,
     placeholderStarting: 'Starting Hermes...',
     placeholderReconnecting: 'Reconnecting to Hermes…',
@@ -4410,6 +4443,7 @@ export const en: Translations = {
 
   assistant: {
     thread: {
+      you: 'You',
       loadingSession: 'Loading session',
       showEarlier: 'Show earlier messages',
       loadingResponse: 'Hermes is loading a response',

@@ -196,7 +196,7 @@ export function LocalModelsBrowseSection(): ReactElement {
     <SettingsSection
       aside={
         <Button onClick={sideload} size="sm" variant="outline">
-          <FolderOpen className="mr-1 size-3.5" />
+          <FolderOpen className="mr-1 size-4" />
           {copy.sideloadButton}
         </Button>
       }
@@ -281,7 +281,7 @@ export function LocalModelsBrowseSection(): ReactElement {
                             size="sm"
                             variant="ghost"
                           >
-                            {dJob ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
+                            {dJob ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
                           </Button>
                         </span>
 

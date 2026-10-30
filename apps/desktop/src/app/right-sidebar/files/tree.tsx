@@ -370,9 +370,9 @@ function ProjectTreeRow({
         ) : isErrorPlaceholder ? (
           <Codicon name="warning" size="0.75rem" />
         ) : isFolder ? (
-          <Codicon name={node.isOpen ? 'folder-opened' : 'folder'} size="0.875rem" />
+          <Codicon name={node.isOpen ? 'folder-opened' : 'folder'} size="1rem" />
         ) : (
-          <Codicon name="file" size="0.875rem" />
+          <Codicon name="file" size="1rem" />
         )}
       </span>
       {editing ? (

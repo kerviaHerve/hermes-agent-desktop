@@ -26,7 +26,9 @@ vi.mock('@/i18n', () => ({
   useI18n: () => ({
     t: {
       sidebar: {
+        filter: { project: 'Project' },
         messageCount: (count: number) => `${count} messages`,
+        searchFilters: { agent: 'Agent' },
         toolCallCount: (count: number) => `${count} tool calls`,
         projects: {
           home: 'Home'
@@ -208,9 +210,9 @@ describe('SidebarSessionRow', () => {
     vi.useRealTimers()
   })
 
-  // Full-title tooltip on hover (#83000-class ask): the label is a tooltip
-  // trigger, but the tip only opens when the title is actually truncated.
-  describe('full-title overflow tooltip', () => {
+  // Conversation identity is available on a settled hover even at compact
+  // density, while the title remains readable when it is truncated.
+  describe('conversation context tooltip', () => {
     afterEach(() => {
       vi.useRealTimers()
     })
@@ -240,7 +242,7 @@ describe('SidebarSessionRow', () => {
       expect(screen.getByRole('tooltip').textContent).toContain(title)
     })
 
-    it('stays closed when the title fits', () => {
+    it('shows agent and date even when the title fits', () => {
       vi.useFakeTimers()
       renderRow(makeSession({ title }))
 
@@ -252,7 +254,8 @@ describe('SidebarSessionRow', () => {
         vi.advanceTimersByTime(700)
       })
 
-      expect(screen.queryByRole('tooltip')).toBeNull()
+      expect(screen.getByRole('tooltip').textContent).toContain(title)
+      expect(screen.getByRole('tooltip').textContent).toContain('default')
     })
 
     it('cancels a pending open when the pointer leaves before the delay', () => {

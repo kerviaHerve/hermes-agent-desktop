@@ -58,7 +58,7 @@ export function useApprovalModeStatusbarItem(
 
   return {
     className: mode === 'off' ? 'bg-(--chrome-action-hover) text-foreground' : undefined,
-    icon: mode === 'off' ? <ZapFilled className="size-3.5" /> : <Zap className="size-3.5 opacity-70" />,
+    icon: mode === 'off' ? <ZapFilled className="size-4" /> : <Zap className="size-4 opacity-70" />,
     id: 'approval-mode',
     label: labels[mode],
     menuAlign: 'end',

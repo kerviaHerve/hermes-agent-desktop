@@ -12,7 +12,7 @@ import { GlyphSpinner } from '@/components/ui/glyph-spinner'
 import { releaseTypingFocus } from '@/components/ui/keyboard-first'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
-import { ChevronDown } from '@/lib/icons'
+import { Brain, ChevronDown } from '@/lib/icons'
 import { formatModelPillLabel, providerDisplayName } from '@/lib/model-status-label'
 import { cn } from '@/lib/utils'
 import { $currentModelSource, setModelPickerOpen } from '@/store/session'
@@ -47,10 +47,12 @@ const PILL = cn(
 export function ModelPill({
   compact = false,
   disabled,
+  iconOnly = false,
   model
 }: {
   compact?: boolean
   disabled: boolean
+  iconOnly?: boolean
   model: ChatBarState['model']
 }) {
   const copy = useI18n().t.shell.statusbar
@@ -139,8 +141,20 @@ export function ModelPill({
   // the text changes, and a provider that declines leaves the core label.
   const pillLabel = useComposerModelPillLabel({ compact, model: currentModel, reasoningEffort: reasoningEffort || '' })
 
-  const label = compact ? (
-    <ChevronDown className="size-3.5 shrink-0 opacity-70" />
+  const label = iconOnly ? (
+    <>
+      <Brain aria-hidden="true" className="size-4 shrink-0" strokeWidth={1.75} />
+      {pinnedOverride && (
+        <span
+          aria-label={copy.modelPinned}
+          className="absolute right-0.5 top-0.5 size-1 rounded-full bg-(--ui-accent)"
+          data-testid="model-pinned-dot"
+          role="img"
+        />
+      )}
+    </>
+  ) : compact ? (
+    <ChevronDown className="size-4 shrink-0 opacity-70" />
   ) : (
     <>
       {currentModel.trim() ? (
@@ -162,24 +176,38 @@ export function ModelPill({
 
   // Compact (floating composer): a snug square holding just the chevron — no pill
   // padding, sized to match the other composer icon buttons.
-  const pillClass = compact
+  const pillClass = iconOnly
     ? cn(
-        'size-(--composer-control-size) shrink-0 justify-center gap-0 rounded-md p-0',
-        'text-(--ui-text-tertiary) hover:bg-(--chrome-action-hover) hover:text-foreground'
+        'relative size-7 shrink-0 justify-center gap-0 rounded-md p-0',
+        'text-(--ui-text-secondary) hover:bg-(--chrome-action-hover) hover:text-foreground'
       )
-    : PILL
+    : compact
+      ? cn(
+          'size-(--composer-control-size) shrink-0 justify-center gap-0 rounded-md p-0',
+          'text-(--ui-text-tertiary) hover:bg-(--chrome-action-hover) hover:text-foreground'
+        )
+      : PILL
+
+  const displayName = currentModel.trim() ? formatModelPillLabel(currentModel, { fastMode, serviceTier }) : ''
 
   const baseTitle = currentProvider
     ? copy.modelTitle(providerDisplayName(currentProvider), currentModel || copy.modelNone)
-    : copy.switchModel
+    : displayName
+      ? `${copy.switchModel} · ${displayName}`
+      : copy.switchModel
 
   const title = pinnedOverride ? `${baseTitle} — ${copy.modelPinned}` : baseTitle
 
   if (!model.modelMenuContent) {
     return (
-      <Tip label={pinnedOverride ? `${copy.openModelPicker} — ${copy.modelPinned}` : copy.openModelPicker} side="top">
+      <Tip
+        label={
+          iconOnly ? title : pinnedOverride ? `${copy.openModelPicker} — ${copy.modelPinned}` : copy.openModelPicker
+        }
+        side="top"
+      >
         <Button
-          aria-label={copy.openModelPicker}
+          aria-label={iconOnly ? title : copy.openModelPicker}
           className={pillClass}
           data-tour={tourMarker}
           disabled={disabled}

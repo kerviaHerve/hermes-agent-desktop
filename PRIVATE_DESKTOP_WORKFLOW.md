@@ -1,6 +1,6 @@
-# Private Hermes Desktop workflow
+# Hermes Desktop fork workflow
 
-This repository is a private, independent copy of Nous Research's MIT-licensed
+This repository is an independent copy of Nous Research's MIT-licensed
 Hermes Agent. The initial source tree exactly matches upstream commit
 `fcc26fbd9f1641755e49793d7ed608f3b7214c3d`. It is not a GitHub fork and
 cannot use GitHub's **Sync fork** button.
@@ -13,7 +13,7 @@ cannot use GitHub's **Sync fork** button.
 - Short-lived `desktop/*` branches: one focused change at a time, merged into
   `main` through a pull request.
 
-`origin` is this private repository. `upstream` fetches
+`origin` is the Kervia repository. `upstream` fetches
 `NousResearch/hermes-agent`; pushing to it is disabled locally. Keep the
 upstream `LICENSE` and copyright notices when distributing a build.
 
@@ -71,9 +71,9 @@ and `apps/desktop/BUILDING.md`.
 ## Bringing in an official update
 
 1. Run `bash scripts/sync-private-upstream.sh` from this repository. It fetches
-   the latest official `main`, records its exact tree on `upstream-snapshot`,
-   and pushes that branch to the private repository. It never changes our
-   `main` working tree.
+   the latest official `main` and records its exact tree on the local
+   `upstream-snapshot` branch. It never changes our `main` working tree or
+   pushes anything unless `--push` is explicitly passed.
 2. Compare `upstream-snapshot` with `main` and open a pull request into `main`.
    Review changes in Desktop, `apps/shared`, the gateway protocol, packaging,
    and dependencies. Resolve any conflicts deliberately.
@@ -90,5 +90,5 @@ and `apps/desktop/BUILDING.md`.
 
 The snapshot branch intentionally records source trees rather than importing
 the official repository's large Git history. Every sync commit includes the
-official SHA in its message. This keeps the private repository small while
+official SHA in its message. This keeps the repository small while
 Git can still merge future source changes against the previous snapshot.

@@ -51,6 +51,20 @@ function deps(
 }
 
 describe('macOS client wiring', () => {
+  it('uses the Kervia GitHub Releases feed without allowing an automatic install', () => {
+    createMacStrategy({
+      ...deps('', true),
+      editionFeedUrl: 'https://github.com/kerviaHerve/hermes-agent-desktop/releases/latest/download/'
+    })
+    expect(client.setFeedURL).toHaveBeenCalledWith({
+      provider: 'generic',
+      url: 'https://github.com/kerviaHerve/hermes-agent-desktop/releases/latest/download/',
+      channel: 'stable'
+    })
+    expect(client.autoDownload).toBe(false)
+    expect(client.autoInstallOnAppQuit).toBe(false)
+  })
+
   it('uses the generated provider by default and forbids implicit installs or downgrades', async () => {
     const strategy = createMacStrategy(deps())
     expect(client.setFeedURL).not.toHaveBeenCalled()

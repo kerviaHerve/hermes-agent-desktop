@@ -36,12 +36,12 @@ const TICKER_DEPTH = 6
 function statusGlyph(status: DelegateRowStatus, label: string): ReactNode {
   if (isDelegateRowLive(status)) {
     return (
-      <GlyphSpinner ariaLabel={label} className="size-3.5 text-[0.95rem] text-(--ui-text-tertiary)" spinner="breathe" />
+      <GlyphSpinner ariaLabel={label} className="size-4 text-[0.95rem] text-(--ui-text-tertiary)" spinner="breathe" />
     )
   }
 
   if (status === 'failed' || status === 'interrupted') {
-    return <AlertCircle aria-label={label} className="size-3.5 text-destructive" />
+    return <AlertCircle aria-label={label} className="size-4 text-destructive" />
   }
 
   if (status === 'dispatched') {
@@ -51,7 +51,7 @@ function statusGlyph(status: DelegateRowStatus, label: string): ReactNode {
     return <span aria-hidden className="size-1.5 rounded-full bg-(--ui-text-tertiary)" />
   }
 
-  return <CheckCircle2 aria-label={label} className="size-3.5 text-emerald-600/85 dark:text-emerald-400/85" />
+  return <CheckCircle2 aria-label={label} className="size-4 text-emerald-600/85 dark:text-emerald-400/85" />
 }
 
 /**

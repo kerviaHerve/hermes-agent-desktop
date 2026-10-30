@@ -92,7 +92,7 @@ export function renderActionItem(
       onSelect={onSelect}
       variant={variant}
     >
-      {iconNode ?? (icon ? <Codicon name={icon} size="0.875rem" /> : null)}
+      {iconNode ?? (icon ? <Codicon name={icon} size="1rem" /> : null)}
       {typeof label === 'string' ? <span>{label}</span> : label}
     </kit.Item>
   )

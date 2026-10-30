@@ -357,6 +357,7 @@ catalog: CatalogTranslations
   common: {
     apply: string
     back: string
+    returnToChat: string
     save: string
     saving: string
     cancel: string
@@ -2786,9 +2787,21 @@ catalog: CatalogTranslations
       actions: string
     }
     profileRail: string
+    localHermes: string
     nav: Record<string, string>
     searchAria: string
     searchPlaceholder: string
+    searchIn: (hermes: string) => string
+    searchFilters: {
+      title: string
+      agent: string
+      technical: string
+      allAgents: string
+      date: string
+      anyDate: string
+      lastWeek: string
+      lastMonth: string
+    }
     clearSearch: string
     noMatch: (query: string) => string
     results: string
@@ -2886,7 +2899,25 @@ catalog: CatalogTranslations
   }
 
   composer: {
+    add: string
+    ready: string
+    context: string
+    writeToAgent: (agent: string) => string
     message: string
+    height: string
+    heightCompact: string
+    heightComfort: string
+    heightExpanded: string
+    threadWidth: string
+    threadWidthFocused: string
+    threadWidthBalanced: string
+    threadWidthWide: string
+    threadWidthFull: string
+    activityAndQueue: string
+    threadLayoutEditorial: string
+    threadLayoutDialogue: string
+    threadLayoutToggle: (current: string, next: string) => string
+    contextTokens: string
     wakingProfile: (profile: string) => string
     placeholderStarting: string
     placeholderReconnecting: string
@@ -3863,6 +3894,7 @@ catalog: CatalogTranslations
 
   assistant: {
     thread: {
+      you: string
       loadingSession: string
       showEarlier: string
       loadingResponse: string

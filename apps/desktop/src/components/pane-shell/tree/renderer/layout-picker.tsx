@@ -223,7 +223,7 @@ export function LayoutPicker() {
               size="sm"
               variant="ghost"
             >
-              <Codicon name="add" size="0.875rem" />
+              <Codicon name="add" size="1rem" />
               {t.zones.newGridLayout}
             </Button>
           </section>

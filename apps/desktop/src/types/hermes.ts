@@ -1406,6 +1406,8 @@ export interface ComputerUseStatus {
 }
 
 export interface SessionSearchResult {
+  /** Present on newer backends; keeps archived hits out of the live-chat path. */
+  archived?: boolean
   /** Recency of the matched conversation, straight from the sessions row —
    *  present on hits backed by a rich row (the search endpoint fills it).
    *  Used to order unloaded hits honestly; falls back to session_started. */
@@ -1414,6 +1416,8 @@ export interface SessionSearchResult {
    *  used as the durable pin id; falls back to session_id when absent. */
   lineage_root?: string | null
   model: string | null
+  /** Owner profile returned by the search endpoint. */
+  profile?: string | null
   role: string | null
   /** Live compression tip of the matched conversation — resume by this id. */
   session_id: string

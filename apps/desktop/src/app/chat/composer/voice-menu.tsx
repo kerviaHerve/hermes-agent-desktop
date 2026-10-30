@@ -92,11 +92,11 @@ export function VoiceMenu({
             {voiceStatus === 'recording' ? (
               <Square className={cn('fill-current', iconSize.xs)} />
             ) : voiceStatus === 'transcribing' ? (
-              <Loader2 className={cn('animate-spin', iconSize.sm)} />
+              <Loader2 className={cn('animate-spin', iconSize.md)} />
             ) : wakeListening ? (
-              <Ear className={iconSize.sm} />
+              <Ear className={iconSize.md} />
             ) : (
-              <Codicon name="mic" size="0.875rem" />
+              <Codicon name="mic" size="1rem" />
             )}
           </Button>
         </DropdownMenuTrigger>
@@ -110,7 +110,7 @@ export function VoiceMenu({
             onStartConversation()
           }}
         >
-          <AudioLines className={iconSize.sm} />
+          <AudioLines className={iconSize.md} />
           {c.startVoice}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -143,7 +143,7 @@ export function VoiceMenu({
             onToggleAutoSpeak()
           }}
         >
-          {autoSpeak ? <Volume2 className={iconSize.sm} /> : <VolumeX className={iconSize.sm} />}
+          {autoSpeak ? <Volume2 className={iconSize.md} /> : <VolumeX className={iconSize.md} />}
           {autoSpeak ? c.stopSpeakingReplies : c.speakReplies}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
@@ -156,7 +156,7 @@ export function VoiceMenu({
             void toggleWakeWord()
           }}
         >
-          {wakeListening ? <Ear className={iconSize.sm} /> : <EarOff className={iconSize.sm} />}
+          {wakeListening ? <Ear className={iconSize.md} /> : <EarOff className={iconSize.md} />}
           {wakeLabel}
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>

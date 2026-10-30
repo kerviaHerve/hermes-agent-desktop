@@ -84,6 +84,41 @@ function sortGroups(groups: SidebarSessionGroup[]): SidebarSessionGroup[] {
   return groups.sort((a, b) => a.label.localeCompare(b.label) || a.id.localeCompare(b.id))
 }
 
+/** Native Desktop's primary local pool can return some rows explicitly tagged
+ * `local` and others with no connection tag. Once the registry confirms that
+ * this pool is local and no other owner is in the visible list, present those
+ * rows as one agent group. The sessions retain their original owner tags for
+ * navigation and writes; this is only a sidebar presentation choice. */
+export function coalesceSoleLocalGroups(
+  groups: SidebarSessionGroup[],
+  registry: DesktopConnectionsRegistry | null,
+  profileListOwner: null | string,
+  browserHosted: boolean,
+  colors: Record<string, string>
+): SidebarSessionGroup[] {
+  if (
+    browserHosted ||
+    profileListOwner !== null ||
+    registry?.primary !== LOCAL_CONNECTION_ID ||
+    groups.some(group => group.connectionId && group.connectionId !== LOCAL_CONNECTION_ID)
+  ) {
+    return groups
+  }
+
+  const merged = new Map<string, SidebarSessionGroup>()
+
+  for (const group of groups) {
+    const profile = group.profile!
+    const target = merged.get(profile) ?? ownerGroup(null, profile, registry, colors)
+
+    target.sessions.push(...group.sessions)
+
+    merged.set(profile, target)
+  }
+
+  return sortGroups([...merged.values()])
+}
+
 /** Re-key owner groups shown inside another section (a messaging platform) so
  *  their collapse/alias/order preferences never touch the recents groups. No
  *  gateway header sits above them there, so the gateway stays in the label only
@@ -149,15 +184,15 @@ export function useGatewaySessionGroups(sessions: SessionInfo[], enabled: boolea
     }
 
     const groups = buildGatewaySessionGroups(sessions, registry, colors)
+    const owner = profileListConnectionId(apiConnectionId, isBrowserHostedDesktop())
+    const presentedGroups = coalesceSoleLocalGroups(groups, registry, owner, isBrowserHostedDesktop(), colors)
 
     if (!includeEmptyProfiles) {
-      return groups
+      return presentedGroups
     }
 
-    const owner = profileListConnectionId(apiConnectionId, isBrowserHostedDesktop())
-
     return withEmptyProfileGroups(
-      groups,
+      presentedGroups,
       profiles.map(profile => profile.name),
       owner,
       registry,

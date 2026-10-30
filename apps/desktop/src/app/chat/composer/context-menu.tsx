@@ -26,6 +26,7 @@ const SNIPPET_KEYS = ['codeReview', 'implementationPlan', 'explainThis']
 
 export function ContextMenu({
   state,
+  showLabel = false,
   onInsertText,
   onOpenUrlDialog,
   onPasteClipboardImage,
@@ -53,14 +54,17 @@ export function ContextMenu({
               aria-label={state.tools.label}
               className={cn(
                 GHOST_ICON_BTN,
+                showLabel && 'composer-desktop-add h-(--composer-control-size) w-auto gap-1.5 px-2',
                 'data-[state=open]:bg-(--chrome-action-hover) data-[state=open]:text-foreground'
               )}
+              data-slot="composer-add"
               disabled={!state.tools.enabled}
-              size="icon"
+              size={showLabel ? 'sm' : 'icon'}
               type="button"
               variant="ghost"
             >
-              <Codicon name="add" size="0.875rem" />
+              <Codicon name="add" size="1rem" />
+              {showLabel && <span>{c.add}</span>}
             </Button>
           </DropdownMenuTrigger>
         </Tip>
@@ -101,7 +105,7 @@ export function ContextMenu({
               key={provider.key}
               onSelect={() => void provider.run({ insertText: onInsertText })}
             >
-              <Codicon name={provider.icon ?? 'plug'} size="0.875rem" />
+              <Codicon name={provider.icon ?? 'plug'} size="1rem" />
               <span>{provider.label}</span>
             </DropdownMenuItem>
           ))}
@@ -146,7 +150,7 @@ function PromptSnippetsDialog({ onInsertText, onOpenChange, open }: PromptSnippe
                   }}
                   type="button"
                 >
-                  <MessageSquareText className="mt-0.5 size-3.5 shrink-0 text-(--ui-text-tertiary) group-hover/snippet:text-foreground" />
+                  <MessageSquareText className="mt-0.5 size-4 shrink-0 text-(--ui-text-tertiary) group-hover/snippet:text-foreground" />
                   <span className="grid min-w-0 gap-0.5">
                     <span className="text-sm font-medium text-foreground">{snippet.label}</span>
                     <span className="text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)">
@@ -185,6 +189,7 @@ interface ContextMenuItemProps {
 }
 
 interface ContextMenuProps {
+  showLabel?: boolean
   onInsertText: (text: string) => void
   onOpenUrlDialog: () => void
   onPasteClipboardImage?: (opts?: { silent?: boolean }) => Promise<boolean> | void

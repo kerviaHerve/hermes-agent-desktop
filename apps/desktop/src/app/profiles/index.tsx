@@ -353,7 +353,7 @@ function SoulEditor({ profileName }: { profileName: string }) {
 
       {error && (
         <div className="flex items-start gap-2 rounded bg-destructive/10 px-3 py-2 text-xs text-destructive">
-          <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+          <AlertTriangle className="mt-0.5 size-4 shrink-0" />
           <span>{error}</span>
         </div>
       )}

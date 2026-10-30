@@ -21,18 +21,18 @@ export function LocalModelsHardwareSection({ hardware }: LocalModelsHardwareSect
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1 py-1 text-[length:var(--conversation-caption-font-size)] text-muted-foreground">
           {hardware.gpu_name && (
             <span className="inline-flex items-center gap-1.5">
-              <Zap className="size-3.5" />
+              <Zap className="size-4" />
               {hardware.gpu_name}
             </span>
           )}
 
           <span className="inline-flex items-center gap-1.5">
-            <Cpu className="size-3.5" />
+            <Cpu className="size-4" />
             {copy.vram(gbLabel(hardware.vram_total_bytes))}
           </span>
 
           <span className="inline-flex items-center gap-1.5">
-            <Package className="size-3.5" />
+            <Package className="size-4" />
             {copy.ram(gbLabel(hardware.ram_total_bytes))}
           </span>
 

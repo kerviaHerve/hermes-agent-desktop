@@ -39,7 +39,7 @@ export function ProfileLaunchMenuItems({ connectionId, label, profile }: Profile
     <>
       {canOpenNewWindow() && (
         <ContextMenuItem onSelect={() => void openNewWindow(route)}>
-          <Codicon name="link-external" size="0.875rem" />
+          <Codicon name="link-external" size="1rem" />
           <span>{p.openInNewWindow}</span>
         </ContextMenuItem>
       )}
@@ -47,7 +47,7 @@ export function ProfileLaunchMenuItems({ connectionId, label, profile }: Profile
         disabled={isDefault || !window.hermesDesktop?.profile?.setDefault}
         onSelect={() => void makeDefault()}
       >
-        <Codicon name={isDefault ? 'check' : 'home'} size="0.875rem" />
+        <Codicon name={isDefault ? 'check' : 'home'} size="1rem" />
         <span>{isDefault ? p.defaultProfile : p.setAsDefault}</span>
       </ContextMenuItem>
     </>

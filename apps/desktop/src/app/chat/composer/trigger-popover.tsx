@@ -220,7 +220,7 @@ export function ComposerTriggerPopover({
                   ) : (
                     <>
                       <span className="grid size-4 shrink-0 place-items-center text-(--ref-color)" data-ref={refKind}>
-                        <Codicon name={referenceStyle(refKind).codicon} size="0.875rem" />
+                        <Codicon name={referenceStyle(refKind).codicon} size="1rem" />
                       </span>
                       <span className="min-w-0 shrink truncate font-medium leading-5 text-foreground">{display}</span>
                       {description && (

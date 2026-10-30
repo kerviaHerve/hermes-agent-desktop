@@ -214,9 +214,10 @@ function GatewayProfileGroup({
 
   return (
     <SidebarRowStack
-      className={cn(sortable.dragging && 'relative z-10')}
+      className={cn(!embedded && 'mt-1', sortable.dragging && 'relative z-10', sortable.dropPosition && 'relative')}
       data-gateway-group={group.profile ? group.id : undefined}
       data-gateway-section={!group.profile ? group.id : undefined}
+      data-reorder-target={sortable.dropPosition}
       ref={sortable.ref}
       style={sortable.style}
     >

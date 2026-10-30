@@ -288,7 +288,7 @@ function AdvancedDelegationStatus({ blocked, scope }: { blocked: boolean; scope:
 
   return (
     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 px-1" data-slot="delegation-plugin-hint">
-      <Plug className="size-3.5 shrink-0 text-(--ui-text-tertiary)" />
+      <Plug className="size-4 shrink-0 text-(--ui-text-tertiary)" />
       <span className="text-xs text-(--ui-text-secondary)">{message}</span>
       {action}
     </div>

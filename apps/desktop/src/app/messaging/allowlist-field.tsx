@@ -121,14 +121,14 @@ export function AllowlistField({ field, fieldId, label, pending, onEdit, tools }
               onClick={() => remove(row.id)}
               variant="ghost"
             >
-              <X className="size-3.5" />
+              <X className="size-4" />
             </Button>
           </Tip>
         </div>
       ))}
       <div className="flex items-center gap-2">
         <Button className="h-7 gap-1 px-2 text-xs" onClick={add} size="sm" variant="ghost">
-          <Plus className="size-3.5" />
+          <Plus className="size-4" />
           {m.addListEntry}
         </Button>
         <span className="flex-1" />

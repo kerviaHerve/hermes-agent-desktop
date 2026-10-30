@@ -175,7 +175,7 @@ function PlanCard({ flow, tier }: { flow: DowngradeFlow; tier: BillingPlanTierVi
             variant="outline"
           >
             {tier.action.label}
-            <ExternalLink className="size-3.5" />
+            <ExternalLink className="size-4" />
           </Button>
         )}
 

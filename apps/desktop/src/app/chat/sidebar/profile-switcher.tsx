@@ -668,30 +668,16 @@ export function ProfileRail() {
                 : activeStrip}
             </div>
           </div>
-          <AddProfileButton label={p.newProfile} onClick={() => setCreateOpen(true)} />
-          <ImportProfileButton label={p.importProfile} />
         </>
       )}
-
-      {/* Always reachable, even with only the default profile: the manage
-          overlay is the only place to edit a profile's SOUL.md, and a
-          single-profile user must be able to edit the default's persona
-          without first creating a throwaway second profile. */}
-      <ProfilePill active={false} glyph="ellipsis" label={p.manageProfiles} onSelect={() => navigate(PROFILES_ROUTE)} />
+      <ProfileRailActions
+        connectGateway={multipleConnections ? undefined : () => navigate(`${SETTINGS_ROUTE}?tab=gateway`)}
+        onCreate={() => setCreateOpen(true)}
+        onImport={() => void runImportProfileFlow()}
+        onManage={() => navigate(PROFILES_ROUTE)}
+      />
 
       {localDeviceDialog}
-
-      {/* Multi-gateway discoverability: before a second source exists, a plug
-          pinned beside Manage deep-links to the unified Gateways page. Once
-          there are several sources, the same action lives in their selector. */}
-      {!multipleConnections && (
-        <ProfilePill
-          active={false}
-          glyph="plug"
-          label={p.connectGateway}
-          onSelect={() => navigate(`${SETTINGS_ROUTE}?tab=gateway`)}
-        />
-      )}
 
       {/* Land in the new profile on a fresh chat (selectProfile triggers the
           new-session reset), not stuck on the session you were just in. */}
@@ -850,37 +836,51 @@ function EditSoulDialog({
   )
 }
 
-// The "+" create button, shared by both rail render paths.
-function AddProfileButton({ label, onClick }: { label: string; onClick: () => void }) {
-  return (
-    <Tip label={label}>
-      <button
-        aria-label={label}
-        className="grid size-5 shrink-0 place-items-center rounded-[3px] text-(--ui-text-tertiary) opacity-55 transition hover:bg-(--ui-control-hover-background) hover:text-foreground hover:opacity-100"
-        onClick={onClick}
-        type="button"
-      >
-        <Codicon name="add" size="0.75rem" />
-      </button>
-    </Tip>
-  )
-}
+// Keep the profile strip for direct switching and drag ordering; put its
+// secondary commands behind one named menu so the footer stays quiet.
+function ProfileRailActions({
+  connectGateway,
+  onCreate,
+  onImport,
+  onManage
+}: {
+  connectGateway?: () => void
+  onCreate: () => void
+  onImport: () => void
+  onManage: () => void
+}) {
+  const { t } = useI18n()
+  const p = t.profiles
 
-// Import-archive door beside the "+": adopt a shared profile bundle (theme,
-// skills, layout) as a new profile. Same chrome as AddProfileButton; the whole
-// flow (picker → import → apply overlay → switch) lives in the store.
-function ImportProfileButton({ label }: { label: string }) {
   return (
-    <Tip label={label}>
-      <button
-        aria-label={label}
-        className="grid size-5 shrink-0 place-items-center rounded-[3px] text-(--ui-text-tertiary) opacity-55 transition hover:bg-(--ui-control-hover-background) hover:text-foreground hover:opacity-100"
-        onClick={() => void runImportProfileFlow()}
-        type="button"
-      >
-        <Codicon name="cloud-download" size="0.75rem" />
-      </button>
-    </Tip>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button aria-label={p.manageProfiles} className="shrink-0 text-(--ui-text-tertiary)" size="icon-xs" type="button" variant="ghost">
+          <Codicon name="ellipsis" size="1rem" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="min-w-48" side="top">
+        <DropdownMenuItem onSelect={onCreate}>
+          <Codicon aria-hidden="true" name="add" size="1rem" />
+          {p.newProfile}
+        </DropdownMenuItem>
+        <DropdownMenuItem onSelect={onImport}>
+          <Codicon aria-hidden="true" name="cloud-download" size="1rem" />
+          {p.importProfile}
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onSelect={onManage}>
+          <Codicon aria-hidden="true" name="ellipsis" size="1rem" />
+          {p.manageProfiles}
+        </DropdownMenuItem>
+        {connectGateway && (
+          <DropdownMenuItem onSelect={connectGateway}>
+            <Codicon aria-hidden="true" name="plug" size="1rem" />
+            {p.connectGateway}
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -948,16 +948,16 @@ function ProfileDropdown({
               <span className="truncate">{p.title}</span>
             )}
           </span>
-          <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="0.875rem" />
+          <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="1rem" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="min-w-48 max-w-72" collisionPadding={8} side="top">
         <DropdownMenuItem onSelect={onCreate}>
-          <Codicon aria-hidden="true" name="add" size="0.875rem" />
+          <Codicon aria-hidden="true" name="add" size="1rem" />
           <span className="truncate">{p.newProfile}</span>
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={onImport}>
-          <Codicon aria-hidden="true" name="cloud-download" size="0.875rem" />
+          <Codicon aria-hidden="true" name="cloud-download" size="1rem" />
           <span className="truncate">{p.importProfile}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -1141,7 +1141,7 @@ function ProfilePill({
         type="button"
         variant="ghost"
       >
-        {pending ? <Loader2 className="animate-spin" /> : <Codicon name={glyph} size="0.875rem" />}
+        {pending ? <Loader2 className="animate-spin" /> : <Codicon name={glyph} size="1rem" />}
         {summary && !active && (
           <span className="absolute -right-0.5 -top-0.5">
             <ProfileStatusDot summary={summary} />
@@ -1363,19 +1363,19 @@ function RestSquare({
         >
           <ProfileLaunchMenuSection connectionId={agent.connectionId} label={label} profile={agent.profile} />
           <ContextMenuItem onSelect={onSelect}>
-            <Codicon name="arrow-right" size="0.875rem" />
+            <Codicon name="arrow-right" size="1rem" />
             <span className="truncate">{p.fleet.switchTo(agent.profile, agent.connectionLabel)}</span>
           </ContextMenuItem>
           <ContextMenuItem onSelect={() => setPickerOpen(true)}>
-            <Codicon name="symbol-color" size="0.875rem" />
+            <Codicon name="symbol-color" size="1rem" />
             <span>{p.color}</span>
           </ContextMenuItem>
           <ContextMenuItem onSelect={onRename}>
-            <Codicon name="text-size" size="0.875rem" />
+            <Codicon name="text-size" size="1rem" />
             <span>{p.renameMenu}</span>
           </ContextMenuItem>
           <ContextMenuItem onSelect={onEditSoul}>
-            <Codicon name="edit" size="0.875rem" />
+            <Codicon name="edit" size="1rem" />
             <span>{p.editSoul}</span>
           </ContextMenuItem>
           <ContextMenuItem
@@ -1383,7 +1383,7 @@ function RestSquare({
             onSelect={onDelete}
             variant="destructive"
           >
-            <Codicon name="trash" size="0.875rem" />
+            <Codicon name="trash" size="1rem" />
             <span>{t.common.delete}</span>
           </ContextMenuItem>
         </ContextMenuContent>
@@ -1613,24 +1613,24 @@ function ProfileSquare({
         >
           <ProfileLaunchMenuSection connectionId={connectionId} label={label} profile={name} />
           <ContextMenuItem onSelect={() => setPickerOpen(true)}>
-            <Codicon name="symbol-color" size="0.875rem" />
+            <Codicon name="symbol-color" size="1rem" />
             <span>{p.color}</span>
           </ContextMenuItem>
           <ContextMenuItem onSelect={onRename}>
-            <Codicon name="text-size" size="0.875rem" />
+            <Codicon name="text-size" size="1rem" />
             <span>{p.renameMenu}</span>
           </ContextMenuItem>
           <ContextMenuItem onSelect={onEditSoul}>
-            <Codicon name="edit" size="0.875rem" />
+            <Codicon name="edit" size="1rem" />
             <span>{p.editSoul}</span>
           </ContextMenuItem>
           <ContextMenuItem onSelect={() => void runExportProfileFlow(name)}>
-            <Codicon name="package" size="0.875rem" />
+            <Codicon name="package" size="1rem" />
             <span>{p.exportMenu}</span>
           </ContextMenuItem>
           {onConnectRemote && (
             <ContextMenuItem onSelect={onConnectRemote}>
-              <Codicon name="globe" size="0.875rem" />
+              <Codicon name="globe" size="1rem" />
               <span>{remoteHost ? p.remoteOverride.badge(remoteHost) : p.remoteOverride.menuItem}</span>
             </ContextMenuItem>
           )}
@@ -1639,7 +1639,7 @@ function ProfileSquare({
             onSelect={onDelete}
             variant="destructive"
           >
-            <Codicon name="trash" size="0.875rem" />
+            <Codicon name="trash" size="1rem" />
             <span>{t.common.delete}</span>
           </ContextMenuItem>
         </ContextMenuContent>

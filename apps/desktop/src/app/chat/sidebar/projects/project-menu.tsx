@@ -207,7 +207,7 @@ export function ProjectMenu({
   // (where selecting adopts the repo as a real project so the look sticks).
   const appearanceItem = (
     <DropdownMenuItem onSelect={() => setAppearanceOpen(true)}>
-      <Codicon name="symbol-color" size="0.875rem" />
+      <Codicon name="symbol-color" size="1rem" />
       <span>{p.menuAppearance}</span>
     </DropdownMenuItem>
   )
@@ -334,7 +334,7 @@ export function ProjectContextMenu({
       {canTheme && (
         <kit.Sub>
           <kit.SubTrigger>
-            <Codicon name="symbol-color" size="0.875rem" />
+            <Codicon name="symbol-color" size="1rem" />
             <span>{p.menuAppearance}</span>
           </kit.SubTrigger>
           <kit.SubContent className="w-auto p-2">

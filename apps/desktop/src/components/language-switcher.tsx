@@ -84,7 +84,7 @@ export function LanguageSwitcher({ className, collapsed = false, dropUp = false 
       variant="outline"
     >
       <span className="inline-flex min-w-0 items-center gap-2">
-        <Globe className="size-3.5 shrink-0" />
+        <Globe className="size-4 shrink-0" />
         {!collapsed && <span className="truncate">{current.endonym}</span>}
       </span>
       {!collapsed && <ChevronDown className="size-3 shrink-0 opacity-70" />}

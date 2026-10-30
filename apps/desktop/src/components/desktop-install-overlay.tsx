@@ -674,7 +674,7 @@ export function DesktopInstallOverlay({ enabled = true }: DesktopInstallOverlayP
               type="button"
               variant="ghost"
             >
-              {logOpen ? <ChevronDown className={iconSize.sm} /> : <ChevronRight className={iconSize.sm} />}
+              {logOpen ? <ChevronDown className={iconSize.md} /> : <ChevronRight className={iconSize.md} />}
               <span>{logOpen ? copy.hideOutput : copy.showOutput}</span>
               <span className="ml-1 tabular-nums">({copy.lines(state.log.length)})</span>
             </Button>

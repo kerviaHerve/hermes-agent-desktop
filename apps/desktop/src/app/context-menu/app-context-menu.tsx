@@ -167,7 +167,7 @@ function Item({
 }) {
   return (
     <DropdownMenuItem disabled={disabled} onSelect={onSelect}>
-      {icon ? <Codicon name={icon} size="0.875rem" /> : null}
+      {icon ? <Codicon name={icon} size="1rem" /> : null}
       <span>{label}</span>
       {shortcut ? <DropdownMenuShortcut>{shortcut}</DropdownMenuShortcut> : null}
     </DropdownMenuItem>

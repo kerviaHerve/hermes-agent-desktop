@@ -168,16 +168,16 @@ function AttachmentPill({ attachment, onRemove }: { attachment: ComposerAttachme
                   src={attachment.thumbnailUrl ?? attachment.previewUrl}
                 />
               ) : (
-                <Icon className="size-3.5" />
+                <Icon className="size-4" />
               )}
               {isUploading && (
                 <span className="absolute inset-0 grid place-items-center bg-background/60 backdrop-blur-[1px]">
-                  <Loader2 className="size-3.5 animate-spin text-foreground/75" />
+                  <Loader2 className="size-4 animate-spin text-foreground/75" />
                 </span>
               )}
               {hasUploadError && (
                 <span className="absolute inset-0 grid place-items-center bg-destructive/15">
-                  <AlertCircle className="size-3.5 text-destructive" />
+                  <AlertCircle className="size-4 text-destructive" />
                 </span>
               )}
             </span>
@@ -200,7 +200,7 @@ function AttachmentPill({ attachment, onRemove }: { attachment: ComposerAttachme
           {onRemove && (
             <button
               aria-label={c.removeAttachment(attachment.label)}
-              className="absolute -right-1 -top-1 grid size-3.5 place-items-center rounded-full border border-border/70 bg-background text-muted-foreground opacity-0 shadow-xs transition hover:bg-accent hover:text-foreground group-hover/attachment:opacity-100 focus-visible:opacity-100"
+              className="absolute -right-1 -top-1 grid size-4 place-items-center rounded-full border border-border/70 bg-background text-muted-foreground opacity-0 shadow-xs transition hover:bg-accent hover:text-foreground group-hover/attachment:opacity-100 focus-visible:opacity-100"
               onClick={() => onRemove(attachment.id)}
               type="button"
             >

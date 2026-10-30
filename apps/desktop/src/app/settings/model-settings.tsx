@@ -1068,7 +1068,7 @@ export function ModelSettings({ onMainModelChanged, scopeProfile, subpage }: Mod
       <span>{error}</span>
       {skewRestart && (
         <Button disabled={restartingBackend} onClick={() => void recycleStaleBackend()} size="sm" variant="textStrong">
-          {restartingBackend && <Loader2 className="size-3.5 animate-spin" />}
+          {restartingBackend && <Loader2 className="size-4 animate-spin" />}
           {restartingBackend ? m.restartingBackend : m.restartBackend}
         </Button>
       )}
@@ -1128,7 +1128,7 @@ export function ModelSettings({ onMainModelChanged, scopeProfile, subpage }: Mod
                         onClick={() => void activateApiKeyProvider()}
                         size="sm"
                       >
-                        {activating && <Loader2 className="size-3.5 animate-spin" />}
+                        {activating && <Loader2 className="size-4 animate-spin" />}
                         {activating ? 'Activating...' : 'Activate'}
                       </Button>
                     </div>
@@ -1159,7 +1159,7 @@ export function ModelSettings({ onMainModelChanged, scopeProfile, subpage }: Mod
                 onClick={() => void applyMainModel()}
                 size="sm"
               >
-                {applying && <Loader2 className="size-3.5 animate-spin" />}
+                {applying && <Loader2 className="size-4 animate-spin" />}
                 {applying ? m.applying : t.common.apply}
               </Button>
             </div>

@@ -93,9 +93,9 @@ export function LocalModelsRuntimeSection({ status, jobs, lastError }: LocalMode
           title={
             <span className="inline-flex items-center gap-2">
               {rJob.status === 'paused' ? (
-                <Pause className="size-3.5" />
+                <Pause className="size-4" />
               ) : (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               )}
               {copy.installing}
             </span>
@@ -135,9 +135,9 @@ export function LocalModelsRuntimeSection({ status, jobs, lastError }: LocalMode
           title={
             <span className="inline-flex items-center gap-2">
               {rJob.status === 'paused' ? (
-                <Pause className="size-3.5" />
+                <Pause className="size-4" />
               ) : (
-                <Loader2 className="size-3.5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
               )}
               {copy.updating}
             </span>

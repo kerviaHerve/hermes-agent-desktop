@@ -601,7 +601,7 @@ const PrimaryCell = memo(function PrimaryCell({ artifact, ctx }: { artifact: Art
       title={label}
     >
       <span className="mt-0.5 grid size-6 shrink-0 place-items-center self-start rounded-md bg-(--ui-bg-tertiary) text-(--ui-text-tertiary)">
-        <Icon className="size-3.5" />
+        <Icon className="size-4" />
       </span>
       <span className={cn('min-w-0 flex-1', isLink ? 'wrap-anywhere' : 'truncate')}>
         {label}
@@ -633,7 +633,7 @@ const LocationCell = memo(function LocationCell({ artifact }: { artifact: Artifa
         appearance="icon"
         buttonSize="icon-xs"
         className="shrink-0 text-muted-foreground opacity-0 transition-opacity hover:text-foreground focus-visible:opacity-100 group-hover/location:opacity-100"
-        iconClassName="size-3.5"
+        iconClassName="size-4"
         label={copyLabel}
         text={artifact.value}
         title={copyLabel}

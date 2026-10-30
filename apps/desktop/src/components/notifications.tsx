@@ -345,7 +345,7 @@ function NotificationItem({ notification, stack }: { notification: AppNotificati
         type="button"
         variant="ghost"
       >
-        <Codicon name="close" size="0.875rem" />
+        <Codicon name="close" size="1rem" />
       </Button>
     </Alert>
   )

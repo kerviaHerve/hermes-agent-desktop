@@ -318,7 +318,7 @@ function AssigneeMenu({
         >
           {current ? (
             <>
-              <Avatar name={current} size="0.875rem" />
+              <Avatar name={current} size="1rem" />
               <span className="truncate">{current}</span>
             </>
           ) : (
@@ -330,7 +330,7 @@ function AssigneeMenu({
       <DropdownMenuContent align="start">
         {(roster?.profiles ?? []).map(profile => (
           <DropdownMenuItem key={profile.name} onSelect={() => onReassign(profile.name)}>
-            <Avatar name={profile.name} size="0.875rem" />
+            <Avatar name={profile.name} size="1rem" />
             {profile.name}
             {profile.name === current && <Codicon className="ml-auto" name="check" size="0.8rem" />}
           </DropdownMenuItem>

@@ -90,9 +90,9 @@ export function LocalModelsQuickstart({
                     key={label}
                   >
                     {i < stageIndex ? (
-                      <CheckCircle2 className="size-3.5 text-primary" />
+                      <CheckCircle2 className="size-4 text-primary" />
                     ) : i === stageIndex ? (
-                      <Loader2 className="size-3.5 animate-spin" />
+                      <Loader2 className="size-4 animate-spin" />
                     ) : (
                       <span className="size-1.5 rounded-full bg-current" />
                     )}

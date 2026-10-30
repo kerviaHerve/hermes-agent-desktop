@@ -336,7 +336,7 @@ const AssistantMessageBody: FC<AssistantMessageProps & { collapsedNotice?: null 
                       side="top"
                       tooltip={t.assistant.thread.dismissError}
                     >
-                      <XIcon className="size-3.5" />
+                      <XIcon className="size-4" />
                     </TooltipIconButton>
                   )}
                 </div>
@@ -1311,7 +1311,7 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
           <MessageHoverTime className="mr-1 px-0.5" />
           {branchInNewChat && (
             <TooltipIconButton onClick={branchInNewChat} tooltip={copy.branchNewChat}>
-              <GitForkIcon className="size-3.5" />
+              <GitForkIcon className="size-4" />
             </TooltipIconButton>
           )}
           {copyButton}
@@ -1320,7 +1320,7 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
           )}
           <ReadAloudButton action={readAloud} />
           <TooltipIconButton disabled={reloadDisabled} onClick={reload} tooltip={copy.refresh}>
-            <RefreshCwIcon className="size-3.5" />
+            <RefreshCwIcon className="size-4" />
           </TooltipIconButton>
         </div>
         {/* Mounted only on touch: each Radix menu root adds a document key
@@ -1347,14 +1347,14 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
                     />
                   )}
                   {renderActionItem(kit, {
-                    iconNode: <AudioLines className="size-3.5" />,
+                    iconNode: <AudioLines className="size-4" />,
                     key: 'read-aloud',
                     label: readAloud.menuLabel,
                     onSelect: () => readAloud.onActivate(),
                     disabled: readAloud.disabled
                   })}
                   {renderActionItem(kit, {
-                    iconNode: <RefreshCwIcon className="size-3.5" />,
+                    iconNode: <RefreshCwIcon className="size-4" />,
                     key: 'refresh',
                     label: copy.refresh,
                     disabled: reloadDisabled,
@@ -1364,7 +1364,7 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
               )}
             >
               <Button aria-label={copy.moreActions} size="icon" type="button" variant="ghost">
-                <MoreHorizontal className="size-3.5" />
+                <MoreHorizontal className="size-4" />
               </Button>
             </ActionsMenu>
           </div>
@@ -1401,7 +1401,7 @@ const AssistantActionBar: FC<MessageActionProps & { durationS?: number }> = ({
                 ))}
               </span>
             ) : (
-              <SmilePlusIcon className="size-3.5" />
+              <SmilePlusIcon className="size-4" />
             )}
           </TooltipIconButton>
         </ReactionPicker>
@@ -1415,7 +1415,7 @@ const ReadAloudButton: FC<{ action: ReadAloudActionState }> = ({ action }) => {
 
   return (
     <TooltipIconButton disabled={action.disabled} onClick={action.onActivate} tooltip={action.tooltip}>
-      <Icon className={cn('size-3.5', action.isPreparing && 'animate-spin')} />
+      <Icon className={cn('size-4', action.isPreparing && 'animate-spin')} />
     </TooltipIconButton>
   )
 }
@@ -1428,13 +1428,13 @@ const AssistantFooter: FC<MessageActionProps & { durationS?: number }> = ({ dura
         hideWhenSingleBranch
       >
         <BranchPickerPrimitive.Previous className="grid size-6 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:cursor-default disabled:opacity-35">
-          <Codicon name="chevron-left" size="0.875rem" />
+          <Codicon name="chevron-left" size="1rem" />
         </BranchPickerPrimitive.Previous>
         <span className="tabular-nums">
           <BranchPickerPrimitive.Number /> / <BranchPickerPrimitive.Count />
         </span>
         <BranchPickerPrimitive.Next className="grid size-6 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:cursor-default disabled:opacity-35">
-          <Codicon name="chevron-right" size="0.875rem" />
+          <Codicon name="chevron-right" size="1rem" />
         </BranchPickerPrimitive.Next>
       </BranchPickerPrimitive.Root>
       <AssistantActionBar durationS={durationS} {...props} />

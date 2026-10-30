@@ -17,7 +17,7 @@ export function StepUpInlineAction({ flow }: { flow: ReturnType<typeof useStepUp
         <span className="font-mono text-[0.72rem] font-semibold text-foreground">{flow.verification.code}</span>
         <Button onClick={flow.openVerification} size="sm" type="button" variant="outline">
           {b.openVerification}
-          <ExternalLink className="size-3.5" />
+          <ExternalLink className="size-4" />
         </Button>
       </span>
     )
@@ -67,7 +67,7 @@ export function BillingRefusalInline({ refusal }: { refusal: BillingRefusal | nu
       {portalUrl && (
         <Button onClick={() => openExternalLink(portalUrl)} size="sm" type="button" variant="outline">
           {t.settings.billing.buyCredits.openPortal}
-          <ExternalLink className="size-3.5" />
+          <ExternalLink className="size-4" />
         </Button>
       )}
     </div>

@@ -1,12 +1,18 @@
+import { useStore } from '@nanostores/react'
 import { type CSSProperties, type ReactNode, useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
+import { openSessionFromPicker } from '@/app/open-session'
 import { TITLEBAR_HEIGHT } from '@/app/shell/titlebar'
 import { TitlebarIcon } from '@/app/shell/titlebar-icon'
 import { Button } from '@/components/ui/button'
+import { Tip } from '@/components/ui/tooltip'
 import { translateNow } from '@/i18n'
 import { ESCAPE_PRIORITY, isTopEscapeLayer, pushEscapeLayer } from '@/lib/escape-layers'
 import { triggerHaptic } from '@/lib/haptics'
+import { MessageCircle } from '@/lib/icons'
 import { cn } from '@/lib/utils'
+import { $focusedStoredSessionId } from '@/store/session-focus'
 
 // Shared top clearance for overlay content that sits *beside* the floating
 // close button (which is absolute at `0.1875rem + titlebar/2`, -translate-y-1/2,
@@ -42,6 +48,9 @@ export function OverlayView({
   rootClassName,
   titlebarActions
 }: OverlayViewProps) {
+  const navigate = useNavigate()
+  const focusedSessionId = useStore($focusedStoredSessionId)
+
   const closeOverlay = () => {
     triggerHaptic('close')
     onClose()
@@ -122,6 +131,23 @@ export function OverlayView({
 
             <div className="pointer-events-auto absolute right-[var(--titlebar-tools-right,0.75rem)] top-[calc(0.1875rem+var(--titlebar-height)/2)] flex -translate-y-1/2 items-center gap-1.5 [-webkit-app-region:no-drag]">
               {titlebarActions}
+
+              {focusedSessionId && (
+                <Tip label={translateNow('common.returnToChat')}>
+                  <Button
+                    aria-label={translateNow('common.returnToChat')}
+                    className="text-(--ui-text-tertiary) hover:bg-(--chrome-action-hover) hover:text-foreground"
+                    onClick={() => {
+                      triggerHaptic('selection')
+                      openSessionFromPicker(focusedSessionId, navigate, 'in-place')
+                    }}
+                    size="icon-titlebar"
+                    variant="ghost"
+                  >
+                    <MessageCircle className="size-4" />
+                  </Button>
+                </Tip>
+              )}
 
               <Button
                 aria-label={closeLabel}

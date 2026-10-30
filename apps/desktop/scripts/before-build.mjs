@@ -26,12 +26,13 @@ const {
   appNamePascal,
   artifactNamePascal
 } = require('../product-identity.cjs')
+const { kerviaEdition } = require('../product-identity.cjs')
 
 export default async function beforeBuild() {
   stageMsixAssets()
   writeMsixExtensions()
   if (store) stageStoreManifest(path.join(import.meta.dirname, '..'), process.env.HERMES_PAYLOAD_TAG)
-  else if (process.env.HERMES_PAYLOAD_TAG) {
+  else if (process.env.HERMES_PAYLOAD_TAG && !kerviaEdition) {
     stageReleaseManifest(path.join(import.meta.dirname, '..'), process.env.HERMES_PAYLOAD_TAG)
   }
 

@@ -24,7 +24,7 @@ export const SCAFFOLD_META_CLASS = 'shrink-0 text-[0.625rem] tabular-nums text-(
 
 /** The fixed cell a scaffold line's leading glyph sits in — status dot, tool
  *  icon, spinner. Same box on every line, so the labels share a left edge. */
-export const SCAFFOLD_GLYPH_CLASS = 'grid size-3.5 shrink-0 place-items-center'
+export const SCAFFOLD_GLYPH_CLASS = 'grid size-4 shrink-0 place-items-center'
 
 /**
  * One scaffold line. `children` is the label and whatever trails it in flow

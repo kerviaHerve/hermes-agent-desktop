@@ -50,7 +50,7 @@ export function FleetGatewayMenuGroup({ group, onSelect, slot, wrapRow }: FleetG
           <DropdownMenuItem aria-label={label} className="min-w-0" key={agent.profile} onSelect={() => onSelect(agent)}>
             <span className="flex min-w-0 items-center gap-1.5">
               {localDefault ? (
-                <Codicon aria-hidden="true" name="device-desktop" size="0.875rem" />
+                <Codicon aria-hidden="true" name="device-desktop" size="1rem" />
               ) : (
                 <ProfileGlyph
                   aria-hidden="true"

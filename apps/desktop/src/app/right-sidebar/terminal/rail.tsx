@@ -143,7 +143,7 @@ function TerminalRailItem({ active, canCloseOthers, index, term, toggleHint }: T
               <Codicon
                 className={cn(term.kind === 'agent' && !active && 'text-primary')}
                 name={term.kind === 'agent' ? 'agent' : 'terminal'}
-                size="0.875rem"
+                size="1rem"
               />
             </button>
           </Tip>

@@ -3510,6 +3510,7 @@ function createNativePackagedStrategy(
       channel: resolveUpdaterChannelFromStamp(),
       light: isLightVariant(),
       feedBaseUrl: resolveDesktopFeedBaseUrl(),
+      editionFeedUrl: PRODUCT_IDENTITY.updateFeedUrl,
       appVersion: app.getVersion(),
       log: rememberLog,
       emitProgress: emitUpdateProgress,
@@ -17578,9 +17579,9 @@ ipcMain.handle('hermes:vscode-theme:search', async (_event, query) => searchMark
 // running app. Three delivery paths: macOS 'open-url',
 // Win/Linux running-app 'second-instance' (argv), Win/Linux cold-start argv.
 // ---------------------------------------------------------------------------
-const HERMES_PROTOCOL = DEV_SERVER ? 'hermes-dev' : 'hermes'
+const HERMES_PROTOCOL = DEV_SERVER ? 'hermes-dev' : PRODUCT_IDENTITY.kerviaEdition ? 'hermes-kervia' : 'hermes'
 /** Schemes accepted when parsing inbound URLs (dev accepts both). */
-const DEEPLINK_SCHEMES = DEV_SERVER ? ['hermes-dev', 'hermes'] : ['hermes']
+const DEEPLINK_SCHEMES = DEV_SERVER ? ['hermes-dev', 'hermes'] : PRODUCT_IDENTITY.kerviaEdition ? ['hermes-kervia', 'hermes'] : ['hermes']
 let _pendingDeepLink = null
 let _rendererReadyForDeepLink = false
 // Set by sendOpenUpdatesRequested() when the renderer cannot hear it yet.

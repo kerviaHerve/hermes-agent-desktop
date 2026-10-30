@@ -248,7 +248,7 @@ function OAuthPicker({
           variant="text"
         >
           {showAll ? p.collapse : connected.length > 0 ? p.connectAnother : p.otherProviders}
-          <ChevronDown className={cn('size-3.5 transition', showAll && 'rotate-180')} />
+          <ChevronDown className={cn('size-4 transition', showAll && 'rotate-180')} />
         </Button>
       )}
     </section>

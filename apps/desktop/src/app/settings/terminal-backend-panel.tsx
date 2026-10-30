@@ -120,7 +120,7 @@ export function TerminalBackendPanel({ onConfiguredChange, profile }: TerminalBa
   if (loading && !data) {
     return (
       <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
-        <Loader2 className="size-3.5 animate-spin" />
+        <Loader2 className="size-4 animate-spin" />
         {copy.loading}
       </div>
     )
@@ -135,7 +135,7 @@ export function TerminalBackendPanel({ onConfiguredChange, profile }: TerminalBa
       <div className="flex items-baseline justify-between gap-2 px-0.5">
         <span className="text-[0.72rem] font-medium">{copy.sectionTitle}</span>
         <Button disabled={loading} onClick={() => void refresh()} size="sm" variant="text">
-          <RefreshCw className={cn('size-3.5', loading && 'animate-spin')} />
+          <RefreshCw className={cn('size-4', loading && 'animate-spin')} />
         </Button>
       </div>
       <div className="grid gap-1">

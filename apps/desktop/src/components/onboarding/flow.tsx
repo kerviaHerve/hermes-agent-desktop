@@ -68,7 +68,7 @@ export function FlowPanel({
     return (
       <div className="grid gap-3">
         <div className="flex items-center gap-1.5 text-sm text-destructive">
-          <ErrorIcon className="shrink-0" size="0.875rem" />
+          <ErrorIcon className="shrink-0" size="1rem" />
           <span>{flow.message || t.onboarding.signInFailed}</span>
         </div>
         {flow.detail ? (

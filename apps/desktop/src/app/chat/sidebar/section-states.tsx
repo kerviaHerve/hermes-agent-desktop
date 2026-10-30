@@ -19,7 +19,7 @@ export function SidebarSessionSkeletons() {
   return (
     <SidebarRowStack aria-hidden="true">
       {['w-32', 'w-40', 'w-28', 'w-36', 'w-24'].map((width, i) => (
-        <SidebarRowShell actions={<Skeleton className="size-3.5 rounded-sm opacity-60" />} key={`${width}-${i}`}>
+        <SidebarRowShell actions={<Skeleton className="size-4 rounded-sm opacity-60" />} key={`${width}-${i}`}>
           <SidebarRowCluster>
             <Skeleton className={cn('h-3 rounded-sm', width)} />
           </SidebarRowCluster>

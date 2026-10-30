@@ -264,11 +264,11 @@ export function PanelRowMenu({ items, label = 'Actions' }: { items: PanelMenuIte
     <ActionsMenu ariaLabel={label} contentClassName="w-40" items={renderPanelMenuItems(items)}>
       <Button
         aria-label={label}
-        className="size-5 rounded-[4px] bg-transparent text-(--ui-text-tertiary) opacity-0 transition-colors duration-100 hover:bg-(--ui-control-active-background) hover:text-foreground focus-visible:opacity-100 focus-visible:ring-0 group-hover/row:opacity-100 data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground data-[state=open]:opacity-100 [&_svg]:size-3.5!"
+        className="size-5 rounded-[4px] bg-transparent text-(--ui-text-tertiary) opacity-0 transition-colors duration-100 hover:bg-(--ui-control-active-background) hover:text-foreground focus-visible:opacity-100 focus-visible:ring-0 group-hover/row:opacity-100 data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground data-[state=open]:opacity-100 [&_svg]:size-4!"
         size="icon"
         variant="ghost"
       >
-        <Codicon name="kebab-vertical" size="0.875rem" />
+        <Codicon name="kebab-vertical" size="1rem" />
       </Button>
     </ActionsMenu>
   )
@@ -391,7 +391,7 @@ export function PanelAddButton({
         size="sm"
         variant="ghost"
       >
-        <Codicon name={icon} size="0.875rem" />
+        <Codicon name={icon} size="1rem" />
       </Button>
     </Tip>
   )
@@ -426,7 +426,7 @@ export function PanelAction({
       size="sm"
       variant={primary ? 'default' : 'ghost'}
     >
-      <Codicon name={icon} size="0.875rem" spinning={spinning} />
+      <Codicon name={icon} size="1rem" spinning={spinning} />
       {children}
     </Button>
   )

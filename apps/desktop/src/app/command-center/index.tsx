@@ -437,7 +437,7 @@ export function CommandCenterView({
                                 onClick={() => (pinned ? unpinSession(pinId) : pinSession(pinId))}
                                 title={pinned ? cc.unpinSession : cc.pinSession}
                               >
-                                {pinned ? <BookmarkFilled className="size-3.5" /> : <Bookmark className="size-3.5" />}
+                                {pinned ? <BookmarkFilled className="size-4" /> : <Bookmark className="size-4" />}
                               </RowIconButton>
                               <RowIconButton
                                 onClick={() =>
@@ -445,14 +445,14 @@ export function CommandCenterView({
                                 }
                                 title={cc.exportSession}
                               >
-                                <Download className="size-3.5" />
+                                <Download className="size-4" />
                               </RowIconButton>
                               <RowIconButton
                                 className="hover:text-destructive"
                                 onClick={() => setPendingDelete(session)}
                                 title={cc.deleteSession}
                               >
-                                <Trash2 className="size-3.5" />
+                                <Trash2 className="size-4" />
                               </RowIconButton>
                             </div>
                           </li>
@@ -559,7 +559,7 @@ export function CommandCenterView({
                     </div>
                     {systemError && (
                       <span className="inline-flex items-center gap-1 text-[length:var(--conversation-caption-font-size)] text-destructive">
-                        <AlertCircle className="size-3.5" />
+                        <AlertCircle className="size-4" />
                         {systemError}
                       </span>
                     )}
@@ -640,7 +640,7 @@ function UsagePanel({ error, loading, onRefresh, period, usage }: UsagePanelProp
     <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto pb-2">
       {error && (
         <span className="inline-flex items-center gap-1 text-[length:var(--conversation-caption-font-size)] text-destructive">
-          <AlertCircle className="size-3.5" />
+          <AlertCircle className="size-4" />
           {error}
         </span>
       )}

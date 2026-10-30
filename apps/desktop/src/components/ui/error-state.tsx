@@ -22,7 +22,7 @@ export function ErrorBanner({ children, className }: { children: ReactNode; clas
         className
       )}
     >
-      <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+      <AlertTriangle className="mt-0.5 size-4 shrink-0" />
       <span className="min-w-0 whitespace-pre-wrap break-words">{children}</span>
     </div>
   )

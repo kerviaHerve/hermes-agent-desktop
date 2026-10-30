@@ -52,6 +52,7 @@ it('keeps background continuations in one response with one action bar and the o
     await waitFor(() => expect(container.textContent).toContain('The deployment is verified.'))
     expect(container.querySelectorAll('[data-slot="aui_turn-pair"]')).toHaveLength(1)
     expect(container.querySelectorAll('[data-slot="aui_response-group"]')).toHaveLength(1)
+    expect(container.querySelectorAll('[data-slot="aui_response-agent-label"]')).toHaveLength(1)
     expect(container.querySelectorAll('[data-slot="aui_msg-actions"]')).toHaveLength(1)
     expect(container.querySelector('[data-role="assistant"]')).toBe(original)
     expect(
@@ -94,6 +95,23 @@ it('keeps background continuations in one response with one action bar and the o
     expect(reloaded.container.querySelectorAll('[data-slot="aui_msg-actions"]')).toHaveLength(1)
     reloaded.unmount()
   }
+})
+
+it('attributes a selected agent conversation to its routed profile', async () => {
+  const messages = toChatMessages([
+    { role: 'user', content: 'Hello Forky', timestamp: 1 },
+    { role: 'assistant', content: 'Hello.', timestamp: 2 }
+  ]).map(toRuntimeMessage)
+
+  const { container } = render(
+    <ThreadRuntime messages={messages}>
+      <Thread scrollProfile="forky" />
+    </ThreadRuntime>
+  )
+
+  await waitFor(() =>
+    expect(container.querySelector('[data-slot="aui_response-agent-label"]')?.textContent).toBe('forky')
+  )
 })
 
 it('ends the response at a real user prompt or unrelated system event', () => {

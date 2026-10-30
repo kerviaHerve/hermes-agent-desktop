@@ -522,7 +522,7 @@ function useSessionActions({
       // unarchive codicon exists, so the restore item carries the ArchiveOff
       // glyph the Settings → Archived Chats restore button already uses.
       icon: archived ? undefined : 'archive',
-      iconNode: archived ? <ArchiveOff className="size-3.5" /> : undefined,
+      iconNode: archived ? <ArchiveOff className="size-4" /> : undefined,
       label: archived ? r.unarchive : r.archive,
       onSelect: () => {
         triggerHaptic('selection')
@@ -557,7 +557,7 @@ function useSessionActions({
       {identityItems.map(item => renderActionItem(kit, item))}
       <kit.Sub>
         <kit.SubTrigger disabled={!sessionId}>
-          <Codicon name="symbol-color" size="0.875rem" />
+          <Codicon name="symbol-color" size="1rem" />
           <span>{t.sidebar.projects.menuAppearance}</span>
         </kit.SubTrigger>
         <kit.SubContent className="p-2">
@@ -568,7 +568,7 @@ function useSessionActions({
         appearance={kit.copyAppearance}
         disabled={!sessionId}
         errorMessage={r.copyIdFailed}
-        iconClassName="size-3.5 text-current"
+        iconClassName="size-4 text-current"
         key={r.copyId}
         label={r.copyId}
         onCopyError={err => notifyError(err, r.copyIdFailed)}
@@ -578,7 +578,7 @@ function useSessionActions({
       {workItems.map(item => renderActionItem(kit, item))}
       <kit.Sub>
         <kit.SubTrigger disabled={!sessionId}>
-          <Codicon name="folder" size="0.875rem" />
+          <Codicon name="folder" size="1rem" />
           <span>{t.sidebar.projects.moveToProject}</span>
         </kit.SubTrigger>
         <kit.SubContent>

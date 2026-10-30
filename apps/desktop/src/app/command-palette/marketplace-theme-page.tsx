@@ -80,7 +80,7 @@ export function MarketplaceThemePage({ search, onPickTheme }: MarketplaceThemePa
   }
 
   if (query.isLoading) {
-    return <StatusRow icon={<Loader2 className="size-3.5 animate-spin" />} text={copy.loading} />
+    return <StatusRow icon={<Loader2 className="size-4 animate-spin" />} text={copy.loading} />
   }
 
   if (query.isError) {
@@ -114,7 +114,7 @@ export function MarketplaceThemePage({ search, onPickTheme }: MarketplaceThemePa
             role="option"
             type="button"
           >
-            <Palette className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+            <Palette className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
             <span className="flex min-w-0 flex-col">
               <span className="truncate font-medium">{item.displayName}</span>
               <span className="truncate text-[0.6875rem] text-muted-foreground/80">

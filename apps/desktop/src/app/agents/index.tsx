@@ -31,17 +31,17 @@ function statusGlyph(status: SubagentStatus, a: Translations['agents']): ReactNo
     return (
       <GlyphSpinner
         ariaLabel={a.running}
-        className="size-3.5 shrink-0 text-[0.95rem] text-muted-foreground/80"
+        className="size-4 shrink-0 text-[0.95rem] text-muted-foreground/80"
         spinner="breathe"
       />
     )
   }
 
   if (status === 'failed' || status === 'interrupted') {
-    return <AlertCircle aria-label={a.failed} className="size-3.5 shrink-0 text-destructive" />
+    return <AlertCircle aria-label={a.failed} className="size-4 shrink-0 text-destructive" />
   }
 
-  return <CheckCircle2 aria-label={a.done} className="size-3.5 shrink-0 text-emerald-600/85 dark:text-emerald-400/85" />
+  return <CheckCircle2 aria-label={a.done} className="size-4 shrink-0 text-emerald-600/85 dark:text-emerald-400/85" />
 }
 
 const STREAM_TONE: Record<SubagentStreamEntry['kind'], string> = {

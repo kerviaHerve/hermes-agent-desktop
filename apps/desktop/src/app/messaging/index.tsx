@@ -869,7 +869,7 @@ function PlatformDetail({
                 target="_blank"
               >
                 {m.openSetupGuide}
-                <ExternalLink className="size-3.5" />
+                <ExternalLink className="size-4" />
               </a>
             </Button>
           </div>
@@ -924,7 +924,7 @@ function PlatformDetail({
             type="button"
           >
             <span>{m.advanced(hiddenCount)}</span>
-            <DisclosureCaret open={showAdvanced} size="0.875rem" />
+            <DisclosureCaret open={showAdvanced} size="1rem" />
           </button>
           {showAdvanced && (
             <div className="mt-3 grid gap-1">
@@ -1051,7 +1051,7 @@ function MessagingField({
         <Tip label={m.openDocs}>
           <Button asChild className="size-8 shrink-0" variant="ghost">
             <a href={field.url} rel="noreferrer" target="_blank">
-              <ExternalLink className="size-3.5" />
+              <ExternalLink className="size-4" />
             </a>
           </Button>
         </Tip>
@@ -1065,7 +1065,7 @@ function MessagingField({
             onClick={() => onClear(field.key)}
             variant="ghost"
           >
-            <Trash2 className="size-3.5" />
+            <Trash2 className="size-4" />
           </Button>
         </Tip>
       )}

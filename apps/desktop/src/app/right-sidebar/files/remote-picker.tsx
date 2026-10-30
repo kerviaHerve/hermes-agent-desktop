@@ -216,7 +216,7 @@ export function RemoteFolderPicker() {
             {newFolderName !== null && (
               <div className="px-2 py-1">
                 <div className="flex items-center gap-2">
-                  <Codicon className="text-(--ui-text-secondary)" name="new-folder" size="0.875rem" />
+                  <Codicon className="text-(--ui-text-secondary)" name="new-folder" size="1rem" />
                   <Input
                     aria-invalid={Boolean(newFolderError)}
                     aria-label={r.remotePickerFolderName}
@@ -243,7 +243,7 @@ export function RemoteFolderPicker() {
                     size="icon-xs"
                     variant="ghost"
                   >
-                    <Codicon name={creating ? 'loading' : 'check'} size="0.875rem" spinning={creating} />
+                    <Codicon name={creating ? 'loading' : 'check'} size="1rem" spinning={creating} />
                   </Button>
                 </div>
                 {newFolderError && (
@@ -279,7 +279,7 @@ export function RemoteFolderPicker() {
               size="sm"
               variant="ghost"
             >
-              <Codicon name="new-folder" size="0.875rem" />
+              <Codicon name="new-folder" size="1rem" />
               {r.remotePickerNewFolder}
             </Button>
             <Button onClick={() => close()} size="sm" variant="ghost">
@@ -303,7 +303,7 @@ function FolderRow({ disabled = false, name, onClick }: { disabled?: boolean; na
       onClick={onClick}
       type="button"
     >
-      <Codicon name="folder" size="0.875rem" />
+      <Codicon name="folder" size="1rem" />
       <span className="min-w-0 truncate">{name}</span>
     </button>
   )

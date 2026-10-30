@@ -436,13 +436,21 @@ export function setSessionUnreadRemote(id: string, unread: boolean, profile?: st
 // showing: an unscoped request lands on the primary backend, which searches
 // its launch profile's state.db whatever profile the sidebar is on. `null`
 // asks the primary on purpose; omitted follows the ambient request profile.
-export function searchSessions(query: string, profile?: null | string): Promise<SessionSearchResponse> {
+export function searchSessions(
+  query: string,
+  profile?: null | string,
+  options?: { excludeSources?: readonly string[] }
+): Promise<SessionSearchResponse> {
   const scope = profileScoped(profile)
   const suffix = scope.profile ? `&profile=${encodeURIComponent(scope.profile)}` : ''
 
+  const excluded = options?.excludeSources?.length
+    ? `&exclude_sources=${encodeURIComponent(options.excludeSources.join(','))}`
+    : ''
+
   return hermesApi<SessionSearchResponse>({
     ...scope,
-    path: `/api/sessions/search?q=${encodeURIComponent(query)}${suffix}`
+    path: `/api/sessions/search?q=${encodeURIComponent(query)}${suffix}${excluded}`
   })
 }
 

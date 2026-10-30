@@ -42,7 +42,7 @@ export function ProviderPicker() {
             onSelect={() => setPetGenProvider(provider.default ? '' : provider.name)}
           >
             <span className="min-w-0 flex-1 truncate font-medium text-foreground">{provider.label}</span>
-            {provider.name === current?.name && <Check className="size-3.5 text-primary" />}
+            {provider.name === current?.name && <Check className="size-4 text-primary" />}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

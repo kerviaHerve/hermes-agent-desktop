@@ -130,7 +130,7 @@ export function SharedMetricsConsentDialog({ enabled, profile, requestGateway }:
             onClick={() => setExpanded(value => !value)}
             type="button"
           >
-            <ChevronDown className={cn('size-3.5 transition-transform', expanded ? 'rotate-0' : '-rotate-90')} />
+            <ChevronDown className={cn('size-4 transition-transform', expanded ? 'rotate-0' : '-rotate-90')} />
             {copy.whatIsCollected}
           </button>
           {expanded ? (

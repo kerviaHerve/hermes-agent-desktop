@@ -219,7 +219,7 @@ export function CredentialKeyCard({
           {expandable && (
             <ChevronDown
               className={cn(
-                'size-3.5 shrink-0 text-muted-foreground transition',
+                'size-4 shrink-0 text-muted-foreground transition',
                 expanded ? 'rotate-180 opacity-100' : 'opacity-0 group-hover/card:opacity-100'
               )}
             />
@@ -308,7 +308,7 @@ export function ProviderKeyRows({ expanded, group, onExpand, onToggle, rowProps 
           {expandable && (
             <ChevronDown
               className={cn(
-                'size-3.5 shrink-0 text-muted-foreground transition',
+                'size-4 shrink-0 text-muted-foreground transition',
                 expanded ? 'rotate-180 opacity-100' : 'opacity-0 group-hover/card:opacity-100'
               )}
             />

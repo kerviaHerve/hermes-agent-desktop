@@ -47,6 +47,30 @@ export const $collapsedStatusDrawers = persistentAtom<string[]>(
   )
 )
 
+/** The compact composer starts with its activity drawer closed. Only explicit
+ * openings are stored, separately from the earlier open-by-default layout. */
+export const $expandedStatusDrawers = persistentAtom<string[]>(
+  'hermes.desktop.expandedStatusDrawers.v1',
+  [],
+  Codecs.json(value =>
+    Array.isArray(value)
+      ? [...new Set(value.filter((key): key is string => typeof key === 'string' && decodeScope(key) !== null))].slice(
+          -MAX_SAVED_DRAWERS
+        )
+      : []
+  )
+)
+
+export function setStatusDrawerExpanded(key: string, expanded: boolean): void {
+  const next = $expandedStatusDrawers.get().filter(saved => saved !== key)
+
+  if (expanded) {
+    next.push(key)
+  }
+
+  $expandedStatusDrawers.set(next.slice(-MAX_SAVED_DRAWERS))
+}
+
 export function setStatusDrawerCollapsed(key: string, collapsed: boolean): void {
   const next = $collapsedStatusDrawers.get().filter(saved => saved !== key)
 
@@ -58,7 +82,7 @@ export function setStatusDrawerCollapsed(key: string, collapsed: boolean): void 
 }
 
 export function migrateStatusDrawersForProfile(from: string, to: string): void {
-  const renamed = $collapsedStatusDrawers.get().map(key => {
+  const migrate = (key: string) => {
     const scope = decodeScope(key)
 
     if (!scope || (scope.connectionId !== null && scope.connectionId !== 'local')) {
@@ -70,31 +94,33 @@ export function migrateStatusDrawersForProfile(from: string, to: string): void {
       profile: scope.profile === from ? to : scope.profile,
       targetProfile: scope.targetProfile === from ? to : scope.targetProfile
     })
-  })
+  }
 
-  $collapsedStatusDrawers.set([...new Set(renamed)])
+  $collapsedStatusDrawers.set([...new Set($collapsedStatusDrawers.get().map(migrate))])
+  $expandedStatusDrawers.set([...new Set($expandedStatusDrawers.get().map(migrate))])
 }
 
 export function dropStatusDrawersForProfile(
   profile: string,
   route?: { connectionId?: string; profile?: string; targetProfile?: string }
 ): void {
-  $collapsedStatusDrawers.set(
-    $collapsedStatusDrawers.get().filter(key => {
-      const scope = decodeScope(key)
+  const keep = (key: string) => {
+    const scope = decodeScope(key)
 
-      if (!scope) {
-        return false
-      }
+    if (!scope) {
+      return false
+    }
 
-      const matches = route
-        ? scope.profile === route.profile?.trim() &&
-          (!route.targetProfile || scope.targetProfile === route.targetProfile.trim()) &&
-          (!route.connectionId || scope.connectionId === route.connectionId.trim())
-        : (scope.connectionId === null || scope.connectionId === 'local') &&
-          (scope.profile === profile || scope.targetProfile === profile)
+    const matches = route
+      ? scope.profile === route.profile?.trim() &&
+        (!route.targetProfile || scope.targetProfile === route.targetProfile.trim()) &&
+        (!route.connectionId || scope.connectionId === route.connectionId.trim())
+      : (scope.connectionId === null || scope.connectionId === 'local') &&
+        (scope.profile === profile || scope.targetProfile === profile)
 
-      return !matches
-    })
-  )
+    return !matches
+  }
+
+  $collapsedStatusDrawers.set($collapsedStatusDrawers.get().filter(keep))
+  $expandedStatusDrawers.set($expandedStatusDrawers.get().filter(keep))
 }

@@ -105,7 +105,7 @@ function NoticeCard({ notice }: { notice: BillingNoticeView }) {
             variant="outline"
           >
             {notice.action.label}
-            <ExternalLink className="size-3.5" />
+            <ExternalLink className="size-4" />
           </Button>
         ))}
     </div>
@@ -295,7 +295,7 @@ function BuyCreditsOutcome({
         {outcome.portalUrl && (
           <Button onClick={() => onPortal(outcome.portalUrl)} size="sm" type="button" variant="outline">
             {b.buyCredits.openPortal}
-            <ExternalLink className="size-3.5" />
+            <ExternalLink className="size-4" />
           </Button>
         )}
       </div>
@@ -318,7 +318,7 @@ function BuyCreditsOutcome({
       {portalUrl && (
         <Button onClick={() => onPortal(portalUrl)} size="sm" type="button" variant="outline">
           {b.buyCredits.openPortal}
-          <ExternalLink className="size-3.5" />
+          <ExternalLink className="size-4" />
         </Button>
       )}
     </div>
@@ -412,7 +412,7 @@ function BillingFixtureSelect({
 
   return (
     <div className="flex items-center gap-1.5 text-(--ui-text-tertiary)">
-      <Wrench className="size-3.5 shrink-0" />
+      <Wrench className="size-4 shrink-0" />
       <span className="text-xs font-normal">{b.preview}</span>
       <Select onValueChange={value => onValueChange(value as BillingFixtureSelection)} value={value}>
         <SelectTrigger
