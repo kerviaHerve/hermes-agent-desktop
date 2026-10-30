@@ -11,13 +11,13 @@
 
 **EN** — A macOS client for [Hermes Agent](https://github.com/NousResearch/hermes-agent), based on its MIT-licensed source. This edition improves how conversations are read and organized. It connects to an existing Hermes gateway.
 
-**Version 0.1.3** · Hermes source [`bff22bd`](https://github.com/NousResearch/hermes-agent/commit/bff22bde93db8d9fd57b63ee1bcb47947ed04fd2) · [Journal des changements / Changelog](CHANGELOG-KERVIA.md)
+**Version 0.1.4** · Hermes source [`5057eaa`](https://github.com/NousResearch/hermes-agent/commit/5057eaa3a4d0cbef0e30078418a5115faa62889e) · [Journal des changements / Changelog](CHANGELOG-KERVIA.md)
 
 ## Fonctionnalités / Features
 
 | Domaine / Area | Français | English |
 | --- | --- | --- |
-| Conversations | Discussions regroupées par agent ; agents et discussions réorganisables ; groupes repliables. | Chats grouped by agent; reorder agents and chats; collapse agent groups. |
+| Conversations | Discussions regroupées par agent ; agents, discussions et sections réorganisables ; groupes repliables. | Chats grouped by agent; reorder agents, chats, and sidebar sections; collapse agent groups. |
 | Repères visuels / Visual cues | Agent et discussion active identifiables d'un regard, avec un repère discret. | Identify the agent and active chat at a glance with a subtle visual cue. |
 | Recherche / Search | Recherche dans le Hermes sélectionné, qu'il soit local ou distant. | Search within the selected Hermes instance, local or remote. |
 | Fil de discussion / Chat view | Messages de l'utilisateur et de l'agent mieux différenciés ; activité de l'agent consultable avec différents niveaux de détail. | Clearer distinction between user and agent messages; agent activity available at different detail levels. |
