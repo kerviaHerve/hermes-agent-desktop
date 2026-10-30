@@ -4,6 +4,12 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
+## Kervia 0.1.4 · Hermes source `5057eaa3a4d0cbef0e30078418a5115faa62889e`
+
+**FR** — Les sections de la barre latérale (Épinglées, Agents ou Sessions, plateformes de messagerie et tâches planifiées) peuvent être déplacées avec le menu discret de leur en-tête. Leur ordre est enregistré séparément pour chaque passerelle Hermes et conservé quand une section disparaît temporairement. La liste des agents garde une hauteur adaptée lorsqu'une section est placée après elle. Cette version intègre également les 30 commits Hermes suivants : formulaire unique pour les questions de clarification, indication plus juste lorsqu'un serveur de modèle local est arrêté, corrections des raccourcis et de la configuration distante. Les fonctionnalités dépendantes de la passerelle restent soumises à ses capacités.
+
+**EN** — Sidebar sections (Pinned, Agents or Sessions, messaging platforms, and scheduled jobs) can be moved through a discreet header menu. Their order is saved separately for each Hermes gateway and retained when a section is temporarily absent. The agent list keeps a suitable height when another section follows it. This version also integrates the next 30 Hermes commits: a single form for multi-question clarification, clearer feedback when a local model server is stopped, shortcut fixes, and remote configuration fixes. Gateway-dependent features remain subject to the connected gateway's capabilities.
+
 ## Kervia 0.1.3 · Hermes source `bff22bde93db8d9fd57b63ee1bcb47947ed04fd2`
 
 **FR** — Synchronise les 37 commits Hermes publiés depuis la base de Kervia 0.1.2. Le Desktop bénéficie des corrections de reconnexion, de stabilité de la connexion et de lecture des médias, ainsi que du signalement des notifications natives dans le Dock. Le code amont ajoute aussi l'arrêt et le rattrapage des tâches planifiées ; ces commandes ne s'affichent que si la passerelle les prend en charge. L'interface Kervia, le dossier de données séparé et le mécanisme de mise à jour restent conservés. La compilation vérifie désormais que le paquet contient bien l'interface Kervia. Le suivi de l'amont et l'application en branche locale sont reproductibles avec `scripts/kervia-sync-upstream.sh`.
