@@ -1,19 +1,34 @@
+<p align="center">
+  <img src="apps/desktop/assets/kervia/icon.png" alt="Logo Hermes Desktop · Kervia Edition, chevron Kervia" width="112">
+</p>
+
 # Hermes Desktop · Kervia Edition
 
-Un client macOS pour [Hermes Agent](https://github.com/NousResearch/hermes-agent), basé sur son code source MIT. Cette édition se concentre sur la lecture et l'organisation des conversations. Elle fonctionne avec une passerelle Hermes existante et **n'installe pas le moteur Hermes**.
+**FR** — Un client macOS pour [Hermes Agent](https://github.com/NousResearch/hermes-agent), basé sur son code source MIT. Cette édition améliore la lecture et l'organisation des conversations. Elle se connecte à une passerelle Hermes existante.
 
-### Ce que cette édition améliore
+**EN** — A macOS client for [Hermes Agent](https://github.com/NousResearch/hermes-agent), based on its MIT-licensed source. This edition improves how conversations are read and organized. It connects to an existing Hermes gateway.
 
-- Conversations regroupées par agent, avec un repère visuel pour l'agent et la discussion active, repli des groupes et réorganisation des agents et des discussions.
-- Recherche limitée au Hermes sélectionné, afin de garder les serveurs locaux et distants séparés.
-- Fil de discussion plus lisible : distinction entre vos messages et ceux de l'agent, activité de l'agent consultable selon le niveau de détail choisi.
-- Barre de saisie plus compacte, avec ses options Hermes conservées, ainsi que plusieurs hauteurs et largeurs de fil.
-- Habillage plus sobre, thèmes existants préservés, icône issue du chevron Kervia original.
-- Application indépendante de l'Hermes Desktop officiel : nom, identifiant macOS, données locales et [mises à jour](docs/KERVIA-RELEASE.md) séparés.
+## Fonctionnalités / Features
 
-Les projets, profils, paramètres et outils restent ceux d'Hermes. Les [versions macOS](https://github.com/kerviaHerve/hermes-agent-desktop/releases) ne comprennent que le client Desktop ; une passerelle Hermes compatible doit déjà être disponible. Le moteur et ses mises à jour restent gérés séparément. La préparation de Windows et Linux n'est pas encore validée.
+| Domaine / Area | Français | English |
+| --- | --- | --- |
+| Conversations | Discussions regroupées par agent ; agents et discussions réorganisables ; groupes repliables. | Chats grouped by agent; reorder agents and chats; collapse agent groups. |
+| Repères visuels / Visual cues | Agent et discussion active identifiables d'un regard, avec un repère discret. | Identify the agent and active chat at a glance with a subtle visual cue. |
+| Recherche / Search | Recherche dans le Hermes sélectionné, qu'il soit local ou distant. | Search within the selected Hermes instance, local or remote. |
+| Fil de discussion / Chat view | Messages de l'utilisateur et de l'agent mieux différenciés ; activité de l'agent consultable avec différents niveaux de détail. | Clearer distinction between user and agent messages; agent activity available at different detail levels. |
+| Saisie et affichage / Composer and layout | Options de saisie Hermes conservées ; hauteurs de saisie et largeurs de fil réglables, jusqu'à la pleine largeur. | Hermes composer options retained; adjustable composer height and chat width, including full width. |
+| Apparence / Appearance | Interface plus sobre, modes clair et sombre, thèmes Hermes conservés et chevron Kervia d'origine. | A refined interface, light and dark modes, existing Hermes themes, and the original Kervia chevron. |
+| Application séparée / Separate app | Nom, identifiant macOS et données locales propres à cette édition ; [circuit de mise à jour](docs/KERVIA-RELEASE.md) dédié. | Its own app name, macOS identifier, and local data; a dedicated [update path](docs/KERVIA-RELEASE.md). |
 
-Cette édition est maintenue par [Kervia](https://kervia.ch). Elle n'est pas une publication officielle de Nous Research. Le code d'origine, sa licence MIT et ses mentions sont conservés ci-dessous.
+**FR** — Les projets, profils, paramètres et outils Hermes restent disponibles. Cette édition distribue uniquement le client Desktop : elle requiert une passerelle Hermes compatible et n'installe pas le moteur. Les [versions macOS](https://github.com/kerviaHerve/hermes-agent-desktop/releases) seront publiées ici après signature. Windows et Linux ne sont pas encore validés.
+
+**EN** — Hermes projects, profiles, settings, and tools remain available. This edition distributes the Desktop client only: it requires a compatible Hermes gateway and does not install the agent engine. Signed [macOS releases](https://github.com/kerviaHerve/hermes-agent-desktop/releases) will appear here. Windows and Linux have not yet been validated.
+
+Maintenu par [Kervia](https://kervia.ch) / Maintained by [Kervia](https://kervia.ch). Cette édition est indépendante de Nous Research / This is an independent edition, not an official Nous Research release.
+
+## Projet d'origine / Upstream project
+
+Le README officiel d'Hermes Agent et ses mentions sont conservés ci-dessous. / The original Hermes Agent README and its notices follow below.
 
 ---
 
