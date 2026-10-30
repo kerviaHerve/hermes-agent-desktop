@@ -62,3 +62,15 @@ test('OS file-manager metadata landing in hashed trees never invalidates a recor
     rmSync(out, { recursive: true, force: true })
   }
 })
+
+test('Desktop renderer cache separates the stock and Kervia editions', async () => {
+  const { buildInputs } = await import('../scripts/build/freshness.mjs')
+  const source = fixture('freshness-edition-')
+  try {
+    const stock = buildInputs(source, 'desktop', {}, { KERVIA_DESKTOP_EDITION: '0' })
+    const kervia = buildInputs(source, 'desktop', {}, { KERVIA_DESKTOP_EDITION: '1' })
+    expect(stock.env).not.toEqual(kervia.env)
+  } finally {
+    rmSync(source, { recursive: true, force: true })
+  }
+})

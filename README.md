@@ -11,7 +11,7 @@
 
 **EN** — A macOS client for [Hermes Agent](https://github.com/NousResearch/hermes-agent), based on its MIT-licensed source. This edition improves how conversations are read and organized. It connects to an existing Hermes gateway.
 
-**Version 0.1.2** · Hermes source [`b1d7c5b`](https://github.com/NousResearch/hermes-agent/commit/b1d7c5b296d46f75d870583362640acc0cf8d6cb) · [Journal des changements / Changelog](CHANGELOG-KERVIA.md)
+**Version 0.1.3** · Hermes source [`2d2808e`](https://github.com/NousResearch/hermes-agent/commit/2d2808ee84549f9836b0056750265058e5488a8a) · [Journal des changements / Changelog](CHANGELOG-KERVIA.md)
 
 ## Fonctionnalités / Features
 

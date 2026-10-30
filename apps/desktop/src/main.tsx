@@ -46,6 +46,10 @@ import { ThemeProvider } from './themes/context'
 // Hermes F keeps its visual layer while using Hermes' palette and backend contracts.
 document.documentElement.dataset.herouiV2 = 'true'
 
+if (import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1') {
+  document.title = 'Hermes Desktop · Kervia Edition'
+}
+
 installClipboardShim()
 // Chromium serializes selection copies (Cmd+C, right-click Copy) with the
 // theme's computed colors inlined; without this guard a dark-theme selection

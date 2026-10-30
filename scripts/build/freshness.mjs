@@ -163,14 +163,14 @@ function stampClock(prepared = {}) {
   return identity ? (identity.builtAt ?? null) : null
 }
 
-// Vite inlines every VITE_* variable into the renderer and NODE_ENV selects its mode (and the React
-// Compiler's dev output), so a renderer is a function of these as much as of its sources: a
-// VITE_PERF_PROBE=1 build must never be reused or certified for a plain one. An unset NODE_ENV is
-// the production default vite's build() itself writes into process.env, so a build that started
-// without one still matches the receipt it records afterwards.
+// Vite inlines every VITE_* variable and the Kervia edition flag (via the
+// Desktop Vite config). NODE_ENV selects its mode and React Compiler output.
+// A renderer built for one edition must never be reused for another.
+// An unset NODE_ENV is the production default vite's build() itself writes
+// into process.env, so a build that started without one still matches its receipt.
 function rendererEnv(env) {
   return Object.entries({ ...env, NODE_ENV: env.NODE_ENV || 'production' })
-    .filter(([key]) => key === 'NODE_ENV' || key.startsWith('VITE_')).sort()
+    .filter(([key]) => key === 'NODE_ENV' || key === 'KERVIA_DESKTOP_EDITION' || key.startsWith('VITE_')).sort()
 }
 
 export function buildInputs(source, product, prepared = {}, env = process.env) {

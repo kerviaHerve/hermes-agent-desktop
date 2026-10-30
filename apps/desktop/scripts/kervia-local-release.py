@@ -113,6 +113,12 @@ def verify(version: str) -> None:
     if (stamp.get("dirty") or stamp.get("payload") != "light"
             or stamp.get("commit") != commit or stamp.get("displayVersion") != version):
         raise RuntimeError("Release stamp does not match the clean Desktop-only source")
+    receipt = app / "Contents/Resources/app.asar.unpacked/dist/hermes-build.json"
+    if not receipt.exists():
+        raise RuntimeError("Missing packaged renderer build receipt")
+    renderer_env = dict(json.loads(receipt.read_text())["inputs"]["env"])
+    if renderer_env.get("KERVIA_DESKTOP_EDITION") != "1":
+        raise RuntimeError("Packaged renderer is not the Kervia edition")
     feed = (release / "stable-mac.yml").read_text()
     if not feed.startswith(f"version: {version}\n"):
         raise RuntimeError("Update feed version does not match release")
