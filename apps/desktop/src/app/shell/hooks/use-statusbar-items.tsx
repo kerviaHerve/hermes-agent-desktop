@@ -79,6 +79,7 @@ import {
 } from '@/store/updates'
 import type { FreeTierStatus, StatusResponse, UsageStats } from '@/types/hermes'
 
+import kerviaChevron from '../../../../assets/kervia/chevron-original.svg'
 import { CRON_ROUTE, SETTINGS_ROUTE, WEBHOOKS_ROUTE } from '../../routes'
 import type { StatusbarItem } from '../statusbar-controls'
 
@@ -755,9 +756,10 @@ export function useStatusbarItems({
       },
       systemResourcesItem,
       {
-        className: 'opacity-60',
         id: 'fork-credit',
-        label: 'fork by kervia',
+        icon: <img alt="" className="h-3 w-2.5 shrink-0" src={kerviaChevron} />,
+        label: 'Hermes Desktop · Kervia Edition',
+        title: 'Hermes Desktop · Kervia Edition',
         variant: 'text'
       },
       {
