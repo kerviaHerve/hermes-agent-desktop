@@ -458,13 +458,15 @@ export function DesktopInstallOverlay({
             <BrandMark className="size-11 shrink-0" />
             <div className="min-w-0">
               <h2 className="text-xl font-semibold tracking-tight">{copy.setupChoiceTitle}</h2>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                {desktopOnly && localState === 'none'
-                  ? copy.connectExistingDesc
-                  : localState === 'none'
-                    ? copy.setupChoiceDesc
-                    : copy.setupChoiceDescLocal}
-              </p>
+              {(!desktopOnly || localState === 'none') && (
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                  {desktopOnly
+                    ? copy.connectExistingDesc
+                    : localState === 'none'
+                      ? copy.setupChoiceDesc
+                      : copy.setupChoiceDescLocal}
+                </p>
+              )}
             </div>
           </div>
 
