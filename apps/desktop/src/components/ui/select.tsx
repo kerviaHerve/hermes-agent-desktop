@@ -108,7 +108,7 @@ function SelectItem({ className, children, ...props }: React.ComponentProps<type
       data-slot="select-item"
       {...props}
     >
-      <span className="absolute right-2 flex size-3.5 items-center justify-center text-foreground">
+      <span className="absolute right-2 flex size-4 items-center justify-center text-foreground">
         <SelectPrimitive.ItemIndicator>
           <Codicon name="check" size="0.75rem" />
         </SelectPrimitive.ItemIndicator>

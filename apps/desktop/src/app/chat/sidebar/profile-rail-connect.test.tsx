@@ -4,10 +4,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { ProfileRail } from './profile-switcher'
 
-// The rail's discoverability pills are navigation, not identity — assert the
-// multi-gateway entry point deep-links to Settings → Connections instead of
-// relying on someone finding the pane three levels into Settings (the exact
-// gap reported against the multi-connection registry launch).
+// The rail's compact menu keeps its gateway entry point one click away from
+// the profile strip, without making it a permanent footer icon.
 
 const navigate = vi.fn()
 
@@ -106,8 +104,8 @@ describe('ProfileRail multi-gateway entry point', () => {
   it('deep-links to the unified Settings → Gateways page from the rail', () => {
     render(<ProfileRail />)
 
-    const pill = screen.getByRole('button', { name: 'Manage gateways…' })
-    fireEvent.click(pill)
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Manage profiles…' }), { button: 0, pointerType: 'mouse' })
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Manage gateways…' }))
 
     expect(navigate).toHaveBeenCalledWith('/settings?tab=gateway')
   })
@@ -115,10 +113,11 @@ describe('ProfileRail multi-gateway entry point', () => {
   it('keeps the entry point visible for single-profile users', () => {
     render(<ProfileRail />)
 
-    // The whole point is first-run discoverability: the pill must not be
-    // gated behind multiProfile the way the default↔all toggle is.
-    expect(screen.getByRole('button', { name: 'Manage gateways…' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'Manage profiles…' })).toBeTruthy()
+    // The menu must remain available with only the default profile.
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Manage profiles…' }), { button: 0, pointerType: 'mouse' })
+    expect(screen.getByRole('menuitem', { name: 'Manage gateways…' })).toBeTruthy()
+    expect(screen.getByRole('menuitem', { name: 'New profile' })).toBeTruthy()
+    expect(screen.getByRole('menuitem', { name: 'Import profile…' })).toBeTruthy()
   })
 
   it('keeps the active profile explicit when gateway identity moves to the statusbar', () => {
@@ -126,7 +125,8 @@ describe('ProfileRail multi-gateway entry point', () => {
     render(<ProfileRail />)
 
     expect(screen.getByRole('button', { name: 'default' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'Manage gateways…' })).toBeNull()
-    expect(screen.getByRole('button', { name: 'Manage profiles…' })).toBeTruthy()
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Manage profiles…' }), { button: 0, pointerType: 'mouse' })
+    expect(screen.queryByRole('menuitem', { name: 'Manage gateways…' })).toBeNull()
+    expect(screen.getByRole('menuitem', { name: 'Manage profiles…' })).toBeTruthy()
   })
 })

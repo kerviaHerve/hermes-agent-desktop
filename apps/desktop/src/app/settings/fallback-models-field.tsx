@@ -156,14 +156,14 @@ export function FallbackModelsField({
               size="icon-xs"
               variant="ghost"
             >
-              <X className="size-3.5" />
+              <X className="size-4" />
             </Button>
           </div>
         )
       })}
       <div>
         <Button onClick={() => commit([...rows, { provider: '', model: '' }])} size="sm" variant="textStrong">
-          <Plus className="size-3.5" />
+          <Plus className="size-4" />
           {m.fallbackAdd}
         </Button>
       </div>

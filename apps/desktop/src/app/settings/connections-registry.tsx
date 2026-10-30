@@ -600,7 +600,7 @@ export function ConnectionsRegistrySection() {
           containerClassName="mt-3 mb-0 w-full max-w-sm"
           onChange={event => updateSearchQuery(event.target.value)}
           placeholder={s.searchPlaceholder}
-          prefix={<SearchIcon className="size-3.5" />}
+          prefix={<SearchIcon className="size-4" />}
           ref={searchInputRef}
           size="sm"
           type="search"
@@ -659,7 +659,7 @@ export function ConnectionsRegistrySection() {
                         size="icon-sm"
                         variant="ghost"
                       >
-                        <Pencil className="size-3.5" />
+                        <Pencil className="size-4" />
                       </Button>
                       <Button
                         aria-label={s.removeConnection}
@@ -881,7 +881,7 @@ export function ConnectionsRegistrySection() {
             size="sm"
             variant="outline"
           >
-            <Plus className="size-3.5" /> {s.addConnection}
+            <Plus className="size-4" /> {s.addConnection}
           </Button>
           {bridge?.updateAll && (registry?.connections.length ?? 0) > 1 && (
             <Button

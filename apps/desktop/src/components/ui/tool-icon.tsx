@@ -44,7 +44,7 @@ export interface ToolIconProps {
 
 /** Filled tool glyph. Falls back to the outline codicon font for any name not
  *  covered by the solid set so new tools still render an icon. */
-export function ToolIcon({ className, name, size = '0.875rem' }: ToolIconProps) {
+export function ToolIcon({ className, name, size = '1rem' }: ToolIconProps) {
   const path = TOOL_ICON_PATHS[name]
 
   if (!path) {

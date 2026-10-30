@@ -135,7 +135,7 @@ function VersionStepper({
           onClick={() => onSelect(current - 1)}
           type="button"
         >
-          <ChevronLeft className="size-3" />
+          <ChevronLeft className="size-4" />
         </button>
       </Tip>
       <span className="text-[0.625rem] font-bold tabular-nums text-muted-foreground">
@@ -149,7 +149,7 @@ function VersionStepper({
           onClick={() => onSelect(current + 1)}
           type="button"
         >
-          <ChevronRight className="size-3" />
+          <ChevronRight className="size-4" />
         </button>
       </Tip>
       {current < total - 1 && (
@@ -221,7 +221,7 @@ export function ArtifactPreview({ onClose, target }: { onClose?: () => void; tar
             <CopyButton
               appearance="inline"
               className="h-5 px-1 opacity-70 hover:opacity-100"
-              iconClassName="size-3"
+              iconClassName="size-4"
               label={copy.copyContent}
               showLabel={false}
               text={version.content}
@@ -239,7 +239,7 @@ export function ArtifactPreview({ onClose, target }: { onClose?: () => void; tar
                 }
                 type="button"
               >
-                <Download className="size-3" />
+                <Download className="size-4" />
               </button>
             </Tip>
             {record.kind === 'html' && window.hermesDesktop && (
@@ -252,7 +252,7 @@ export function ArtifactPreview({ onClose, target }: { onClose?: () => void; tar
                   }
                   type="button"
                 >
-                  <ExternalLink className="size-3" />
+                  <ExternalLink className="size-4" />
                 </button>
               </Tip>
             )}

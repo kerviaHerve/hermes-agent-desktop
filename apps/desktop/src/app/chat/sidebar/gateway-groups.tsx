@@ -23,11 +23,14 @@ import { useContributions } from '@/contrib'
 import { ContribBoundary, ContribRender } from '@/contrib/react/boundary'
 import type { SessionInfo } from '@/hermes'
 import { useI18n } from '@/i18n'
+import { flattenSessionsWithBranches } from '@/lib/session-branch-tree'
 import { useStoreSelector } from '@/lib/use-session-slice'
 import { cn } from '@/lib/utils'
 import { $connectionsRegistry } from '@/store/connection-registry-state'
+import { $sidebarOrdering, setSidebarSessionOrderManual } from '@/store/layout'
 import { newSessionInAgent, newSessionInProfile } from '@/store/profile'
 import { $sessionProfilesUsage } from '@/store/session'
+import { $sidebarGroupSessionOrders, setSidebarGroupSessionOrder } from '@/store/sidebar-group-session-order'
 import { $sidebarSessionRankIds } from '@/store/sidebar-sort'
 
 import { SidebarGroupRow, SidebarRowGrab, SidebarRowLink, SidebarRowStack } from './chrome'
@@ -40,7 +43,7 @@ import {
   reorderGatewayGroups,
   toggleGatewayGroup
 } from './gateway-group-preferences'
-import { rankSessions } from './order'
+import { mergeVisibleReorder, orderByIds, rankSessions } from './order'
 import { SIDEBAR_GROUP_PAGE } from './projects/model'
 import type { SidebarSessionGroup } from './projects/workspace-groups'
 import { WorkspaceAddButton, WorkspaceShowMoreButton } from './projects/workspace-header'
@@ -48,7 +51,7 @@ import { ReorderableList, shellOwnsPress, useSortableBindings } from './reordera
 
 interface GatewayProfileGroupsProps {
   groups: SidebarSessionGroup[]
-  renderRows: (sessions: SessionInfo[]) => ReactNode
+  renderRows: (sessions: SessionInfo[], onReorder?: (ids: string[]) => void) => ReactNode
   sensors?: ReturnType<typeof useSensors>
   onNewSessionSplit?: NewSessionSplitHandler
   nested?: boolean
@@ -138,7 +141,7 @@ export function GatewayProfileGroups({
 
 interface GatewayProfileGroupProps {
   group: SidebarSessionGroup
-  renderRows: (sessions: SessionInfo[]) => ReactNode
+  renderRows: (sessions: SessionInfo[], onReorder?: (ids: string[]) => void) => ReactNode
   onMove: (direction: 1 | -1) => void
   onNewSessionSplit?: NewSessionSplitHandler
   first: boolean
@@ -163,6 +166,8 @@ function GatewayProfileGroup({
   const aliases = useStore($gatewayGroupAliases)
   const collapsed = useStore($gatewayGroupCollapsed)
   const rankIds = useStore($sidebarSessionRankIds)
+  const ordering = useStore($sidebarOrdering)
+  const groupOrders = useStore($sidebarGroupSessionOrders)
 
   const usage = useStoreSelector($sessionProfilesUsage, all =>
     showsProfileTotals(group.connectionId, embedded) ? all[group.profile!] : undefined
@@ -174,9 +179,24 @@ function GatewayProfileGroup({
   const sortable = useSortableBindings(group.id)
   const label = aliases[group.id] || group.label
   const open = !collapsed.includes(group.id)
-  const sessions = rankSessions(group.sessions, rankIds)
+  const rankedSessions = rankSessions(group.sessions, rankIds)
+
+  const sessions =
+    ordering === 'manual'
+      ? orderByIds(rankedSessions, session => session.id, groupOrders[group.id] ?? [])
+      : rankedSessions
+
   const hiddenCount = embedded ? 0 : Math.max(0, sessions.length - visibleCount)
   const route = group.connectionId ? { connectionId: group.connectionId, profile: group.profile! } : undefined
+
+  const reorderSessions = (ids: string[]) => {
+    const allIds = flattenSessionsWithBranches(sessions, { preserveOrder: true })
+      .filter(entry => !entry.branchStem)
+      .map(entry => entry.session.id)
+
+    setSidebarGroupSessionOrder(group.id, mergeVisibleReorder(allIds, ids))
+    setSidebarSessionOrderManual(true)
+  }
 
   const startSession = () => {
     if (!open) {
@@ -194,9 +214,10 @@ function GatewayProfileGroup({
 
   return (
     <SidebarRowStack
-      className={cn(sortable.dragging && 'relative z-10')}
+      className={cn(!embedded && 'mt-1', sortable.dragging && 'relative z-10', sortable.dropPosition && 'relative')}
       data-gateway-group={group.profile ? group.id : undefined}
       data-gateway-section={!group.profile ? group.id : undefined}
+      data-reorder-target={sortable.dropPosition}
       ref={sortable.ref}
       style={sortable.style}
     >
@@ -313,6 +334,7 @@ function GatewayProfileGroup({
           ) : null}
           <ProfileGroupRows
             emptyLabel={s.noSessions}
+            onReorder={group.profile && !embedded ? reorderSessions : undefined}
             profile={group.profile}
             renderRows={renderRows}
             sessions={embedded ? sessions : sessions.slice(0, visibleCount)}
@@ -408,13 +430,14 @@ function ProfileGroupHeaderItem({
 interface ProfileGroupRowsProps {
   profile?: string
   sessions: SessionInfo[]
-  renderRows: (sessions: SessionInfo[]) => ReactNode
+  renderRows: (sessions: SessionInfo[], onReorder?: (ids: string[]) => void) => ReactNode
+  onReorder?: (ids: string[]) => void
   emptyLabel: string
 }
 
 // A profile with no chats keeps its section: a muted line under the header says so. A gateway
 // section holds its profiles as children, not rows, so it never shows the line.
-function ProfileGroupRows({ profile, sessions, renderRows, emptyLabel }: ProfileGroupRowsProps) {
+function ProfileGroupRows({ profile, sessions, renderRows, onReorder, emptyLabel }: ProfileGroupRowsProps) {
   if (!sessions.length && profile) {
     return (
       <div className="px-2 py-1 text-xs text-(--ui-text-tertiary)" data-gateway-group-empty>
@@ -423,5 +446,5 @@ function ProfileGroupRows({ profile, sessions, renderRows, emptyLabel }: Profile
     )
   }
 
-  return <>{renderRows(sessions)}</>
+  return <div data-agent-session-rail="">{renderRows(sessions, onReorder)}</div>
 }

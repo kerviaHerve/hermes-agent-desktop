@@ -136,7 +136,7 @@ export function McpInstallDeepLinkDialog() {
         <div className="flex flex-col gap-3">
           {request.transport === 'stdio' && (
             <div className="flex items-start gap-2 rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-              <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" />
               <span>{m.deepLinkStdioWarning}</span>
             </div>
           )}
@@ -160,7 +160,7 @@ export function McpInstallDeepLinkDialog() {
 
           {error && (
             <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
-              <AlertTriangle className="mt-0.5 size-3.5 shrink-0" />
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}

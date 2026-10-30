@@ -190,7 +190,7 @@ function ArchivedSessionsSettings({ includeDefaultDirectory }: { includeDefaultD
                         type="button"
                         variant="textStrong"
                       >
-                        {busy ? <Loader2 className="size-3.5 animate-spin" /> : <ArchiveOff className="size-3.5" />}
+                        {busy ? <Loader2 className="size-4 animate-spin" /> : <ArchiveOff className="size-4" />}
                         <span>{s.unarchive}</span>
                       </Button>
                       <Tip label={s.deletePermanently}>
@@ -203,7 +203,7 @@ function ArchivedSessionsSettings({ includeDefaultDirectory }: { includeDefaultD
                           type="button"
                           variant="ghost"
                         >
-                          <Trash2 className="size-3.5" />
+                          <Trash2 className="size-4" />
                         </Button>
                       </Tip>
                     </div>
@@ -443,7 +443,7 @@ function DefaultProjectDirSetting() {
         action={
           <div className="flex items-center gap-3">
             <Button disabled={busy} onClick={() => void choose()} size="sm" type="button" variant="textStrong">
-              <FolderOpen className="size-3.5" />
+              <FolderOpen className="size-4" />
               <span>{dir ? s.change : s.choose}</span>
             </Button>
             {dir && (

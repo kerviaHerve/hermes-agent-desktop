@@ -52,7 +52,7 @@ export function CurrentPlanCard({ onViewPlans, plan }: { onViewPlans: () => void
           {plan.link && (
             <Button onClick={() => plan.link && openExternal(plan.link.url)} size="sm" type="button" variant="outline">
               {plan.link.label}
-              <ExternalLink className="size-3.5" />
+              <ExternalLink className="size-4" />
             </Button>
           )}
         </div>

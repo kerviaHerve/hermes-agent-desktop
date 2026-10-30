@@ -4,6 +4,7 @@ import { createContext, memo, useCallback, useContext, useMemo, useRef, useState
 import { ChatEmptySlot } from '@/components/assistant-ui/chat-empty-slot'
 import { AssistantMessage } from '@/components/assistant-ui/thread/assistant-message'
 import { ThreadMessageList } from '@/components/assistant-ui/thread/list'
+import { ResponseAgentProfileContext } from '@/components/assistant-ui/thread/response-group'
 import { BackgroundResumeNotice, CenteredThreadSpinner } from '@/components/assistant-ui/thread/status'
 import { SystemMessage } from '@/components/assistant-ui/thread/system-message'
 import { ThreadTimeline } from '@/components/assistant-ui/thread/timeline'
@@ -17,6 +18,9 @@ import type { HermesGateway } from '@/hermes'
 import { useI18n } from '@/i18n'
 import { $webappSignedOut } from '@/store/boot'
 import { notifyError } from '@/store/notifications'
+import { isSessionOwnerRoute } from '@/store/session-request-router'
+import { knownOwnerForSession } from '@/store/session-states'
+import { $threadLayout } from '@/store/thread-layout'
 
 type ThreadLoadingState = 'response' | 'session'
 
@@ -78,6 +82,7 @@ export const Thread = memo(function Thread({
   // A signed-out Webapp tab keeps no conversation on the page under its sign-in view; the
   // messages mount again from the session once the tab signs back in.
   const signedOut = useStore($webappSignedOut)
+  const threadLayout = useStore($threadLayout)
 
   if (isHistorical) {
     onBranchInNewChat = undefined
@@ -182,39 +187,44 @@ export const Thread = memo(function Thread({
   // into the switch's render pass. It takes no props, so one element is
   // always correct.
   const loadingIndicator = useMemo(() => <BackgroundResumeNotice />, [])
+  const owner = knownOwnerForSession(sessionId) ?? knownOwnerForSession(sessionKey)
+  const agentProfile = isSessionOwnerRoute(owner) ? owner.profile : typeof owner === 'string' ? owner : scrollProfile
 
   return (
-    <ThreadEditContext.Provider value={editContext}>
-      <div
-        className="relative grid h-full min-h-0 max-w-full grid-rows-[minmax(0,1fr)] overflow-hidden bg-transparent contain-[layout_paint]"
-        data-slot="thread"
-      >
-        {!signedOut && (
-          <>
-            <ThreadMessageList
-              clampToComposer={clampToComposer}
-              components={messageComponents}
-              emptyPlaceholder={emptyPlaceholder}
-              loadingIndicator={loadingIndicator}
-              scrollProfile={scrollProfile}
-              sessionId={sessionId}
-              sessionKey={sessionKey}
-              sessionLoading={loading === 'session'}
-            />
-            {loading === 'session' && <CenteredThreadSpinner />}
-            <ThreadTimeline />
-          </>
-        )}
-        <ConfirmDialog
-          confirmLabel={copy.restoreConfirm}
-          description={copy.restoreBody}
-          destructive
-          onClose={closeRestoreConfirm}
-          onConfirm={confirmRestore}
-          open={Boolean(restoreConfirmTarget)}
-          title={copy.restoreTitle}
-        />
-      </div>
-    </ThreadEditContext.Provider>
+    <ResponseAgentProfileContext.Provider value={agentProfile ?? null}>
+      <ThreadEditContext.Provider value={editContext}>
+        <div
+          className="relative grid h-full min-h-0 max-w-full grid-rows-[minmax(0,1fr)] overflow-hidden bg-transparent contain-[layout_paint]"
+          data-slot="thread"
+          data-thread-layout={threadLayout}
+        >
+          {!signedOut && (
+            <>
+              <ThreadMessageList
+                clampToComposer={clampToComposer}
+                components={messageComponents}
+                emptyPlaceholder={emptyPlaceholder}
+                loadingIndicator={loadingIndicator}
+                scrollProfile={scrollProfile}
+                sessionId={sessionId}
+                sessionKey={sessionKey}
+                sessionLoading={loading === 'session'}
+              />
+              {loading === 'session' && <CenteredThreadSpinner />}
+              <ThreadTimeline />
+            </>
+          )}
+          <ConfirmDialog
+            confirmLabel={copy.restoreConfirm}
+            description={copy.restoreBody}
+            destructive
+            onClose={closeRestoreConfirm}
+            onConfirm={confirmRestore}
+            open={Boolean(restoreConfirmTarget)}
+            title={copy.restoreTitle}
+          />
+        </div>
+      </ThreadEditContext.Provider>
+    </ResponseAgentProfileContext.Provider>
   )
 })

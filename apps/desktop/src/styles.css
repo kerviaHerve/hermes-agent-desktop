@@ -1,10 +1,12 @@
-@import 'tailwindcss';
+/* HeroUI v3 includes Tailwind. Keep a single Tailwind import and let Hermes'
+   own theme variables below remain the source of truth for the Desktop. */
+@import '@heroui/styles';
 @plugin '@tailwindcss/typography';
 @import 'tw-shimmer';
 @import 'katex/dist/katex.min.css';
 @import '@vscode/codicons/dist/codicon.css';
 
-/* Titlebar clusters: 24×24 hit targets, 13.9px glyphs. codicon.css is
+/* Titlebar clusters: 24×24 hit targets, 16px glyphs. codicon.css is
    unlayered (`font: 16px/1`); Tailwind utilities in @layer lose that fight. */
 .titlebar-icon-button .codicon[class*='codicon-'] {
   font-size: var(--titlebar-icon-size);
@@ -539,7 +541,7 @@
     --sticky-human-top: 0.23rem;
     --file-tree-row-height: 1.375rem;
 
-    --composer-width: 100%;
+    --composer-width: 48rem;
     --composer-control-size: 1.5rem;
     --composer-control-primary-size: 1.625rem;
     --composer-voice-menu-size: 1.25rem;
@@ -575,7 +577,7 @@
     --chat-min-width: 28rem;
     --titlebar-control-size: 24px;
     --titlebar-control-height: 24px;
-    --titlebar-icon-size: 13.9px;
+    --titlebar-icon-size: 16px;
     --sidebar-content-inline-padding: 1rem;
 
     --sidebar: var(--dt-sidebar-bg);
@@ -592,6 +594,20 @@
     --midground: var(--dt-midground);
     --background: var(--dt-background);
     --foreground: var(--dt-foreground);
+
+    /* HeroUI controls follow the currently selected Hermes palette. These
+       aliases are evaluated at render time, including custom and light themes. */
+    --accent: var(--dt-primary);
+    --accent-foreground: var(--dt-primary-foreground);
+    --accent-hover: color-mix(in srgb, var(--dt-primary) 88%, var(--dt-foreground));
+    --default: var(--ui-bg-quaternary);
+    --default-hover: var(--ui-control-hover-background);
+    --default-foreground: var(--ui-text-primary);
+    --overlay: var(--dt-popover);
+    --overlay-foreground: var(--dt-popover-foreground);
+    --focus: var(--dt-ring);
+    --danger: var(--dt-destructive);
+    --danger-foreground: var(--dt-destructive-foreground);
 
     --warm-glow: color-mix(in srgb, var(--ui-warm) 32%, color-mix(in srgb, var(--ui-accent) 6%, transparent));
     /* `--noise-opacity-mul` is set per-mode by `applyTheme()`. */
@@ -1125,6 +1141,99 @@
     background-color: var(--ui-row-hover-background);
     transition: none;
   }
+}
+
+/* A quiet thread through one agent's conversations. Each row paints its own
+   segment so selected-row fills cannot mask the line. The status dot remains
+   above it and retains semantic colors while a turn is running or blocked. */
+html[data-hermes-theme='citron'] {
+  --theme-stroke-primary-accent-mix: 5%;
+  --theme-stroke-secondary-accent-mix: 3%;
+  --theme-stroke-tertiary-accent-mix: 0%;
+  --theme-stroke-quaternary-accent-mix: 0%;
+}
+
+html[data-hermes-theme='citron'] [data-sidebar-primary-nav] [data-tour='sidebar-nav-new-session'] {
+  justify-content: flex-start;
+  background: transparent;
+  color: var(--theme-primary);
+}
+
+html[data-hermes-theme='citron'] [data-sidebar-primary-nav] [data-tour='sidebar-nav-new-session']:hover {
+  background: color-mix(in srgb, var(--theme-primary) 7%, transparent);
+  color: var(--theme-primary);
+}
+
+[data-agent-session-rail] [data-sidebar-session-row]::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: 0.9375rem;
+  width: 1px;
+  background: var(--ui-stroke-tertiary);
+  pointer-events: none;
+}
+
+[data-sidebar-session-row][data-selected='true'] [data-dot-state='idle'] > span:last-child {
+  background: var(--theme-primary) !important;
+  animation: selected-session-pulse 2.4s ease-in-out infinite;
+}
+
+html[data-hermes-theme='citron'] [data-sidebar-session-row][data-selected='true'] [data-dot-state='idle'] > span:last-child {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-primary) 20%, transparent);
+  animation: selected-session-halo 2.8s ease-in-out infinite;
+}
+
+html[data-hermes-theme='citron'] [data-agent-session-rail] [data-sidebar-session-row][data-selected='true'] {
+  background: transparent;
+}
+
+html[data-hermes-theme='citron'] [data-agent-session-rail] [data-sidebar-session-row][data-selected='true'] .hover-marquee-inner {
+  color: var(--theme-primary);
+  font-weight: 600;
+}
+
+@keyframes selected-session-pulse {
+  50% {
+    opacity: 0.68;
+  }
+}
+
+@keyframes selected-session-halo {
+  50% {
+    box-shadow:
+      0 0 0 5px color-mix(in srgb, var(--theme-primary) 17%, transparent),
+      0 0 9px color-mix(in srgb, var(--theme-primary) 23%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-sidebar-session-row][data-selected='true'] [data-dot-state='idle'] > span:last-child {
+    animation: none;
+  }
+}
+
+/* The insertion point stays visible while either an agent group or a
+   conversation is moved. The rows themselves still use dnd-kit's Y motion. */
+[data-reorder-target]::after {
+  content: '';
+  position: absolute;
+  z-index: 20;
+  right: 0.25rem;
+  left: 0.25rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--theme-primary);
+  pointer-events: none;
+}
+
+[data-reorder-target='before']::after {
+  top: -1px;
+}
+
+[data-reorder-target='after']::after {
+  bottom: -1px;
 }
 
 /* Pure-CSS edge fade for a scroller (FadeScroll). From each edge inward the
@@ -1843,7 +1952,9 @@ body.guest-pointer-lock :is(webview, iframe) {
    text-left. direction is never set, so chrome/layout/list-indent stay LTR (the
    issue asks not to flip the whole UI). Covers assistant prose, user lines, and
    both composers (main + edit share composer-rich-input). */
-[data-slot='aui_assistant-message-content'] .aui-md :where(p, [data-tool-media-paragraph], h1, h2, h3, h4, h5, h6, li, blockquote),
+[data-slot='aui_assistant-message-content']
+  .aui-md
+  :where(p, [data-tool-media-paragraph], h1, h2, h3, h4, h5, h6, li, blockquote),
 [data-slot='aui_user-inline-text'],
 [data-slot='composer-rich-input'] {
   unicode-bidi: plaintext;
@@ -1871,7 +1982,9 @@ body.guest-pointer-lock :is(webview, iframe) {
    every block takes the chosen direction (every line of a multi-line draft
    included). Auto stamps no dir, so nothing here matches. Code and KaTeX keep
    their isolated-LTR rules below. */
-[data-slot='aui_assistant-message-content'] .aui-md[dir] :where(p, [data-tool-media-paragraph], h1, h2, h3, h4, h5, h6, li, blockquote),
+[data-slot='aui_assistant-message-content']
+  .aui-md[dir]
+  :where(p, [data-tool-media-paragraph], h1, h2, h3, h4, h5, h6, li, blockquote),
 [data-slot='aui_user-inline-text'][dir],
 [data-slot='composer-rich-input'][dir] {
   unicode-bidi: normal;
@@ -1964,6 +2077,63 @@ body.guest-pointer-lock :is(webview, iframe) {
 [data-slot='aui_thread-content'] {
   max-width: var(--composer-width);
   padding-inline: 1.5rem;
+}
+
+/* One reading-width preference drives the transcript and its docked composer.
+   Existing min() caps keep both usable inside narrow panes. */
+[data-chat-surface][data-thread-width='focused'] {
+  --composer-width: 40rem;
+}
+
+[data-chat-surface][data-thread-width='balanced'] {
+  --composer-width: 48rem;
+}
+
+[data-chat-surface][data-thread-width='wide'] {
+  --composer-width: 56rem;
+}
+
+[data-chat-surface][data-thread-width='full'] {
+  --composer-width: 100%;
+}
+
+/* One restrained radius for the main conversation surfaces. Smaller action
+   buttons keep their own tighter radius so the hierarchy remains legible. */
+[data-slot='thread'][data-thread-layout],
+[data-slot='composer-root'][data-desktop-layout] {
+  --conversation-surface-radius: 0.875rem;
+}
+
+/* The two conversation layouts share the same renderer and reading column.
+   Keep media inside that column so an image cannot dominate a wide display. */
+[data-slot='thread'][data-thread-layout] {
+  --image-preview-max-width: 34rem;
+  --image-preview-height: clamp(15rem, calc(var(--vsq) * 90), 22rem);
+  --thread-viewport-height: max(0rem, calc(100% - var(--composer-measured-height) - 0.5rem));
+  --thread-last-message-clearance: 1rem;
+}
+
+[data-slot='thread'][data-thread-layout] .composer-human-message,
+[data-slot='thread'][data-thread-layout] [data-slot='aui_zoomable-image'] img {
+  border-radius: var(--conversation-surface-radius);
+}
+
+[data-thread-layout='editorial'] [data-slot='aui_user-message-root'] .composer-human-message {
+  width: 100%;
+  max-width: 100%;
+  margin-left: 0;
+}
+
+[data-thread-layout='editorial'] [data-slot='aui_user-role-label'] {
+  justify-content: flex-start;
+}
+
+[data-thread-layout='dialogue'] [data-slot='aui_user-message-root'] .composer-human-message {
+  max-width: min(70%, 26rem);
+}
+
+[data-thread-layout='dialogue'] [data-slot='aui_response-group'] [data-slot='aui_assistant-message-content'] {
+  border-left: 1px solid var(--ui-stroke-tertiary);
 }
 
 [data-slot='aui_intro'] {
@@ -2145,8 +2315,127 @@ body.guest-pointer-lock :is(webview, iframe) {
   font-size: var(--conversation-text-font-size);
 }
 
+/* Keep the existing editor and controls; only its resting height changes. */
+[data-slot='composer-root']:not([data-popped-out])[data-height-mode='comfort'] [data-slot='composer-rich-input'] {
+  min-height: 5rem;
+}
+
+[data-slot='composer-root']:not([data-popped-out])[data-height-mode='expanded'] [data-slot='composer-rich-input'] {
+  min-height: 8.5rem;
+}
+
 [data-slot='composer-rich-input']:is(:empty, [data-empty])::before {
   color: var(--ui-text-tertiary) !important;
+}
+
+/* Docked Desktop composer only. The citron palette follows the approved
+   visual mockup exactly; other themes keep their own live palette. */
+[data-slot='composer-root'][data-desktop-layout] {
+  border-radius: var(--conversation-surface-radius);
+  --composer-fill: color-mix(in srgb, var(--dt-card) 97%, var(--theme-primary) 3%);
+  --composer-action-bg: var(--dt-primary-solid);
+  --composer-action-fg: var(--dt-primary-solid-foreground);
+  --composer-line: var(--ui-stroke-secondary);
+  --composer-lemon: var(--theme-primary);
+  --composer-control-size: 1.5rem;
+  --composer-control-primary-size: 1.8125rem;
+  --composer-control-gap: 0.375rem;
+  --composer-row-gap: 0.25rem;
+  --composer-surface-pad-x: 0.75rem;
+  --composer-surface-pad-y: 0.3125rem;
+}
+
+html[data-hermes-theme='citron'] [data-slot='composer-root'][data-desktop-layout] {
+  --composer-fill: #fff;
+  --composer-action-bg: #6e7f00;
+  --composer-action-fg: #fff;
+  --composer-line: #d6ddd2;
+  --composer-lemon: #6e7f00;
+}
+
+html.dark[data-hermes-theme='citron'] [data-slot='composer-root'][data-desktop-layout] {
+  --composer-fill: #252a25;
+  --composer-action-bg: #d8f424;
+  --composer-action-fg: #172000;
+  --composer-line: #363d36;
+  --composer-lemon: #d8f424;
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-chrome'] {
+  padding: 0 0.25rem 0.25rem;
+  font-size: 0.75rem;
+  transition: opacity 200ms ease-out;
+}
+
+[data-slot='composer-root'][data-desktop-layout][data-thread-scrolled-up] [data-slot='composer-chrome'] {
+  opacity: 0.3;
+}
+
+[data-slot='composer-dock']:is(:hover, :focus-within) [data-slot='composer-root'][data-desktop-layout] [data-slot='composer-chrome'] {
+  opacity: 1;
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-display-controls'] {
+  border: 0;
+  background: transparent;
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-surface'] {
+  border-radius: var(--conversation-surface-radius);
+  border-color: var(--composer-line) !important;
+  background: var(--composer-fill);
+  box-shadow: 0 0.625rem 1.75rem color-mix(in srgb, #000 7%, transparent);
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-rich-input'] {
+  min-height: 2rem;
+  padding-left: 0.25rem;
+  padding-top: 0.375rem;
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-model-controls'] {
+  color: var(--ui-text-primary);
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-model-controls'] > button {
+  color: var(--ui-text-primary);
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-add'] {
+  color: var(--composer-lemon);
+  font-weight: 500;
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-status-dot'] {
+  background: var(--composer-lemon);
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-send'] {
+  border-radius: 0.625rem;
+  background: var(--composer-action-bg);
+  color: var(--composer-action-fg);
+  transition:
+    background-color 140ms ease,
+    transform 140ms ease,
+    opacity 140ms ease;
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-send']:not(:disabled):hover {
+  background: var(--composer-action-bg);
+  transform: translateY(-1px);
+}
+
+[data-slot='composer-root'][data-desktop-layout] [data-slot='composer-send']:disabled {
+  background: var(--composer-action-bg);
+  color: var(--composer-action-fg);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot='composer-root'][data-desktop-layout] [data-slot='composer-send'],
+  [data-slot='composer-root'][data-desktop-layout] [data-slot='composer-chrome'] {
+    transition: none;
+  }
 }
 
 /* ── Composer fill — ONE var painted by the surface AND anything docked to it
@@ -2513,28 +2802,6 @@ button[data-slot='aui_msg-reactions']:not([data-reacted]):focus-visible,
 button[data-slot='aui_msg-reactions']:not([data-reacted])[data-state='open'] {
   opacity: 0.5;
   pointer-events: auto;
-}
-
-/* Failed-turn error card actions (Retry · Switch provider · Open logs ·
-   Copy diagnostics) — compact pill buttons tinted to the card's destructive
-   palette. Stylesheet-owned so the CopyButton inline appearance picks the
-   same look via the shared class. */
-.aui-error-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  border: 1px solid color-mix(in srgb, var(--dt-destructive) 30%, transparent);
-  border-radius: 9999px;
-  background: transparent;
-  padding: 0.1rem 0.55rem;
-  font-size: 0.72rem;
-  line-height: 1.1rem;
-  color: color-mix(in srgb, var(--dt-destructive) 80%, var(--ui-text-secondary));
-  cursor: pointer;
-}
-
-.aui-error-action:hover {
-  background: color-mix(in srgb, var(--dt-destructive) 10%, transparent);
 }
 
 .group:hover button[data-slot='aui_msg-reactions']:not([data-reacted]):hover,
@@ -3475,6 +3742,11 @@ button[data-slot='aui_msg-reactions'] svg {
   position: static !important;
 }
 
+/* HUD keeps its compact two-ink transcript rather than the desktop role labels. */
+[data-hud-shell] :is([data-slot='aui_user-role-label'], [data-slot='aui_response-agent-label']) {
+  display: none;
+}
+
 /* User bubbles: the ONE thing in the band that paints its own opaque fill
    (bg-(--dt-user-bubble) on USER_BUBBLE_BASE_CLASS), so it survives every
    fade the band applies to its own background and reads as a solid card
@@ -3485,6 +3757,8 @@ button[data-slot='aui_msg-reactions'] svg {
        the fill is right.
    Fill and border both ride the same variable, so they cannot desync. */
 [data-hud-shell] .composer-human-message {
+  width: 100%;
+  max-width: 100%;
   background: var(--hud-bubble-fill) !important;
   border-color: var(--hud-bubble-stroke) !important;
   backdrop-filter: none !important;
@@ -3990,4 +4264,384 @@ html[data-hermes-desktop-host='browser'] [data-slot='sidebar-container'] {
    author `!important` rule beats the widget's inline non-important style. */
 [data-pane-hidden] * {
   visibility: inherit !important;
+}
+
+/* HeroUI V2: a separate visual layer over the same Hermes interactions and
+   theme tokens. The V1 checkout does not load this stylesheet. */
+html[data-heroui-v2='true'] [data-tour='sessions-sidebar'] {
+  background: var(--ui-sidebar-surface-background);
+}
+
+html[data-heroui-v2='true'] [data-sidebar-primary-nav] {
+  row-gap: 0.5rem;
+}
+
+html[data-heroui-v2='true'] [data-sidebar-context] {
+  height: 2.25rem;
+  gap: 0.5rem;
+  padding-inline: 0.625rem;
+  border: 1px solid var(--ui-stroke-tertiary);
+  border-radius: 0.875rem;
+  background: color-mix(in srgb, var(--ui-text-primary) 3%, var(--ui-sidebar-surface-background));
+}
+
+html[data-heroui-v2='true'] [data-sidebar-primary-nav] > :first-child {
+  margin-right: -1.25rem;
+}
+
+html[data-heroui-v2='true'] [data-sidebar-primary-nav] [data-tour='sidebar-nav-new-session'] {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid transparent;
+  border-radius: 0.625rem;
+  background: transparent;
+  color: var(--theme-primary);
+  transition: background-color 140ms ease;
+}
+
+html[data-heroui-v2='true'] [data-sidebar-primary-nav] [data-tour='sidebar-nav-new-session']:hover {
+  background: transparent;
+  color: var(--theme-primary);
+  opacity: 0.75;
+}
+
+html[data-heroui-v2='true'] .heroui-v2-search input {
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--ui-text-primary) 4%, var(--ui-sidebar-surface-background));
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+html[data-heroui-v2='true'] .heroui-v2-search input:focus {
+  border-color: color-mix(in srgb, var(--theme-primary) 42%, var(--ui-stroke-secondary));
+  outline: none;
+}
+
+html[data-heroui-v2='true'] [data-sidebar-nav-tabs] > [role='group'] {
+  gap: 0.125rem;
+  padding: 0.1875rem;
+  border: 1px solid var(--ui-stroke-tertiary);
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--ui-text-primary) 3%, var(--ui-sidebar-surface-background));
+}
+
+html[data-heroui-v2='true'] [data-sidebar-nav-tabs] button {
+  height: 2rem;
+  border: 0;
+  border-radius: 0.55rem;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+html[data-heroui-v2='true'] [data-sidebar-nav-tabs] button[aria-pressed='true'] {
+  background: color-mix(in srgb, var(--theme-primary) 12%, var(--ui-sidebar-surface-background));
+  color: var(--ui-text-primary);
+}
+
+html[data-heroui-v2='true'] [data-sidebar-session-row] {
+  border-radius: 0.65rem;
+  transition: background-color 140ms ease;
+}
+
+html[data-heroui-v2='true'] [data-sidebar-session-row]:hover {
+  background: color-mix(in srgb, var(--theme-primary) 6%, var(--ui-control-hover-background));
+}
+
+html[data-heroui-v2='true'] [data-agent-session-rail] [data-sidebar-session-row][data-selected='true'] {
+  background: color-mix(in srgb, var(--theme-primary) 8%, var(--ui-sidebar-surface-background));
+}
+
+html[data-heroui-v2='true'] [data-slot='composer-root'][data-desktop-layout] {
+  --conversation-surface-radius: 1.125rem;
+  --composer-fill: color-mix(in srgb, var(--ui-text-primary) 4%, var(--ui-chat-surface-background));
+  --composer-line: color-mix(in srgb, var(--theme-primary) 17%, var(--ui-stroke-secondary));
+}
+
+html[data-heroui-v2='true'] [data-slot='composer-root'][data-desktop-layout] [data-slot='composer-surface'] {
+  box-shadow: 0 0.85rem 2rem color-mix(in srgb, #000 10%, transparent);
+}
+
+html[data-heroui-v2='true'] [data-slot='thread'][data-thread-layout] .composer-human-message {
+  background: color-mix(in srgb, var(--ui-text-primary) 5%, var(--ui-chat-surface-background));
+  border: 1px solid color-mix(in srgb, var(--theme-primary) 20%, var(--ui-stroke-secondary));
+}
+
+html[data-heroui-v2='true'] [data-slot='thread'][data-thread-layout] [data-slot='aui_assistant-message-content'] {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--ui-stroke-tertiary);
+  border-left: 2px solid color-mix(in srgb, var(--theme-primary) 37%, transparent);
+  border-radius: 0.875rem;
+  background: color-mix(in srgb, var(--ui-text-primary) 2%, var(--ui-chat-surface-background));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-heroui-v2='true'] [data-sidebar-primary-nav] [data-tour='sidebar-nav-new-session'],
+  html[data-heroui-v2='true'] [data-sidebar-nav-tabs] button,
+  html[data-heroui-v2='true'] [data-sidebar-session-row] {
+    transition: none;
+  }
+}
+
+/* ── Error card (Error System Overhaul · Figma "Error handling", node 222:7762) ──
+ * One layout for every severity; severity only changes the tint and the icon colour.
+ * blocking: rust tint + rust icon. degraded: white card + muted icon + dismiss. */
+.aui-error-card {
+  /* Theme tokens, so light, dark and custom skins all follow. Blocking tints with the
+     app's destructive colour. */
+  --err-ink: var(--ui-text-primary);
+  --err-ink-muted: var(--ui-text-tertiary);
+  --err-action: var(--ui-accent-secondary);
+  --err-alert: var(--dt-destructive);
+  position: relative;
+  margin-top: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 640px;
+  overflow: clip;
+  border: 1px solid var(--ui-stroke-tertiary);
+  border-radius: 8px;
+  background: var(--ui-bg-card);
+  padding: 16px;
+  color: var(--err-ink);
+  font-size: 13px;
+  line-height: normal;
+}
+
+.aui-error-card[data-severity='blocking'] {
+  border-color: color-mix(in srgb, var(--err-alert) 18%, transparent);
+  background: color-mix(in srgb, var(--err-alert) 5%, transparent);
+}
+
+.aui-error-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.aui-error-card-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--err-ink-muted);
+}
+
+.aui-error-card[data-severity='blocking'] .aui-error-card-icon {
+  color: var(--err-alert);
+}
+
+.aui-error-card-text {
+  display: flex;
+  min-width: 0;
+  flex: 1 0 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding-top: 1px;
+}
+
+.aui-error-card[data-severity='degraded'] .aui-error-card-text {
+  padding-right: 20px;
+}
+
+.aui-error-card-title {
+  font-weight: 700;
+}
+
+.aui-error-card-body {
+  font-weight: 400;
+}
+
+/* Wraps so a narrow split pane drops the details toggle under the actions instead of clipping it. */
+.aui-error-card-row {
+  display: flex;
+  min-height: 30px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+}
+
+.aui-error-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.aui-error-card-toggle {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--err-ink-muted);
+  text-align: right;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.aui-error-card-toggle:hover {
+  color: var(--err-ink);
+}
+
+.aui-error-card-close {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Action row and details hang under the title, not the icon (icon 20 + gap 6). */
+.aui-error-card-row {
+  margin-left: 26px;
+}
+
+.aui-error-card-toggle:focus-visible,
+.aui-error-card-close:focus-visible,
+.aui-error-details-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--err-ink) 30%, transparent);
+}
+
+/* Nous DS Button (portal /ds/components/button, controls.css geometry, size s):
+ * 32px box, 3px corners, 5px/12px padding, 500 weight. `secondary` is the quiet
+ * slab (currentColor 5% → 10% on hover); `ghost` has no slab and brings up the
+ * 0.5px brand hairline under the cursor. Both take the card's ink. */
+.aui-error-btn {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 3px;
+  padding: 5px 12px;
+  background: transparent;
+  color: var(--err-ink);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease-out,
+    box-shadow 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.aui-error-btn:hover {
+  transition-duration: 0ms;
+}
+
+.aui-error-btn:active {
+  transform: scale(0.98);
+}
+
+.aui-error-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--err-ink) 30%, transparent);
+}
+
+.aui-error-btn-secondary {
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+
+.aui-error-btn-secondary:hover {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.aui-error-btn-ghost:hover {
+  box-shadow: inset 0 0 0 0.5px var(--err-action);
+}
+
+.aui-error-btn-ghost:active {
+  box-shadow:
+    inset 0 0 0 0.5px var(--err-action),
+    inset 0 1px 4px 0 color-mix(in srgb, var(--err-ink) 8%, transparent);
+}
+
+.aui-error-btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Details: Nous DS Copy (CommandBlock) slab, then the diagnostics links under it. */
+.aui-error-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 26px;
+}
+
+.aui-error-details[hidden] {
+  display: none;
+}
+
+.aui-error-details-slab {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 12px;
+  border-radius: 3px;
+  /* Nous DS Copy (CommandBlock): a code slab that stays dark in every theme, like a terminal. */
+  box-shadow: inset 0 0 0 1px var(--ui-stroke-tertiary);
+  background: color-mix(in srgb, black 88%, var(--ui-accent-secondary));
+  padding: 12px 12px 12px 14px;
+  color: white;
+}
+
+.aui-error-details-raw {
+  min-width: 0;
+  max-height: 10.5rem;
+  flex: 1;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.aui-error-copy-glyph {
+  display: inline-flex;
+  height: 20px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 150ms ease-out;
+}
+
+.aui-error-copy-glyph:hover,
+.aui-error-copy-glyph:focus-visible {
+  opacity: 1;
+  transition-duration: 0ms;
+}
+
+.aui-error-details-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.aui-error-details-link,
+.aui-error-details .aui-error-details-link {
+  height: auto;
+  gap: 0;
+  border-radius: 0;
+  padding: 0;
+  background: none;
+  font-size: 12px;
+  color: var(--err-ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.aui-error-details-link:hover,
+.aui-error-details .aui-error-details-link:hover {
+  background: none;
+  color: var(--err-ink);
 }

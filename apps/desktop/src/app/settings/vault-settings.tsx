@@ -399,7 +399,7 @@ export function VaultSettings({ subpage }: VaultSettingsProps = {}) {
           <SectionHeading
             aside={
               <Button className="gap-1.5" onClick={() => openAdd()} size="sm" type="button" variant="outline">
-                <Plus className="size-3.5" />
+                <Plus className="size-4" />
                 {v.add}
               </Button>
             }
@@ -428,7 +428,7 @@ export function VaultSettings({ subpage }: VaultSettingsProps = {}) {
                     type="button"
                     variant="ghost"
                   >
-                    <Trash2 className="size-3.5" />
+                    <Trash2 className="size-4" />
                   </Button>
                 )
               }
@@ -488,7 +488,7 @@ export function VaultSettings({ subpage }: VaultSettingsProps = {}) {
                         type="button"
                         variant="ghost"
                       >
-                        <Lock className="size-3.5" />
+                        <Lock className="size-4" />
                         {v.sources.lock}
                       </Button>
                     ) : (
@@ -499,7 +499,7 @@ export function VaultSettings({ subpage }: VaultSettingsProps = {}) {
                         type="button"
                         variant="outline"
                       >
-                        <KeyRound className="size-3.5" />
+                        <KeyRound className="size-4" />
                         {v.sources.unlock}
                       </Button>
                     ))}

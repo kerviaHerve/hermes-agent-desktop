@@ -213,7 +213,7 @@ export function ProfileSwitcher({ compact = false }: { compact?: boolean }) {
               )}
               <span className="truncate">{triggerLabel}</span>
             </span>
-            <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="0.875rem" />
+            <Codicon aria-hidden="true" className="shrink-0 opacity-60" name="chevron-down" size="1rem" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-48 max-w-72" collisionPadding={8} side="top">
@@ -235,7 +235,7 @@ export function ProfileSwitcher({ compact = false }: { compact?: boolean }) {
             {profiles.length > 1 && (
               <DropdownMenuRadioItem className="min-w-0" value={ALL_PROFILES}>
                 <span className="flex min-w-0 items-center gap-1.5">
-                  <Codicon aria-hidden="true" className="text-(--ui-text-tertiary)" name="layers" size="0.875rem" />
+                  <Codicon aria-hidden="true" className="text-(--ui-text-tertiary)" name="layers" size="1rem" />
                   <span className="truncate">{p.allProfiles}</span>
                 </span>
               </DropdownMenuRadioItem>
@@ -265,15 +265,15 @@ export function ProfileSwitcher({ compact = false }: { compact?: boolean }) {
           ))}
           <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={() => setCreateOpen(true)}>
-            <Codicon aria-hidden="true" name="add" size="0.875rem" />
+            <Codicon aria-hidden="true" name="add" size="1rem" />
             <span className="truncate">{p.newProfile}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => void runImportProfileFlow()}>
-            <Codicon aria-hidden="true" name="cloud-download" size="0.875rem" />
+            <Codicon aria-hidden="true" name="cloud-download" size="1rem" />
             <span className="truncate">{p.importProfile}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={() => navigate(PROFILES_ROUTE)}>
-            <Codicon aria-hidden="true" name="settings-gear" size="0.875rem" />
+            <Codicon aria-hidden="true" name="settings-gear" size="1rem" />
             <span className="truncate">{p.manageProfiles}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

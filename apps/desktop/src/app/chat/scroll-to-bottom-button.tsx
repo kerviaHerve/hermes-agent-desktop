@@ -127,7 +127,7 @@ export function ScrollToBottomButton({ sessionId }: { sessionId: string | null }
       tabIndex={visible ? 0 : -1}
       type="button"
     >
-      <Codicon name="arrow-down" size="0.875rem" />
+      <Codicon name="arrow-down" size="1rem" />
       {visibleApproval || count <= 0 ? (
         <span>{label}</span>
       ) : (

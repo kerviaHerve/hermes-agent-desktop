@@ -334,7 +334,7 @@ export function ProjectDialog() {
 
         {mode === 'add-folder' && (
           <Button disabled={submitting} onClick={() => void pickFolder()} type="button">
-            <Codicon name="folder-opened" size="0.875rem" />
+            <Codicon name="folder-opened" size="1rem" />
             {p.addFolder}
           </Button>
         )}

@@ -212,9 +212,9 @@ export const CodingStatusRow = memo(function CodingStatusRow({
           // of an already-loaded repo (window focus, turn settle), reading as an
           // annoying icon "blip" with no first-load value. Refreshes are silent.
           // It's a button (not the whole row) so the glyph opens the review pane
-          // while the strip around it stays inert; size-3.5 fills the slot exactly.
+          // while the strip around it stays inert; size-4 fills the slot exactly.
           leading={
-            <button className="flex size-3.5 items-center justify-center" onClick={onOpen} type="button">
+            <button className="flex size-4 items-center justify-center" onClick={onOpen} type="button">
               <Codicon className="text-(--ui-green)" name="git-branch" size="0.8rem" />
             </button>
           }

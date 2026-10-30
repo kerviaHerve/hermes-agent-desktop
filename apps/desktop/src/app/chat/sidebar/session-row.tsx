@@ -73,6 +73,7 @@ interface SidebarSessionRowProps extends React.ComponentProps<'div'> {
   onResume: () => void
   reorderable?: boolean
   dragging?: boolean
+  dropPosition?: 'before' | 'after'
   dragHandleProps?: React.HTMLAttributes<HTMLElement>
   /** Tag the row with its owning profile (initial chip + tooltip). Used by
    *  flat cross-profile lists — Pinned and search results in the All-profiles
@@ -139,6 +140,7 @@ function SidebarSessionRowImpl({
   onResume,
   reorderable = false,
   dragging = false,
+  dropPosition,
   dragHandleProps,
   showProfile = false,
   card = false,
@@ -205,7 +207,7 @@ function SidebarSessionRowImpl({
   // to the left of the kebab's own column: never flush right, never swapping.
   const trailing: { key: string; node: React.ReactNode }[] = []
 
-  if ((showProfile || pinnedProfile) && hasProfileTag) {
+  if (showProfile || pinnedProfile) {
     trailing.push({ key: 'profile', node: <ProfileTag profile={session.profile} /> })
   }
 
@@ -273,8 +275,18 @@ function SidebarSessionRowImpl({
   // every row (card or not) on every poll. Selecting the resolved label means
   // a row only repaints when its own label actually changes — and one-line
   // rows always select null.
-  const context = useStoreSelector($projects, projects =>
-    card ? (sessionProjectLabel(session, projects) ?? (pathLeaf(session.cwd) || t.sidebar.projects.home)) : null
+  const projectLabel = useStoreSelector($projects, projects => sessionProjectLabel(session, projects))
+  const context = card ? (projectLabel ?? (pathLeaf(session.cwd) || t.sidebar.projects.home)) : null
+
+  const hoverDetails = (
+    <div className="max-w-72 text-left">
+      <div className="font-semibold">{title}</div>
+      <div className="mt-1 opacity-75">
+        {t.sidebar.searchFilters.agent}: {session.profile || 'default'}
+        {projectLabel && ` · ${t.sidebar.filter.project}: ${projectLabel}`}
+      </div>
+      <div className="opacity-75">{absoluteAge}</div>
+    </div>
   )
 
   // Card footer line: which model worked on it and how big it got. Rendered
@@ -342,14 +354,14 @@ function SidebarSessionRowImpl({
         <Button
           aria-label={r.sessionActions}
           className={cn(
-            'size-5 rounded-[4px] bg-transparent text-transparent transition-colors duration-100 hover:bg-(--ui-control-active-background) hover:text-foreground focus-visible:bg-(--ui-control-active-background) focus-visible:text-foreground focus-visible:ring-0 data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground group-hover:text-(--ui-text-tertiary) [&_svg]:size-3.5!',
+            'size-5 rounded-[4px] bg-transparent text-transparent transition-colors duration-100 hover:bg-(--ui-control-active-background) hover:text-foreground focus-visible:bg-(--ui-control-active-background) focus-visible:text-foreground focus-visible:ring-0 data-[state=open]:bg-(--ui-control-active-background) data-[state=open]:text-foreground group-hover:text-(--ui-text-tertiary) [&_svg]:size-4!',
             trailing.length > 0 && 'absolute right-0',
             pr && KEBAB_YIELDS
           )}
           size="icon"
           variant="ghost"
         >
-          <Codicon name="kebab-vertical" size="0.875rem" />
+          <Codicon name="kebab-vertical" size="1rem" />
         </Button>
       </SessionActionsMenu>
     </div>
@@ -391,6 +403,9 @@ function SidebarSessionRowImpl({
           className
         )}
         data-glass-opaque={dragging ? '' : undefined}
+        data-reorder-target={dropPosition}
+        data-selected={isSelected ? 'true' : undefined}
+        data-sidebar-session-row=""
         data-working={liveTurn ? 'true' : undefined}
         // The row runs BOTH drags off one press, and each declines outside its
         // own region — so no timing/arbitration rule is needed and neither can
@@ -536,7 +551,7 @@ function SidebarSessionRowImpl({
                 <Tip label={r.continuationOrigin}>
                   <Codicon
                     aria-hidden="true"
-                    className="size-3.5 shrink-0 text-(--ui-text-quaternary)"
+                    className="size-4 shrink-0 text-(--ui-text-quaternary)"
                     name="layers"
                     size="0.75rem"
                   />
@@ -560,7 +575,7 @@ function SidebarSessionRowImpl({
                         OverflowTip stays on the truncating label so its
                         scrollWidth measurement is unchanged. */}
                     <RowButton className="block w-full text-left">
-                      <OverflowTip label={title} placement="row">
+                      <OverflowTip always label={hoverDetails} placement="row">
                         <SidebarRowLabel
                           className="hover-marquee block font-normal group-hover:text-foreground group-data-[working=true]:text-foreground/90"
                           onPointerEnter={armMarquee}
@@ -629,7 +644,7 @@ function SidebarSessionRowImpl({
                       button (same contract as the flat row: no onClick of its
                       own — the click bubbles to the body div's resolver). */}
                   <RowButton className="block w-full text-left">
-                    <OverflowTip label={title} placement="row">
+                    <OverflowTip always label={hoverDetails} placement="row">
                       <SidebarRowLabel
                         className={cn(
                           'hover-marquee text-[0.8125rem] font-medium text-(--ui-text-primary) group-data-[working=true]:text-foreground',
@@ -699,6 +714,7 @@ function rowPropsEqual(a: SidebarSessionRowProps, b: SidebarSessionRowProps): bo
     a.branchStem === b.branchStem &&
     a.reorderable === b.reorderable &&
     a.dragging === b.dragging &&
+    a.dropPosition === b.dropPosition &&
     a.showProfile === b.showProfile &&
     a.card === b.card &&
     a.dragHandleProps === b.dragHandleProps &&

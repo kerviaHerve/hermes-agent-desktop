@@ -28,6 +28,7 @@ const {
   msixAppIdWithOrg,
   token
 } = require('./product-identity.cjs')
+const { kerviaEdition, updateFeedUrl } = require('./product-identity.cjs')
 
 // `storeMsix` is optional on the identity type but guaranteed present when
 // `store` is true (product-identity.cjs spreads it only in that branch).
@@ -37,6 +38,10 @@ const {
 /** @type {NonNullable<typeof storeMsix> | undefined} */
 const storeMsixWhenStore = storeMsix
 const releaseBuild = Boolean(process.env.HERMES_PAYLOAD_TAG)
+const editionVersion = process.env.HERMES_PAYLOAD_VERSION
+if (kerviaEdition && (!/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(editionVersion || '') || !releaseBuild)) {
+  throw new Error('Kervia Edition packaging requires HERMES_PAYLOAD_VERSION and HERMES_PAYLOAD_TAG')
+}
 
 /**
  * The store MSIX packaging identity. Callers must only invoke this when
@@ -78,14 +83,14 @@ module.exports = {
   protocols: [
     {
       name: `${displayName} Protocol`,
-      schemes: ['hermes']
+      schemes: [kerviaEdition ? 'hermes-kervia' : 'hermes']
     }
   ],
   // A store build is archived, never served to a feed — prefix its artifact
   // so it can't collide with the out-of-store MSIX of the same tag/arch, and
   // the release pipeline can keep the two apart.
   artifactName: `${store ? 'Store-' : ''}${artifactNamePascal}-\${version}-\${os}-\${arch}.\${ext}`,
-  icon: 'assets/icon',
+  icon: kerviaEdition ? 'assets/kervia/icon.png' : 'assets/icon',
   // The electron-updater feed. CI builds set CLOUDFLARE_R2_PUBLIC_URL (the R2
   // public bucket / custom domain) and publish there — the feed yml, blockmaps
   // and installers all live in the same flat R2 bucket, and electron-updater
@@ -96,12 +101,15 @@ module.exports = {
   publish: channelRequest ? null : !channel
     ? null
     : [
-        publicUrl
+        kerviaEdition && updateFeedUrl
+          ? { provider: 'generic', url: updateFeedUrl, channel }
+          : publicUrl
           ? { provider: 'generic', url: publicUrl, channel }
           : { provider: 'github', owner, repo, channel }
       ],
   extraMetadata: {
     name: appNamePascal,
+    ...(kerviaEdition ? { version: editionVersion } : {}),
     // Electron bootstrap reads package.productName before main.ts. Keep the
     // shipped stable default, but isolate nonstable userData from first access.
     // A stable-branded channel has no token and keeps stable's userData.
@@ -147,13 +155,15 @@ module.exports = {
     // electron-builder compiles `.icon` with actool >= 26 only, so hosts
     // without Xcode 26 fall back to the .icns alone (see scripts/mac-icon.cjs);
     // after-pack.mjs restores our full-resolution .icns either way.
-    icon: macIconResource(__dirname),
+    icon: kerviaEdition ? 'assets/kervia/icon.icns' : macIconResource(__dirname),
     // The afterSign hook owns notarization, including keychain-profile builds.
     notarize: false,
     // Electron 44 no longer supports macOS 11 or 12.
     minimumSystemVersion: '13.0',
     // The packaged client reads this generated app-update.yml by default.
-    publish: channelRequest?.receiverCandidate
+    publish: kerviaEdition && updateFeedUrl
+      ? [{ provider: 'generic', url: updateFeedUrl, channel: 'stable' }]
+      : channelRequest?.receiverCandidate
       ? [{ provider: 'generic', url: `${channelRequest.publicBase}/releases/darwin/stable/`, channel: 'stable' }]
       : channelRequest
       ? [{ provider: 'generic', url: `${channelRequest.publicBase}/releases/channel-builds/${channelRequest.buildId}/darwin/`, channel: 'latest' }]
@@ -204,14 +214,14 @@ module.exports = {
     // drive-with-the-girl artwork instead (dmgbuild's badge option can only
     // paste onto the stock removable-drive icon). It lives in packaging/ with
     // the background so the `files` whitelist keeps it out of the app bundle.
-    icon: 'packaging/dmg-volume.icns',
-    title: 'Hermes Agent Installer',
+    icon: kerviaEdition ? 'assets/kervia/icon.icns' : 'packaging/dmg-volume.icns',
+    title: kerviaEdition ? 'Hermes Desktop - Kervia Edition' : 'Hermes Agent Installer',
     // A prebuilt .tiff on purpose, not a PNG plus a @2x sibling: dmg-builder's
     // PNG path runs `tiffutil -cathidpicheck`, which on macOS 26 rewrites both
     // frames to 72 dpi and silently drops the 2x representation. A .tiff is
     // handed to dmgbuild untouched (dmg-builder/dist/dmgUtil.js), and living
     // outside assets/ keeps it out of the app bundle via the `files` whitelist.
-    background: 'packaging/nous-dmg-2b.tiff',
+    ...(kerviaEdition ? { backgroundColor: '#171B19' } : { background: 'packaging/nous-dmg-2b.tiff' }),
     iconSize: 96,
     iconTextSize: 11,
     window: {

@@ -705,7 +705,7 @@ export function Picker({ ctx }: { ctx: OnboardingContext }) {
           variant="text"
         >
           {showAll ? t.onboarding.collapse : t.onboarding.otherProviders}
-          <ChevronDown className={cn('size-3.5 transition', showAll && 'rotate-180')} />
+          <ChevronDown className={cn('size-4 transition', showAll && 'rotate-180')} />
         </Button>
       ) : null}
       <div className="flex items-center justify-between gap-3 pt-1">
@@ -884,7 +884,7 @@ export function ApiKeyForm({
           >
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-medium">{o.name}</span>
-              {isSet?.(o.envKey) ? <Check className="size-3.5 text-muted-foreground" /> : null}
+              {isSet?.(o.envKey) ? <Check className="size-4 text-muted-foreground" /> : null}
             </div>
             {(t.onboarding.apiKeyOptions[o.id]?.short ?? o.short) ? (
               <p className="mt-1 text-xs text-muted-foreground">{t.onboarding.apiKeyOptions[o.id]?.short ?? o.short}</p>

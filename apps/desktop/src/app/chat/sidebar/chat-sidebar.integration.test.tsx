@@ -83,6 +83,12 @@ const expectOnlySelectedSession = (title: string | null) => {
   expect(selectedRows).toEqual(expected)
 }
 
+const sectionLabels = () =>
+  screen
+    .getAllByRole('button')
+    .filter(button => button.classList.contains('group/section-label'))
+    .map(button => button.textContent?.trim())
+
 const focus = (groupId: null | string) => act(() => noteActiveTreeGroup(groupId))
 
 describe('ChatSidebar navigation activity', () => {
@@ -197,6 +203,15 @@ describe('ChatSidebar navigation activity', () => {
 
     act(() => dispose())
     expect(screen.getByRole('button', { name: 'Kanban' })).toBeTruthy()
+  })
+
+  it('keeps contributed destinations available under Tools', () => {
+    renderSidebar('/kanban', 'extension')
+    const kanban = screen.getByRole('button', { name: 'Kanban' })
+
+    expect(kanban.closest('li')?.classList.contains('hidden')).toBe(true)
+    fireEvent.click(screen.getByRole('button', { name: 'Tools' }))
+    expect(kanban.closest('li')?.classList.contains('hidden')).toBe(false)
   })
 })
 
@@ -314,8 +329,8 @@ describe('ChatSidebar section labels', () => {
 
     renderSidebar('/', 'chat')
 
-    expect(screen.getByText('Projects')).toBeTruthy()
-    expect(screen.queryByText('Sessions')).toBeNull()
+    expect(sectionLabels()).toContain('Projects')
+    expect(sectionLabels()).not.toContain('Sessions')
   })
 
   it('keeps the "Sessions" label when grouping is on but no projects exist', () => {
@@ -327,8 +342,8 @@ describe('ChatSidebar section labels', () => {
 
     renderSidebar('/', 'chat')
 
-    expect(screen.getByText('Sessions')).toBeTruthy()
-    expect(screen.queryByText('Projects')).toBeNull()
+    expect(sectionLabels()).toContain('Sessions')
+    expect(sectionLabels()).not.toContain('Projects')
   })
 
   it('keeps the "Sessions" label when the grouped tree is only the synthetic Home bucket', () => {
@@ -340,8 +355,8 @@ describe('ChatSidebar section labels', () => {
 
     renderSidebar('/', 'chat')
 
-    expect(screen.getByText('Sessions')).toBeTruthy()
-    expect(screen.queryByText('Projects')).toBeNull()
+    expect(sectionLabels()).toContain('Sessions')
+    expect(sectionLabels()).not.toContain('Projects')
   })
 })
 
@@ -384,7 +399,7 @@ describe('ChatSidebar empty-profile sections', () => {
     // …and the sidebar did not collapse to the blank state: the search field
     // only renders inside the session area, so its presence proves the area
     // (and the messaging sections inside it) rendered.
-    expect(screen.getByPlaceholderText('Search sessions…')).toBeTruthy()
+    expect(screen.getByPlaceholderText(/^In /)).toBeTruthy()
   })
 
   it('still shows the blank state when a profile has nothing at all', () => {
@@ -396,7 +411,7 @@ describe('ChatSidebar empty-profile sections', () => {
     const { container } = renderSidebar('/', 'chat')
 
     expect(container.textContent).toContain('No sessions yet')
-    expect(screen.queryByPlaceholderText('Search sessions…')).toBeNull()
+    expect(screen.queryByPlaceholderText(/^In /)).toBeNull()
   })
 
   it('shows a section per profile when several profiles have no chats anywhere', () => {
@@ -416,7 +431,7 @@ describe('ChatSidebar empty-profile sections', () => {
         node => node.dataset.gatewayGroup
       )
 
-      expect(screen.getByPlaceholderText('Search sessions…')).toBeTruthy()
+      expect(screen.getByPlaceholderText(/^In /)).toBeTruthy()
       expect(groups.some(id => id?.includes('"default"'))).toBe(true)
       expect(groups.some(id => id?.includes('"work"'))).toBe(true)
     } finally {

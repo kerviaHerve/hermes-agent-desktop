@@ -243,7 +243,7 @@ function EnvVarField({ envVar, isSet, onSaved, onCleared, profile }: EnvVarField
               value={value}
             />
             <Button disabled={busy || !value} onClick={() => void handleSave()} size="sm">
-              {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Save />}
+              {busy ? <Loader2 className="size-4 animate-spin" /> : <Save />}
               {t.common.save}
             </Button>
             <Button onClick={() => setEditing(false)} size="sm" variant="text">
@@ -384,13 +384,13 @@ function PostSetupRunner({ toolset, postSetupKey, installed = false, onComplete,
               {copy.postSetupInstalled}
             </Pill>
             <Button disabled={running} onClick={() => void run()} size="sm" variant="text">
-              {running ? <Loader2 className="size-3.5 animate-spin" /> : <Terminal className="size-3.5" />}
+              {running ? <Loader2 className="size-4 animate-spin" /> : <Terminal className="size-4" />}
               {running ? copy.postSetupRunning : copy.postSetupRerun}
             </Button>
           </span>
         ) : (
           <Button disabled={running} onClick={() => void run()} size="sm">
-            {running ? <Loader2 className="size-3.5 animate-spin" /> : <Terminal className="size-3.5" />}
+            {running ? <Loader2 className="size-4 animate-spin" /> : <Terminal className="size-4" />}
             {running ? copy.postSetupRunning : copy.postSetupRun}
           </Button>
         )}
@@ -777,7 +777,7 @@ export function ToolsetConfigPanel({ toolset, onConfiguredChange, profile }: Too
     // config incoming" without reserving a tall empty area.
     return (
       <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
-        <Loader2 className="size-3.5 animate-spin" />
+        <Loader2 className="size-4 animate-spin" />
         {copy.loadingConfig}
       </div>
     )
@@ -861,7 +861,7 @@ export function ToolsetConfigPanel({ toolset, onConfiguredChange, profile }: Too
                 {isSearchBackend && <Pill tone="primary">{copy.webUsedForSearch}</Pill>}
                 {isExtractBackend && <Pill tone="primary">{copy.webUsedForExtract}</Pill>}
               </span>
-              {selecting === provider.name && <Loader2 className="size-3.5 shrink-0 animate-spin" />}
+              {selecting === provider.name && <Loader2 className="size-4 shrink-0 animate-spin" />}
             </button>
 
             {isExpanded && (
@@ -879,7 +879,7 @@ export function ToolsetConfigPanel({ toolset, onConfiguredChange, profile }: Too
                       </Pill>
                     ) : (
                       <Button disabled={selecting !== null} onClick={() => void handleSelect(provider)} size="sm">
-                        {selecting === provider.name ? <Loader2 className="size-3.5 animate-spin" /> : <Check />}
+                        {selecting === provider.name ? <Loader2 className="size-4 animate-spin" /> : <Check />}
                         {copy.useBackend}
                       </Button>
                     )}

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Import the official source tree onto the private repository's snapshot branch.
+# Import the official source tree onto the fork's snapshot branch.
 # Deliberately leaves main untouched; review and merge the snapshot separately.
 set -euo pipefail
 
@@ -36,7 +36,9 @@ if [[ "$source_tree" != "$snapshot_tree" ]]; then
 
   git -C "$repo_root" worktree add --quiet "$worktree" "$snapshot_branch"
   git -C "$worktree" read-tree --reset -u "$source_commit"
-  git -C "$worktree" commit --quiet \
+  # The snapshot copies the official tree byte for byte; fork pre-commit tools
+  # are not installed in this temporary checkout.
+  git -C "$worktree" -c core.hooksPath=/dev/null commit --quiet \
     -m "Sync Hermes Agent snapshot ${source_commit:0:12}" \
     -m "Upstream-Commit: $source_commit"
   echo "Prepared official snapshot $source_commit"
@@ -44,5 +46,7 @@ else
   echo "Source tree already matches official commit $source_commit"
 fi
 
-git -C "$repo_root" push origin "$snapshot_branch"
 echo "Review the differences between $snapshot_branch and main before merging."
+if [[ "${1:-}" == "--push" ]]; then
+  git -C "$repo_root" push origin "$snapshot_branch"
+fi

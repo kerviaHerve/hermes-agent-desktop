@@ -87,7 +87,7 @@ export function ExpandableBlock({ children, className }: ExpandableBlockProps) {
             onClick={() => setExpanded(v => !v)}
             type="button"
           >
-            <ChevronDown className={cn('size-3.5 transition-transform', expanded && 'rotate-180')} />
+            <ChevronDown className={cn('size-4 transition-transform', expanded && 'rotate-180')} />
           </button>
         </div>
       )}

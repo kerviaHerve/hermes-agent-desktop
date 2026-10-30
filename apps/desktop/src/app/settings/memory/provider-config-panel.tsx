@@ -129,7 +129,7 @@ export function ProviderConfigPanel({ profile, provider }: { profile?: string; p
         </button>
         {hasFullConfig && (
           <Button onClick={() => setShowModal(true)} size="sm" type="button" variant="secondary">
-            <SlidersHorizontal className="size-3.5" />
+            <SlidersHorizontal className="size-4" />
             Full config…
           </Button>
         )}

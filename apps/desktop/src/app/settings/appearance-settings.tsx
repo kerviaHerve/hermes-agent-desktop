@@ -1,17 +1,18 @@
+import { Button as HeroButton } from '@heroui/react/button'
+import { Input as HeroInput } from '@heroui/react/input'
 import { useStore } from '@nanostores/react'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 
 import { useDebounced } from '@/app/hooks/use-debounced'
 import { LanguageSwitcher } from '@/components/language-switcher'
-import { SearchField } from '@/components/ui/search-field'
 import { SegmentedControl } from '@/components/ui/segmented-control'
 import { Slider } from '@/components/ui/slider'
 import type { DesktopMarketplaceSearchItem } from '@/global'
 import { saveHermesConfig } from '@/hermes'
 import { useI18n } from '@/i18n'
 import { triggerHaptic } from '@/lib/haptics'
-import { Check, Download, Loader2, Palette, Trash2 } from '@/lib/icons'
+import { Check, Download, Loader2, Palette, Search, Trash2, X } from '@/lib/icons'
 import { selectableCardClass } from '@/lib/selectable-card'
 import { normalize } from '@/lib/text'
 import { cn } from '@/lib/utils'
@@ -257,7 +258,7 @@ function MarketplaceThemeResults({
       <>
         {header}
         <p className="flex items-center gap-2 text-[length:var(--conversation-caption-font-size)] text-(--ui-text-tertiary)">
-          <Loader2 className="size-3.5 animate-spin" />
+          <Loader2 className="size-4 animate-spin" />
           {copy.loading}
         </p>
       </>
@@ -294,15 +295,16 @@ function MarketplaceThemeResults({
           const done = installs.has(item.extensionId)
 
           return (
-            <button
+            <HeroButton
               className={cn(
-                'flex items-center gap-2.5 px-2.5 py-2 text-left disabled:opacity-60',
+                'flex h-auto w-full items-center justify-start gap-2.5 px-2.5 py-2 text-left',
                 selectableCardClass({ prominent: done })
               )}
-              disabled={Boolean(installingId) && !busy}
+              isDisabled={Boolean(installingId) && !busy}
               key={item.extensionId}
-              onClick={() => select(item)}
+              onPress={() => select(item)}
               type="button"
+              variant="ghost"
             >
               <Palette className="size-4 shrink-0 text-(--ui-text-tertiary)" />
               <span className="min-w-0 flex-1">
@@ -323,7 +325,7 @@ function MarketplaceThemeResults({
                   <Download className="size-4" />
                 )}
               </span>
-            </button>
+            </HeroButton>
           )
         })}
       </div>
@@ -586,13 +588,32 @@ export function AppearanceSettings({ subpage }: AppearanceSettingsProps = {}) {
                 <>
                   {/* One search box: filters your installed themes (the grid)
                       and live-searches the VS Code Marketplace below. */}
-                  <SearchField
-                    containerClassName="mt-3 w-full"
-                    inputClassName="flex-1"
-                    onChange={setQuery}
-                    placeholder={a.themeSearchPlaceholder}
-                    value={query}
-                  />
+                  <div className="relative mt-3 w-full">
+                    <Search
+                      aria-hidden
+                      className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-(--ui-text-tertiary)"
+                    />
+                    <HeroInput
+                      aria-label={a.themeSearchPlaceholder}
+                      className="h-9 w-full rounded-full border border-(--ui-stroke-tertiary) bg-(--ui-bg-quinary) py-1.5 pr-9 pl-9 text-sm text-foreground placeholder:text-(--ui-text-tertiary)"
+                      onChange={event => setQuery(event.target.value)}
+                      placeholder={a.themeSearchPlaceholder}
+                      value={query}
+                      variant="secondary"
+                    />
+                    {query && (
+                      <HeroButton
+                        aria-label={t.ui.search.clear}
+                        className="absolute top-1/2 right-1 size-7 -translate-y-1/2 rounded-full p-0 text-(--ui-text-tertiary) hover:text-foreground"
+                        isIconOnly
+                        onPress={() => setQuery('')}
+                        size="sm"
+                        variant="ghost"
+                      >
+                        <X className="size-4" />
+                      </HeroButton>
+                    )}
+                  </div>
 
                   {/* The dedicated theme page uses the page scroller rather
                       than clipping its gallery inside another scroll area. */}
@@ -611,13 +632,17 @@ export function AppearanceSettings({ subpage }: AppearanceSettingsProps = {}) {
 
                           return (
                             <div className="group relative" key={theme.name}>
-                              <button
-                                className={cn('w-full p-2 text-left', selectableCardClass({ active, prominent: true }))}
-                                onClick={() => {
+                              <HeroButton
+                                className={cn(
+                                  'h-auto w-full flex-col items-stretch justify-start p-2 text-left',
+                                  selectableCardClass({ active, prominent: true })
+                                )}
+                                onPress={() => {
                                   triggerHaptic('crisp')
                                   setTheme(theme.name)
                                 }}
                                 type="button"
+                                variant="ghost"
                               >
                                 <ThemePreview mode={resolvedMode} name={theme.name} />
                                 <div className="mt-3 px-1">
@@ -628,7 +653,7 @@ export function AppearanceSettings({ subpage }: AppearanceSettingsProps = {}) {
                                     {theme.description}
                                   </div>
                                 </div>
-                              </button>
+                              </HeroButton>
                               {removable && (
                                 <button
                                   aria-label={a.removeTheme}
@@ -644,7 +669,7 @@ export function AppearanceSettings({ subpage }: AppearanceSettingsProps = {}) {
                                   }}
                                   type="button"
                                 >
-                                  <Trash2 className="size-3.5" />
+                                  <Trash2 className="size-4" />
                                 </button>
                               )}
                             </div>

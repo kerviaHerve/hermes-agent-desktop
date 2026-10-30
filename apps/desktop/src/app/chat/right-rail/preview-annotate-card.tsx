@@ -112,7 +112,7 @@ export function PreviewAnnotateCard({
         style={{ background: ANNOTATE_PILL_SEND }}
         type="submit"
       >
-        <Codicon name="arrow-up" size="0.875rem" />
+        <Codicon name="arrow-up" size="1rem" />
       </button>
     </form>
   )

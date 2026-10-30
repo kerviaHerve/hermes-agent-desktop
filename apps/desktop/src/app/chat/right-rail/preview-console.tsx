@@ -113,7 +113,7 @@ function ConsoleRow({ copyText, log, onSend, onToggleSelect, selected }: Console
           appearance="inline"
           className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           errorMessage={copy.copyFailed}
-          iconClassName="size-3"
+          iconClassName="size-4"
           label={copy.copyEntry}
           showLabel={false}
           text={copyText}
@@ -124,7 +124,7 @@ function ConsoleRow({ copyText, log, onSend, onToggleSelect, selected }: Console
             onClick={onSend}
             type="button"
           >
-            <Send className="size-3" />
+            <Send className="size-4" />
           </button>
         </Tip>
       </span>
@@ -211,7 +211,7 @@ export function PreviewConsolePanel({
       </div>
       <div className="flex h-8 shrink-0 items-center justify-between border-b border-border/50 px-2">
         <div className="flex items-center gap-2 text-[0.6875rem] font-medium text-muted-foreground">
-          <PanelBottom className="size-3.5" />
+          <PanelBottom className="size-4" />
           {copy.title}
           {selectedLogIds.size > 0 && (
             <span className="rounded-full bg-muted px-1.5 py-px text-[0.5625rem] text-muted-foreground">
@@ -226,7 +226,7 @@ export function PreviewConsolePanel({
             onClick={() => sendLogsToComposer(sendableLogs)}
             type="button"
           >
-            <Send className="size-3" />
+            <Send className="size-4" />
             {copy.sendToChat}
           </button>
           <CopyButton
@@ -234,7 +234,7 @@ export function PreviewConsolePanel({
             className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[0.625rem] text-muted-foreground transition-colors hover:bg-accent hover:text-foreground disabled:opacity-40"
             disabled={sendableLogs.length === 0}
             errorMessage={copy.copyFailed}
-            iconClassName="size-3"
+            iconClassName="size-4"
             label={visibleSelection.length > 0 ? copy.copySelected : copy.copyAll}
             text={() => formatConsoleEntries(sendableLogs)}
           >
@@ -246,7 +246,7 @@ export function PreviewConsolePanel({
             onClick={consoleState.clear}
             type="button"
           >
-            <Trash2 className="size-3" />
+            <Trash2 className="size-4" />
             {copy.clear}
           </button>
         </div>

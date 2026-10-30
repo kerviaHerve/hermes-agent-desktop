@@ -104,7 +104,7 @@ export function TipBubble({ action, anchor, keybind, onClose, side, text, title 
             onClick={onClose}
             type="button"
           >
-            <X className={iconSize.sm} />
+            <X className={iconSize.md} />
           </button>
         </div>
       </PopoverContent>

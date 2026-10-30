@@ -324,6 +324,7 @@ export const en: Translations = {
   common: {
     apply: 'Apply',
     back: 'Back',
+    returnToChat: 'Return to conversation',
     save: 'Save',
     saving: 'Saving…',
     cancel: 'Cancel',
@@ -455,7 +456,8 @@ export const en: Translations = {
       microphoneConstraintsUnsupported: 'Microphone constraints are not supported by this device.',
       microphoneFailed: 'Microphone failed',
       microphoneInUse: 'Microphone is already in use by another app.',
-      microphoneNeedsHttps: 'The microphone needs a secure connection. Open the Webapp over HTTPS, or through an SSH tunnel to 127.0.0.1, to use it.',
+      microphoneNeedsHttps:
+        'The microphone needs a secure connection. Open the Webapp over HTTPS, or through an SSH tunnel to 127.0.0.1, to use it.',
       microphonePermissionDenied: 'Microphone permission was denied.',
       microphoneStartFailed: 'Could not start microphone recording.',
       microphoneUnsupported: 'This runtime does not support microphone recording.',
@@ -1666,12 +1668,11 @@ export const en: Translations = {
       },
       keepGoingOnCredits: {
         title: 'Keep going on credits',
-        description:
-          'Use your credits when included usage runs out. Off: Hermes waits for the reset.',
+        description: 'Use your credits when included usage runs out. Off: Hermes waits for the reset.',
         approveInBrowser: 'Approve Remote Spending in your browser to change this. It applies as soon as you approve.',
         openAgain: 'Open again',
         cancel: 'Cancel',
-        approvedRetry: 'Remote Spending is approved, but the change didn\'t save.',
+        approvedRetry: "Remote Spending is approved, but the change didn't save.",
         tryAgain: 'Try again'
       },
       autoReload: {
@@ -1765,7 +1766,7 @@ export const en: Translations = {
             captionResetsIn: duration => `Resets in ${duration}`,
             captionIncluded: 'Included usage',
             valueUsed: percent => `${percent} used`
-          },
+          }
         },
         planCard: {
           freeTier: 'Free',
@@ -2781,7 +2782,8 @@ export const en: Translations = {
     exported: 'Profile exported',
     failedImport: 'Failed to import profile',
     failedExport: 'Failed to export profile',
-    exportNeedsHost: name => `The browser can't save a profile archive. On the Hermes host, run: hermes profile export ${name}`,
+    exportNeedsHost: name =>
+      `The browser can't save a profile archive. On the Hermes host, run: hermes profile export ${name}`,
     allProfiles: 'All profiles',
     showAllProfiles: 'Show all profiles',
     notServedHere: 'Not served here',
@@ -3175,15 +3177,29 @@ export const en: Translations = {
       actions: 'Group actions'
     },
     profileRail: 'Profile rail',
+    localHermes: 'Local Hermes',
     nav: {
       'new-session': 'New session',
+      conversations: 'Conversations',
+      tools: 'Tools',
       capabilities: 'Capabilities',
       messaging: 'Messaging',
       artifacts: 'Artifacts',
       cron: 'Scheduled jobs'
     },
-    searchAria: 'Search sessions',
-    searchPlaceholder: 'Search sessions…',
+    searchAria: 'Search this Hermes',
+    searchPlaceholder: 'Search here…',
+    searchIn: hermes => `In ${hermes}`,
+    searchFilters: {
+      title: 'Search filters',
+      agent: 'Agent',
+      technical: 'Include tool and sub-agent activity',
+      allAgents: 'All agents',
+      date: 'Last activity',
+      anyDate: 'Any time',
+      lastWeek: 'Last 7 days',
+      lastMonth: 'Last 30 days'
+    },
     clearSearch: 'Clear search',
     noMatch: query => `No sessions match “${query}”.`,
     results: 'Results',
@@ -3282,7 +3298,25 @@ export const en: Translations = {
   },
 
   composer: {
+    add: 'Add',
+    ready: 'ready',
+    context: 'Context',
+    writeToAgent: agent => `Write to ${agent}…`,
     message: 'Message',
+    height: 'Input height',
+    heightCompact: 'Compact',
+    heightComfort: 'Comfortable',
+    heightExpanded: 'Expanded',
+    threadWidth: 'Conversation width',
+    threadWidthFocused: 'Focused',
+    threadWidthBalanced: 'Balanced',
+    threadWidthWide: 'Wide',
+    threadWidthFull: 'Full width',
+    activityAndQueue: 'Activity and queue',
+    threadLayoutEditorial: 'Editorial',
+    threadLayoutDialogue: 'Dialogue',
+    threadLayoutToggle: (current, next) => `Thread layout: ${current}. Switch to ${next}`,
+    contextTokens: 'Context tokens used',
     wakingProfile: profile => `Waking up ${profile}…`,
     placeholderStarting: 'Starting Hermes...',
     placeholderReconnecting: 'Reconnecting to Hermes…',
@@ -4410,6 +4444,7 @@ export const en: Translations = {
 
   assistant: {
     thread: {
+      you: 'You',
       loadingSession: 'Loading session',
       showEarlier: 'Show earlier messages',
       loadingResponse: 'Hermes is loading a response',
@@ -4438,18 +4473,28 @@ export const en: Translations = {
       errorAuthKinds: {
         api_key: {
           title: provider => `${provider} rejected your API key`,
-          body: provider => `The key saved for ${provider} is invalid or was revoked. Update it, then retry.`
+          body: () => 'The saved key is invalid or was revoked. Update it, then send your message again.'
         },
         oauth: {
-          title: provider => `Your ${provider} sign-in expired`
+          title: provider => `Sign in to ${provider} again`
         }
       },
-      errorDetails: 'Details',
+      errorDetails: 'View error details',
+      errorHideDetails: 'Hide error details',
+      errorDetailsCopy: 'Copy details',
+      errorCopyRaw: 'Copy error',
+      errorContinue: 'Continue',
+      errorOpenProviderSettings: provider => `Open ${provider} settings`,
+      errorOpenSetupGuide: 'Open setup guide',
+      errorSetupGuideLink: 'Setup guide',
+      errorOpenModelSettings: 'Open model settings',
+      errorStartNewChatLink: 'Start a new chat',
+      errorChooseModelLink: 'Choose another model',
+      errorRetryAtResetShort: time => `Retry at ${time}`,
+      errorRateLimitResetBody: (provider, time) => `You've hit ${provider}'s rate limit. It resets at ${time}.`,
       errorGenericProvider: 'The AI service',
       errorToastTitle: "Hermes couldn't finish the reply",
       errorRetry: 'Retry',
-      errorLimitResets: time => `Limit resets at ${time}`,
-      errorRetryAtReset: time => `Retry when the limit resets (${time})`,
       errorRetryScheduled: (time, wait) => `Retrying at ${time} — in ${wait}`,
       errorRetryScheduledCancel: 'Cancel',
       errorStartNewSession: 'Start new session',
@@ -4468,12 +4513,10 @@ export const en: Translations = {
       errorUpdateApiKey: 'Update API key',
       errorSignInAgain: provider => `Sign in to ${provider} again`,
       errorSignInFreeTier: 'Sign in with a Nous account',
-      errorOauthExpired: provider =>
-        `Your ${provider} sign-in has expired or was revoked. Sign in again to keep chatting.`,
+      errorOauthExpired: provider => `Your ${provider} sign-in expired or was revoked. Sign in again to keep chatting.`,
       errorOpenLogs: 'Open logs',
       errorOpenLogsFailed: 'Could not open the logs folder',
       errorOpenDesktopLogs: 'Open Desktop logs',
-      errorCopyDiagnostics: 'Copy error details',
       errorSendDiagnostics: 'Send diagnostics',
       filesChanged: count => (count === 1 ? '1 file changed' : `${count} files changed`),
       reviewChanges: 'Review',

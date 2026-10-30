@@ -21,7 +21,7 @@ export function FieldTitle({ field }: { field: MemoryProviderField }) {
     <span className="inline-flex items-center gap-1.5">
       {field.label}
       <Tip className="max-w-60 font-normal leading-snug whitespace-normal" label={field.info}>
-        <Info aria-label={`About ${field.label}`} className="size-3.5 text-muted-foreground/70" />
+        <Info aria-label={`About ${field.label}`} className="size-4 text-muted-foreground/70" />
       </Tip>
     </span>
   )

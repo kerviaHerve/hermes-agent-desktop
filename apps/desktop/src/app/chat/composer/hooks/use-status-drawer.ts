@@ -1,8 +1,8 @@
 import { useStore } from '@nanostores/react'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 import { useStoreSelector } from '@/lib/use-session-slice'
-import { $collapsedStatusDrawers, setStatusDrawerCollapsed, statusDrawerKey } from '@/store/composer-status-drawer'
+import { $expandedStatusDrawers, setStatusDrawerExpanded, statusDrawerKey } from '@/store/composer-status-drawer'
 import { $activeConnectionId } from '@/store/connections'
 import { $activeGatewayProfile, normalizeProfileKey } from '@/store/profile'
 import { isSessionOwnerRoute } from '@/store/session-request-router'
@@ -25,23 +25,29 @@ export function useStatusDrawer(sessionKey: string | null) {
   const connectionId = route ? (route.connectionId ?? null) : owner ? null : (scope.connectionId ?? activeConnection)
   const ownerKey = JSON.stringify([connectionId, profile, targetProfile])
   const key = sessionKey ? statusDrawerKey({ connectionId, profile, targetProfile, sessionId: sessionKey }) : null
-  const saved = useStoreSelector($collapsedStatusDrawers, keys => key !== null && keys.includes(key))
+  const expanded = useStoreSelector($expandedStatusDrawers, keys => key !== null && keys.includes(key))
   const draftKey = key ?? ownerKey
-  const [draft, setDraft] = useState({ key: draftKey, collapsed: false })
+  const [draft, setDraft] = useState({ key: draftKey, collapsed: true })
 
   // Unsaved drafts have no durable preference. Never carry their choice into
   // a stored conversation selected from the sidebar or a subsequent new chat.
   if (draft.key !== draftKey) {
-    setDraft({ key: draftKey, collapsed: false })
+    setDraft({ key: draftKey, collapsed: true })
   }
 
-  const collapsed = key ? saved : draft.key === draftKey && draft.collapsed
+  const collapsed = key ? !expanded : draft.key !== draftKey || draft.collapsed
+
+  // Stable ids for the two drawer regions (status stack, coding row) their toggles control.
+  const statusDrawerId = useId()
+  const codingDrawerId = useId()
 
   return {
+    codingDrawerId,
     collapsed,
+    statusDrawerId,
     toggle: () => {
       if (key) {
-        setStatusDrawerCollapsed(key, !collapsed)
+        setStatusDrawerExpanded(key, collapsed)
       } else {
         setDraft({ key: draftKey, collapsed: !collapsed })
       }

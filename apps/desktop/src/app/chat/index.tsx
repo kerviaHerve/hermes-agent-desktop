@@ -51,6 +51,7 @@ import {
 } from '@/store/session'
 import { $focusedStoredSessionId } from '@/store/session-focus'
 import { $sessionStates, sessionTileDelegate } from '@/store/session-states'
+import { $threadWidth } from '@/store/thread-width'
 import { $transcriptTailBySessionId, transcriptTailState } from '@/store/transcript-tail'
 import { isAuxiliaryWindow, isMainWindow } from '@/store/windows'
 
@@ -524,6 +525,7 @@ const ChatViewContent = memo(function ChatViewContent({
   const introHoldsThread = useStore($introHoldsThread) && isPrimary && isMainWindow()
   const guideStarted = useStoreSelector($introView, introView => introView === 'intro' || introView === 'ended')
   const activeSessionId = useStore(view.$runtimeId)
+  const threadWidth = useStore($threadWidth)
 
   const transcriptStoredSessionId = useStoreSelector($sessionStates, states =>
     activeSessionId ? (states[activeSessionId]?.storedSessionId ?? null) : null
@@ -756,6 +758,7 @@ const ChatViewContent = memo(function ChatViewContent({
       data-guide-arrived={isPrimary && guideStarted ? '' : undefined}
       data-session-anchor={sessionAnchor}
       data-setup-chat={setupChat ? '' : undefined}
+      data-thread-width={threadWidth}
     >
       <Backdrop />
       {/* Tiles get their chrome from the layout zone (chip strip); the modal

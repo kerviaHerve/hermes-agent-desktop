@@ -141,6 +141,13 @@ describe('narrow tiles', () => {
 })
 
 describe('ComposerControls shortcut tooltips', () => {
+  it('keeps voice and a visible disabled Send button together in the docked desktop composer', () => {
+    renderControls({ desktopLayout: true, hasComposerPayload: false, canSubmit: false })
+
+    expect(screen.getByLabelText('Start voice conversation')).toBeTruthy()
+    expect(screen.getByLabelText('Send').hasAttribute('disabled')).toBe(true)
+  })
+
   it('labels busy Send with the effective configured action', async () => {
     renderControls({ busy: true, busyAction: 'steer' })
 

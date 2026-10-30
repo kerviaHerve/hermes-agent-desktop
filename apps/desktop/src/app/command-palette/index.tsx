@@ -19,10 +19,10 @@ import { codiconIcon } from '@/components/ui/codicon'
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { HighlightMatches } from '@/components/ui/highlight-matches'
 import { KbdCombo } from '@/components/ui/kbd'
+import { Tip } from '@/components/ui/tooltip'
 import { getHermesConfigRecord, listAllProfileSessions } from '@/hermes'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { useI18n } from '@/i18n'
-import { sessionTitle } from '@/lib/chat-runtime'
 import {
   Activity,
   AppWindow,
@@ -61,6 +61,7 @@ import {
 } from '@/lib/icons'
 import { getServers } from '@/lib/mcp-servers'
 import { normalize } from '@/lib/text'
+import { fmtDateTime } from '@/lib/time'
 import { rollbackSentence } from '@/lib/update-copy'
 import { cn } from '@/lib/utils'
 import { resolveVersionStatus } from '@/lib/version-status'
@@ -72,12 +73,15 @@ import {
   closeCommandPalette,
   setCommandPaletteOpen
 } from '@/store/command-palette'
+import { $activeConnectionId } from '@/store/connections'
 import { completeFlow, recordAction } from '@/store/desktop-metrics'
+import { $interfaceMode } from '@/store/interface-mode'
 import { $bindings, bindingsFor } from '@/store/keybinds'
 import { $dismissedAutoProjectIds, $pinnedSessionIds, filterVisibleProjects } from '@/store/layout'
 import { openPetGenerate } from '@/store/pet-generate'
 import { toggleBrowserTab } from '@/store/preview'
-import { $projectTree, goToProject, openFolderAsProject, requestStartWorkSession } from '@/store/projects'
+import { $profiles, ALL_PROFILES } from '@/store/profile'
+import { $projects, $projectTree, goToProject, openFolderAsProject, requestStartWorkSession } from '@/store/projects'
 import { $connection, $cronSessions, $messagingSessions, $sessions } from '@/store/session'
 import { $unconfirmedPinWrites } from '@/store/session-pin-sync'
 import { $removedSessionIds } from '@/store/session-removal'
@@ -96,6 +100,7 @@ import { type ThemeMode, useTheme } from '@/themes/context'
 import { isUserTheme, resolveTheme } from '@/themes/user-themes'
 
 import { buildSessionByAnyId, resolvePinnedSessions } from '../chat/sidebar/session-index'
+import { useServerSessionSearch } from '../chat/sidebar/use-server-session-search'
 import { openSessionFromPicker, openSessionIntentFromModifiers } from '../open-session'
 import {
   AGENTS_ROUTE,
@@ -118,6 +123,7 @@ import { usePaletteContributions } from './contrib'
 import { HighlightWatcher } from './highlight-watcher'
 import { MarketplaceThemePage } from './marketplace-theme-page'
 import { PetInlineToggle, PetPalettePage } from './pet-palette-page'
+import { mergePaletteSessionSearch, sessionKeywords, toSessionEntry } from './session-search'
 
 interface PaletteItem {
   /** Keybind action id — its live combo renders as a hotkey hint. */
@@ -136,6 +142,8 @@ interface PaletteItem {
   keepOpen?: boolean
   keywords?: string[]
   label: string
+  /** Full context for conversation rows whose title or metadata is clipped. */
+  tooltip?: string
   /** Label shown while ⌘/⌃ is held — previews the modifier-variant action. */
   modLabel?: string
   /**
@@ -170,13 +178,6 @@ const PAGE_PARENTS: Record<string, string> = { 'install-theme': 'theme' }
 interface PalettePage {
   groups: PaletteGroup[]
   placeholder: string
-  title: string
-}
-
-interface SessionEntry {
-  git_branch?: null | string
-  id: string
-  preview?: string
   title: string
 }
 
@@ -359,24 +360,26 @@ const PaletteRow = memo(function PaletteRow({
       onSelect={() => onSelectItem(item)}
       value={paletteValue(item)}
     >
-      <Icon className="size-3.5 shrink-0 text-muted-foreground" />
-      <span className={cn('truncate', modPreview && 'text-muted-foreground/80')}>
-        {modPreview ? (
-          item.modLabel
-        ) : (
-          /* Same per-term split as scoreItem's AND matcher, so the emphasis
-             shows exactly which words earned the row its rank. */
-          <HighlightMatches query={search.split(/\s+/)} text={item.label} />
-        )}
-      </span>
+      <Icon className="size-4 shrink-0 text-muted-foreground" />
+      <Tip delayDuration={500} label={item.tooltip}>
+        <span className={cn('truncate', modPreview && 'text-muted-foreground/80')}>
+          {modPreview ? (
+            item.modLabel
+          ) : (
+            /* Same per-term split as scoreItem's AND matcher, so the emphasis
+               shows exactly which words earned the row its rank. */
+            <HighlightMatches query={search.split(/\s+/)} text={item.label} />
+          )}
+        </span>
+      </Tip>
       {item.detail && (
         <span className={cn(HUD_NOTE, HUD_NOTE_VARIANT[item.detailVariant ?? 'muted'])}>{item.detail}</span>
       )}
       {combo && (
         <KbdCombo className={cn('ml-auto', modPreview ? 'opacity-90' : 'opacity-55')} combo={combo} size="sm" />
       )}
-      {item.to && <ChevronRight className={cn('size-3.5 shrink-0 text-muted-foreground/70', !combo && 'ml-auto')} />}
-      {item.active && <Check className={cn('size-3.5 shrink-0 text-primary', !combo && !item.to && 'ml-auto')} />}
+      {item.to && <ChevronRight className={cn('size-4 shrink-0 text-muted-foreground/70', !combo && 'ml-auto')} />}
+      {item.active && <Check className={cn('size-4 shrink-0 text-primary', !combo && !item.to && 'ml-auto')} />}
     </CommandItem>
   )
 })
@@ -390,20 +393,6 @@ const SESSION_ID_RE = /^\d{8}_\d{6}_[a-f0-9]{6}$/
 // compares literal strings against the tree's absolute paths, so an unexpanded
 // home path would always miss and double-create.
 const FOLDER_PATH_RE = /^(\/|[A-Za-z]:[/\\]).+/
-
-type SessionRow = Awaited<ReturnType<typeof listAllProfileSessions>>['sessions'][number]
-
-const toSessionEntry = (session: SessionRow): SessionEntry => ({
-  git_branch: session.git_branch ?? null,
-  id: session.id,
-  preview: session.preview ?? undefined,
-  title: sessionTitle(session)
-})
-
-// Search terms beyond the label: the preview and branch, so a session is
-// findable by what it's about, not only what it's called.
-const sessionKeywords = (session: SessionEntry, ...tags: string[]): string[] =>
-  [...tags, 'chat', 'session', session.preview, session.git_branch].filter((word): word is string => !!word)
 
 type NonConfigSettingsLabel =
   | 'about'
@@ -585,8 +574,20 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
   )
 
   const [search, setSearch] = useState('')
+  const [includeTechnical, setIncludeTechnical] = useState(false)
   const [page, setPage] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const interfaceMode = useStore($interfaceMode)
+  const activeConnectionId = useStore($activeConnectionId)
+  const profiles = useStore($profiles)
+  const projects = useStore($projects)
+
+  const { serverMatches } = useServerSessionSearch(
+    page ? '' : search.trim(),
+    ALL_PROFILES,
+    profiles.map(profile => profile.name),
+    interfaceMode === 'advanced' && includeTechnical
+  )
 
   // The Update row names the same install the statusbar names — same target
   // selection, same resolver. Reduced to the label string: an in-flight apply
@@ -671,13 +672,13 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
   // invalidate these keys — every open must revalidate. The cached page
   // still paints instantly; the live-store overlay below covers the gap.
   const sessionsQuery = useQuery({
-    queryKey: ['command-palette', 'sessions'],
+    queryKey: ['command-palette', 'sessions', activeConnectionId],
     queryFn: () => listAllProfileSessions(200, 1, 'exclude'),
     staleTime: 0
   })
 
   const archivedQuery = useQuery({
-    queryKey: ['command-palette', 'archived'],
+    queryKey: ['command-palette', 'archived', activeConnectionId],
     queryFn: () => listAllProfileSessions(200, 0, 'only'),
     staleTime: 0
   })
@@ -716,16 +717,29 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
   const pinnedSessions = useMemo(() => {
     const byAnyId = buildSessionByAnyId(liveRows, [], [])
 
-    return resolvePinnedSessions(pinnedSessionIds, byAnyId, liveRows, unconfirmedPinWrites).map(toSessionEntry)
-  }, [liveRows, pinnedSessionIds, unconfirmedPinWrites])
+    return resolvePinnedSessions(pinnedSessionIds, byAnyId, liveRows, unconfirmedPinWrites).map(session =>
+      toSessionEntry(session, projects)
+    )
+  }, [liveRows, pinnedSessionIds, projects, unconfirmedPinWrites])
 
   const sessions = useMemo(() => {
     const pinned = new Set(pinnedSessions.map(session => session.id))
 
-    return liveRows.filter(session => !pinned.has(session.id)).map(toSessionEntry)
-  }, [liveRows, pinnedSessions])
+    return liveRows.filter(session => !pinned.has(session.id)).map(session => toSessionEntry(session, projects))
+  }, [liveRows, pinnedSessions, projects])
 
-  const archivedSessions = useMemo(() => (archivedQuery.data?.sessions ?? []).map(toSessionEntry), [archivedQuery.data])
+  const archivedSessions = useMemo(
+    () => (archivedQuery.data?.sessions ?? []).map(session => toSessionEntry(session, projects)),
+    [archivedQuery.data, projects]
+  )
+
+  const searchedSessions = useMemo(() => {
+    if (!search.trim()) {
+      return []
+    }
+
+    return mergePaletteSessionSearch([...pinnedSessions, ...sessions, ...archivedSessions], serverMatches, projects)
+  }, [archivedSessions, pinnedSessions, projects, search, serverMatches, sessions])
 
   // Search/sub-page are local to a mount, and this component remounts per open
   // (keyed by open count), so each open starts clean without a reset effect.
@@ -1235,30 +1249,23 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
       }))
     })
 
-    // Pinned before Sessions: rankGroups' stable sort keeps source order on
-    // equal scores, so a pin wins a tie with an unpinned row of the same name.
-    if (pinnedSessions.length > 0) {
+    if (searchedSessions.length > 0) {
       result.push({
-        heading: t.sidebar.pinned,
-        items: pinnedSessions.map(session => ({
-          icon: Pin,
-          id: `pinned-${session.id}`,
-          keywords: sessionKeywords(session, 'pinned'),
+        heading: t.sidebar.results,
+        items: searchedSessions.map(session => ({
+          detail: [
+            session.profile,
+            session.project,
+            session.lastActive ? fmtDateTime.format(new Date(session.lastActive * 1000)) : null
+          ].filter(Boolean).join(' · '),
+          icon: session.archived ? Archive : pinnedSessions.some(pinned => pinned.id === session.id) ? Pin : MessageCircle,
+          id: `search-session-${session.id}`,
+          keywords: sessionKeywords(session, session.archived ? 'archived' : ''),
           label: session.title,
-          runWithEvent: goSession(session.id)
-        }))
-      })
-    }
-
-    if (sessions.length > 0) {
-      result.push({
-        heading: t.commandCenter.sections.sessions,
-        items: sessions.map(session => ({
-          icon: MessageCircle,
-          id: `session-${session.id}`,
-          keywords: sessionKeywords(session),
-          label: session.title,
-          runWithEvent: goSession(session.id)
+          tooltip: session.title,
+          ...(session.archived
+            ? { run: go(`${SETTINGS_ROUTE}?tab=sessions&session=${encodeURIComponent(session.id)}`) }
+            : { runWithEvent: goSession(session.id) })
         }))
       })
     }
@@ -1307,22 +1314,8 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
       })
     }
 
-    if (archivedSessions.length > 0) {
-      result.push({
-        heading: t.commandCenter.archivedChats,
-        items: archivedSessions.map(session => ({
-          icon: Archive,
-          id: `archived-${session.id}`,
-          keywords: sessionKeywords(session, 'archived'),
-          label: session.title,
-          run: go(`${SETTINGS_ROUTE}?tab=sessions&session=${encodeURIComponent(session.id)}`)
-        }))
-      })
-    }
-
     return result
   }, [
-    archivedSessions,
     availableThemes,
     go,
     goSession,
@@ -1333,7 +1326,7 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
     resolvedMode,
     resolveThemeMode,
     search,
-    sessions,
+    searchedSessions,
     setMode,
     setTheme,
     settingsCatalog,
@@ -1640,7 +1633,7 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
               onClick={goBack}
               type="button"
             >
-              <ChevronLeft className="size-3.5" />
+              <ChevronLeft className="size-4" />
               <span>{t.commandCenter.back}</span>
               <span className="text-muted-foreground/50">/</span>
               <span className="font-medium text-foreground">{activePage.title}</span>
@@ -1670,7 +1663,27 @@ function CommandPaletteBody({ onExited }: { onExited: () => void }) {
             onValueChange={setSearch}
             placeholder={placeholder}
             ref={inputRef}
-            right={page === 'pets' ? <PetInlineToggle /> : undefined}
+            right={
+              page === 'pets' ? (
+                <PetInlineToggle />
+              ) : !page && interfaceMode === 'advanced' ? (
+                <Tip label={t.sidebar.searchFilters.technical}>
+                  <button
+                    aria-label={t.sidebar.searchFilters.technical}
+                    aria-pressed={includeTechnical}
+                    className={cn(
+                      'rounded-md p-1.5 transition-colors hover:bg-(--chrome-action-hover)',
+                      includeTechnical ? 'text-(--theme-primary)' : 'text-muted-foreground'
+                    )}
+                    onClick={() => setIncludeTechnical(value => !value)}
+                    onMouseDown={event => event.preventDefault()}
+                    type="button"
+                  >
+                    <Activity className="size-4" />
+                  </button>
+                </Tip>
+              ) : undefined
+            }
             value={search}
           />
           <CommandList className="dt-portal-scrollbar max-h-[min(20rem,56vh)]">

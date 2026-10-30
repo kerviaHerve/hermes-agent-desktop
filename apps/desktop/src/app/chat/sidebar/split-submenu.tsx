@@ -76,13 +76,13 @@ export function SplitSubmenu({ close, disabled, kit, label, onSplit }: SplitSubm
           close?.()
         }}
       >
-        <Codicon name="split-horizontal" size="0.875rem" />
+        <Codicon name="split-horizontal" size="1rem" />
         <span>{label}</span>
       </SubTrigger>
       <SubContent>
         {SPLIT_DIRS.map(({ dir, icon, label: dirLabel }) => (
           <Item key={dir} onSelect={() => split(dir)}>
-            <Codicon name={icon} size="0.875rem" />
+            <Codicon name={icon} size="1rem" />
             <span>{dirLabel}</span>
           </Item>
         ))}

@@ -10,7 +10,7 @@ import { GlyphSpinner } from '@/components/ui/glyph-spinner'
 import { releaseTypingFocus } from '@/components/ui/keyboard-first'
 import { Tip } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
-import { ChevronDown } from '@/lib/icons'
+import { SlidersHorizontal } from '@/lib/icons'
 import { reasoningEffortClamp, reasoningEffortLabel } from '@/lib/reasoning-effort'
 import { cn } from '@/lib/utils'
 import { $defaultReasoningEffort } from '@/store/session'
@@ -18,7 +18,7 @@ import { $defaultReasoningEffort } from '@/store/session'
 import type { ChatBarState } from './types'
 
 const PILL = cn(
-  'h-(--composer-control-size) shrink-0 gap-1 rounded-md px-2 text-xs font-normal',
+  'size-(--composer-control-size) shrink-0 justify-center rounded-md p-0 text-xs font-normal',
   'text-(--ui-text-tertiary) hover:bg-(--chrome-action-hover) hover:text-foreground'
 )
 
@@ -82,8 +82,12 @@ export function ReasoningPill({ disabled, model }: { disabled: boolean; model: C
             type="button"
             variant="ghost"
           >
-            {pending ? <GlyphSpinner className="opacity-50" spinner="braille" /> : <span>{label}</span>}
-            <ChevronDown className="size-2.5 shrink-0 opacity-50" />
+            {pending ? (
+              <GlyphSpinner className="opacity-50" spinner="braille" />
+            ) : (
+              <SlidersHorizontal className="size-4" />
+            )}
+            {!pending && <span className="sr-only">{label}</span>}
           </Button>
         </DropdownMenuTrigger>
       </Tip>

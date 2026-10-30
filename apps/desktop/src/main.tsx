@@ -43,6 +43,9 @@ import { startUiPreferencesSync } from './lib/ui-preferences/sync'
 import { installBrowserTabTitle } from './store/browser-tab-title'
 import { ThemeProvider } from './themes/context'
 
+// Hermes F keeps its visual layer while using Hermes' palette and backend contracts.
+document.documentElement.dataset.herouiV2 = 'true'
+
 installClipboardShim()
 // Chromium serializes selection copies (Cmd+C, right-click Copy) with the
 // theme's computed colors inlined; without this guard a dark-theme selection

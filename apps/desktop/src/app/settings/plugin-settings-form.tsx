@@ -353,7 +353,7 @@ export function PluginSettingsForm({
       <SectionHeading
         aside={
           <Button className="gap-1.5" disabled={disabled || saving || !dirty} size="sm" type="submit">
-            {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
+            {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
             {s.save}
           </Button>
         }

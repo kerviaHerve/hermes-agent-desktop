@@ -489,7 +489,7 @@ export function useStatusbarItems({
     () => [
       {
         className: `w-7 justify-center px-0${commandCenterOpen ? ' bg-accent/55 text-foreground' : ''}`,
-        icon: <Command className="size-3.5" />,
+        icon: <Command className="size-4" />,
         id: 'command-center',
         // The system icon: the way into every other surface, including the
         // settings that would bring a hidden item back. Never hideable.
@@ -755,6 +755,12 @@ export function useStatusbarItems({
       },
       systemResourcesItem,
       {
+        className: 'opacity-60',
+        id: 'fork-credit',
+        label: 'fork by kervia',
+        variant: 'text'
+      },
+      {
         ...approvalModeItem,
         hidden: gatewayState !== 'open',
         toggleLabel: copy.toggleApprovalMode
@@ -763,7 +769,7 @@ export function useStatusbarItems({
         actionId: 'view.showTerminal',
         className: `w-7 justify-center px-0${terminalShowing ? ' bg-accent/55 text-foreground' : ''}`,
         hidden: !chatOpen,
-        icon: <Terminal className="size-3.5" />,
+        icon: <Terminal className="size-4" />,
         id: 'terminal',
         onSelect: () => toggleTerminalPane(),
         title: terminalShowing ? copy.hideTerminal : copy.showTerminal,

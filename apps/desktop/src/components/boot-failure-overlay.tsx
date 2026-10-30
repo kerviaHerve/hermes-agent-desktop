@@ -515,7 +515,7 @@ export function BootFailureOverlay() {
             onClick={() => setView('recovery')}
             type="button"
           >
-            <ChevronLeft className="size-3.5" />
+            <ChevronLeft className="size-4" />
             {copy.back}
           </button>
           <div className="min-h-0 flex-1 pt-4">

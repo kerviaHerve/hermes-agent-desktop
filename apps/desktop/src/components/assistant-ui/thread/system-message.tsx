@@ -45,7 +45,7 @@ export const BackgroundResult: FC<BackgroundResultProps> = ({ text, report, proc
         >
           {process && (
             <span className={SCAFFOLD_GLYPH_CLASS}>
-              <ToolIcon className="text-(--ui-text-tertiary)" name="terminal" size="0.875rem" />
+              <ToolIcon className="text-(--ui-text-tertiary)" name="terminal" size="1rem" />
             </span>
           )}
           <span className={cn(SCAFFOLD_LABEL_CLASS, 'min-w-0 truncate')}>{text}</span>
@@ -104,7 +104,7 @@ export const SystemMessage: FC = () => {
         data-slot="aui_system-message-root"
       >
         <span className="tool-memory-legendary-glyph flex h-(--conversation-line-height) w-3.5 shrink-0 items-center justify-center">
-          <ToolIcon className="text-(--tool-memory-legendary-icon)" name="brain" size="0.875rem" />
+          <ToolIcon className="text-(--tool-memory-legendary-icon)" name="brain" size="1rem" />
         </span>
         <span className={cn(SCAFFOLD_LABEL_CLASS, 'tool-memory-legendary-title shrink-0 text-transparent')}>
           {reviewNote.groups.label.trim()}

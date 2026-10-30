@@ -1,5 +1,9 @@
 import { ThreadPrimitive, useAuiState } from '@assistant-ui/react'
-import { type ComponentProps, createContext, useMemo } from 'react'
+import { useStore } from '@nanostores/react'
+import { type ComponentProps, createContext, useContext, useMemo } from 'react'
+
+import { useComposerScope } from '@/app/chat/composer/scope'
+import { $activeGatewayProfile, normalizeProfileKey } from '@/store/profile'
 
 import { contentHasVisibleText, messageContentText, PROCESS_NOTIFICATION_RE } from './content'
 
@@ -22,6 +26,7 @@ export function responseMessageRole(message: GroupMessage): string {
 }
 
 export const ResponseMessageIds = createContext<readonly string[]>([])
+export const ResponseAgentProfileContext = createContext<string | null>(null)
 
 interface ResponseMessagesProps {
   components: ComponentProps<typeof ThreadPrimitive.MessageByIndex>['components']
@@ -44,6 +49,12 @@ interface ResponseSection {
 
 /** Keep message runtimes intact; only their visual container and footer are shared. */
 export function ResponseMessages({ components, indices }: ResponseMessagesProps) {
+  const routedProfile = useContext(ResponseAgentProfileContext)
+  const scope = useComposerScope()
+  const activeProfile = useStore($activeGatewayProfile)
+  const profile = normalizeProfileKey(routedProfile ?? scope.profile ?? activeProfile)
+  const agentName = profile === 'default' ? 'Hermes' : profile
+
   const signature = useAuiState(s =>
     JSON.stringify(
       indices.flatMap(index => {
@@ -93,6 +104,15 @@ export function ResponseMessages({ components, indices }: ResponseMessagesProps)
     section.response ? (
       <ResponseMessageIds.Provider key={section.key} value={section.assistantIds}>
         <div className="group flex min-w-0 flex-col gap-(--scaffold-block-gap)" data-slot="aui_response-group">
+          {section.assistantIds.length > 0 && (
+            <div
+              className="flex items-center gap-2 pl-(--message-text-indent) text-[0.6875rem] font-medium text-(--ui-text-secondary)"
+              data-slot="aui_response-agent-label"
+            >
+              <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-(--theme-primary)" />
+              <span className="truncate">{agentName}</span>
+            </div>
+          )}
           {section.indices.map(index => (
             <ThreadPrimitive.MessageByIndex components={components} index={index} key={index} />
           ))}

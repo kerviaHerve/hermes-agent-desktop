@@ -62,7 +62,8 @@ export function ReorderableList({
 }
 
 export function useSortableBindings(id: string) {
-  const { attributes, isDragging, listeners, setNodeRef, transform, transition } = useSortable({ id })
+  const { activeIndex, attributes, index, isDragging, isOver, listeners, setNodeRef, transform, transition } =
+    useSortable({ id })
   // The FULL handle (role/tabIndex + dnd-kit's keyboard and pointer
   // activators) belongs on the grabber only. Row shells forward just
   // `onPointerDown` from it: a keyboard activator on a container makes every
@@ -74,6 +75,7 @@ export function useSortableBindings(id: string) {
   return {
     dragging: isDragging,
     dragHandleProps,
+    dropPosition: isOver && activeIndex !== index ? (activeIndex < index ? 'after' as const : 'before' as const) : undefined,
     ref: setNodeRef,
     reorderable: true as const,
     style: {

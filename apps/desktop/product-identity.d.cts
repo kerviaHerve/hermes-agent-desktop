@@ -1,6 +1,8 @@
 interface ProductIdentity {
   /** True when this artifact is Hermes Light (remote-only client). */
   light: boolean
+  /** The independently installed, remote-only Kervia desktop client. */
+  kerviaEdition: boolean
   /** True for a Store-submission build (Windows Store packaging identity). */
   store: boolean
   /** Display name. e.g. "Hermes Light" */
@@ -23,6 +25,7 @@ interface ProductIdentity {
    *  "latest" | "light"; canary tags: "canary" | "light-canary". Null
    *  for Store and commit builds (no release feed). */
   readonly channel: string | null
+  readonly updateFeedUrl?: string
   /** Store-submission MSIX packaging identity. Present only when `store`. */
   storeMsix?: {
     identityName: string

@@ -138,7 +138,7 @@ export function ComputerUsePanel({ onConfiguredChange }: ComputerUsePanelProps) 
   if (loading) {
     return (
       <div className="flex items-center gap-2 px-1 text-xs text-muted-foreground">
-        <Loader2 className="size-3.5 animate-spin" />
+        <Loader2 className="size-4 animate-spin" />
         Checking Computer Use status…
       </div>
     )
@@ -182,7 +182,7 @@ export function ComputerUsePanel({ onConfiguredChange }: ComputerUsePanelProps) 
           {status.version && <p className="text-[0.68rem] text-muted-foreground/80">{status.version}</p>}
         </div>
         <Button onClick={() => void refresh()} size="sm" variant="text">
-          <RefreshCw className="size-3.5" />
+          <RefreshCw className="size-4" />
           Recheck
         </Button>
       </div>
@@ -226,13 +226,13 @@ export function ComputerUsePanel({ onConfiguredChange }: ComputerUsePanelProps) 
 
       {status.ready ? (
         <div className="flex items-center gap-1.5 px-1 text-xs text-muted-foreground">
-          <Check className="size-3.5" />
+          <Check className="size-4" />
           Computer Use is ready. Ask the agent to capture an app and click around.
         </div>
       ) : (
         status.can_grant && (
           <Button disabled={granting} onClick={() => void grant()} size="sm">
-            {granting ? <Loader2 className="size-3.5 animate-spin" /> : <ExternalLink className="size-3.5" />}
+            {granting ? <Loader2 className="size-4 animate-spin" /> : <ExternalLink className="size-4" />}
             {granting ? 'Waiting for approval…' : 'Grant permissions'}
           </Button>
         )

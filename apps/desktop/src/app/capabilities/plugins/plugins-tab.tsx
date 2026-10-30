@@ -483,7 +483,7 @@ function PackageRow({
                   {p.updateToPin(updateTargetLabel(agent))}
                 </Button>
               )}
-              {busy && <Loader2 className="size-3.5 animate-spin text-(--ui-text-tertiary)" />}
+              {busy && <Loader2 className="size-4 animate-spin text-(--ui-text-tertiary)" />}
               {agentToggleable ? (
                 <Switch
                   aria-label={`${p.halfAgent}: ${pkg.name}`}

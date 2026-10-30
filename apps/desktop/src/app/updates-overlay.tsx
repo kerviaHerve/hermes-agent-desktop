@@ -543,7 +543,7 @@ function ManualView({
             copied ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
           )}
         >
-          {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+          {copied ? <Check className="size-4" /> : <Copy className="size-4" />}
           {copied ? u.copied : u.copy}
         </span>
       </button>

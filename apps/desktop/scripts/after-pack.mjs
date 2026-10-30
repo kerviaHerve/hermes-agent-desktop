@@ -32,7 +32,8 @@ import { sanitizeTree } from './sanitize-pe-signatures.mjs'
  * @param {string} [appDir] the apps/desktop directory
  */
 export async function restoreLegacyMacIcon({ appOutDir, packager }, appDir = path.resolve(import.meta.dirname, '..')) {
-  await copyFile(path.join(appDir, 'assets', 'icon.icns'), path.join(packager.getResourcesDir(appOutDir), 'icon.icns'))
+  const icon = process.env.KERVIA_DESKTOP_EDITION === '1' ? 'assets/kervia/icon.icns' : 'assets/icon.icns'
+  await copyFile(path.join(appDir, icon), path.join(packager.getResourcesDir(appOutDir), 'icon.icns'))
 }
 
 /**

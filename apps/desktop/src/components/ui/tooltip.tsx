@@ -304,7 +304,13 @@ const OVERFLOW_TIP_DELAY_MS = 600
  * Measurement happens on the CHILD element (`asChild` puts the trigger props on
  * it), so wrap the element that carries the truncation/overflow styling.
  */
-function OverflowTip({ label, children, delayDuration = OVERFLOW_TIP_DELAY_MS, ...props }: TipProps) {
+function OverflowTip({
+  label,
+  children,
+  always = false,
+  delayDuration = OVERFLOW_TIP_DELAY_MS,
+  ...props
+}: TipProps & { always?: boolean }) {
   const provided = React.useContext(HasTooltipProvider)
   const [open, setOpen] = React.useState(false)
   const timer = React.useRef<number | undefined>(undefined)
@@ -344,7 +350,7 @@ function OverflowTip({ label, children, delayDuration = OVERFLOW_TIP_DELAY_MS, .
 
           // Same 2px slack the sidebar marquee uses: sub-pixel rounding can
           // report a 1px "overflow" on a title that fully fits.
-          if (el.scrollWidth - el.clientWidth > 2) {
+          if (always || el.scrollWidth - el.clientWidth > 2) {
             timer.current = window.setTimeout(() => setOpen(true), delayDuration)
           }
         }}

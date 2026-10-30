@@ -157,7 +157,7 @@ function SudoDialog({ sessionId }: { sessionId: string | null }) {
               {t.common.cancel}
             </Button>
             <Button disabled={submitting} type="submit">
-              {submitting ? <Loader2 className="size-3.5 animate-spin" /> : t.common.send}
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : t.common.send}
             </Button>
           </DialogFooter>
         </form>
@@ -255,7 +255,7 @@ function SecretDialog({ sessionId }: { sessionId: string | null }) {
               {t.common.cancel}
             </Button>
             <Button disabled={submitting || !value} type="submit">
-              {submitting ? <Loader2 className="size-3.5 animate-spin" /> : t.common.send}
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : t.common.send}
             </Button>
           </DialogFooter>
         </form>
@@ -350,7 +350,7 @@ function VaultUnlockDialog({ sessionId }: { sessionId: string | null }) {
               {copy.vaultUnlockKeepLocked}
             </Button>
             <Button disabled={submitting || !value} type="submit">
-              {submitting ? <Loader2 className="size-3.5 animate-spin" /> : copy.vaultUnlockConfirm}
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : copy.vaultUnlockConfirm}
             </Button>
           </DialogFooter>
         </form>
@@ -464,7 +464,7 @@ function VaultSaveLoginDialog({ sessionId }: { sessionId: string | null }) {
               {copy.vaultSaveDecline}
             </Button>
             <Button disabled={submitting || !canSave} type="submit">
-              {submitting ? <Loader2 className="size-3.5 animate-spin" /> : copy.vaultSaveConfirm}
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : copy.vaultSaveConfirm}
             </Button>
           </DialogFooter>
         </form>
@@ -566,7 +566,7 @@ function VaultCodeDialog({ sessionId }: { sessionId: string | null }) {
               {copy.vaultCodeSkip}
             </Button>
             <Button disabled={submitting || !trimmed} type="submit">
-              {submitting ? <Loader2 className="size-3.5 animate-spin" /> : copy.vaultCodeConfirm}
+              {submitting ? <Loader2 className="size-4 animate-spin" /> : copy.vaultCodeConfirm}
             </Button>
           </DialogFooter>
         </form>

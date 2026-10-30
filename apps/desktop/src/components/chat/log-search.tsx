@@ -99,7 +99,7 @@ export function LogSearchField({ containerClassName, onChange, placeholder, sear
                     size="icon-xs"
                     variant="ghost"
                   >
-                    <Icon className="size-3.5" />
+                    <Icon className="size-4" />
                   </Button>
                 </Tip>
               )

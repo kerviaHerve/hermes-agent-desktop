@@ -1,3 +1,22 @@
+# Hermes Desktop · Kervia Edition
+
+Un client macOS pour [Hermes Agent](https://github.com/NousResearch/hermes-agent), basé sur son code source MIT. Cette édition se concentre sur la lecture et l'organisation des conversations. Elle fonctionne avec une passerelle Hermes existante et **n'installe pas le moteur Hermes**.
+
+### Ce que cette édition améliore
+
+- Conversations regroupées par agent, avec un repère visuel pour l'agent et la discussion active, repli des groupes et réorganisation des agents et des discussions.
+- Recherche limitée au Hermes sélectionné, afin de garder les serveurs locaux et distants séparés.
+- Fil de discussion plus lisible : distinction entre vos messages et ceux de l'agent, activité de l'agent consultable selon le niveau de détail choisi.
+- Barre de saisie plus compacte, avec ses options Hermes conservées, ainsi que plusieurs hauteurs et largeurs de fil.
+- Habillage plus sobre, thèmes existants préservés, icône issue du chevron Kervia original.
+- Application indépendante de l'Hermes Desktop officiel : nom, identifiant macOS, données locales et [mises à jour](docs/KERVIA-RELEASE.md) séparés.
+
+Les projets, profils, paramètres et outils restent ceux d'Hermes. Les [versions macOS](https://github.com/kerviaHerve/hermes-agent-desktop/releases) ne comprennent que le client Desktop ; une passerelle Hermes compatible doit déjà être disponible. Le moteur et ses mises à jour restent gérés séparément. La préparation de Windows et Linux n'est pas encore validée.
+
+Cette édition est maintenue par [Kervia](https://kervia.ch). Elle n'est pas une publication officielle de Nous Research. Le code d'origine, sa licence MIT et ses mentions sont conservés ci-dessous.
+
+---
+
 <p align="center">
   <img src="assets/banner.png" alt="Hermes Agent" width="100%">
 </p>

@@ -209,7 +209,7 @@ export function PetSettings() {
                             <div className="absolute right-1.5 top-1.5 flex gap-1 opacity-0 transition focus-within:opacity-100 group-hover:opacity-100">
                               {pet.generated && (
                                 <PetAction
-                                  icon={<Pencil className="size-3.5" />}
+                                  icon={<Pencil className="size-4" />}
                                   label={copy.rename(pet.displayName)}
                                   onClick={() => {
                                     setRenameValue(pet.displayName)
@@ -219,7 +219,7 @@ export function PetSettings() {
                               )}
                               {pet.generated && (
                                 <PetAction
-                                  icon={<Download className="size-3.5" />}
+                                  icon={<Download className="size-4" />}
                                   label={copy.exportPet(pet.displayName)}
                                   onClick={() => exportPet(pet.slug)}
                                 />
@@ -229,7 +229,7 @@ export function PetSettings() {
                                 // permanent, so confirm; petdex pets just uninstall.
                                 <PetAction
                                   danger
-                                  icon={<Trash2 className="size-3.5" />}
+                                  icon={<Trash2 className="size-4" />}
                                   label={pet.generated ? copy.delete(pet.displayName) : copy.uninstall(pet.displayName)}
                                   onClick={() => (pet.generated ? setConfirmDelete(pet) : removePet(pet.slug))}
                                 />

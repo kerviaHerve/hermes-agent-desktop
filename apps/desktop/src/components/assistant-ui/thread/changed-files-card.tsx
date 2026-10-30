@@ -64,7 +64,7 @@ export const ChangedFilesCard: FC<{ parts: readonly unknown[] }> = ({ parts }) =
               onClick={() => void openReviewForPath(file.path, scopeCwd, composerScope.target)}
               type="button"
             >
-              <FileTypeIcon className="shrink-0 text-(--ui-text-tertiary)" path={file.path} size="0.875rem" />
+              <FileTypeIcon className="shrink-0 text-(--ui-text-tertiary)" path={file.path} size="1rem" />
               <span className="min-w-0 flex-1 truncate text-(--ui-text-secondary)">{file.name}</span>
               <DiffCount added={file.added} removed={file.removed} />
             </button>

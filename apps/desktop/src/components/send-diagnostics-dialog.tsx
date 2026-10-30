@@ -65,7 +65,7 @@ export function SendDiagnosticsHost() {
               <Button disabled={busy} onClick={() => void confirmSendDiagnostics()}>
                 {busy ? (
                   <span className="flex items-center gap-1.5">
-                    <Loader2Icon className="size-3.5 animate-spin" />
+                    <Loader2Icon className="size-4 animate-spin" />
                     {copy.uploading}
                   </span>
                 ) : (

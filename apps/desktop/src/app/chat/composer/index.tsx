@@ -6,7 +6,6 @@ import {
   type KeyboardEvent,
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef
 } from 'react'
@@ -29,6 +28,7 @@ import { useStoreSelector, useStoresSelector } from '@/lib/use-session-slice'
 import { cn } from '@/lib/utils'
 import { sessionCompacting } from '@/store/compaction'
 import { draftRetry } from '@/store/composer-draft-retry'
+import { $composerHeight } from '@/store/composer-height'
 import { browseBackward, browseForward, deriveUserHistory, isBrowsingHistory } from '@/store/composer-input-history'
 import { POPOUT_WIDTH_REM } from '@/store/composer-popout'
 import { parkQueuedPrompts } from '@/store/composer-queue'
@@ -38,7 +38,14 @@ import { $chatOnboardingSolo } from '@/store/onboarding-intro'
 import { sessionBlockingPrompt } from '@/store/prompts'
 import { toggleReview } from '@/store/review'
 import { $gatewayState } from '@/store/session'
-import { $botChatSessionIds, $sessionStates, $sessionTiles, isBotChatSession } from '@/store/session-states'
+import { isSessionOwnerRoute } from '@/store/session-request-router'
+import {
+  $botChatSessionIds,
+  $sessionStates,
+  $sessionTiles,
+  isBotChatSession,
+  knownOwnerForSession
+} from '@/store/session-states'
 import { useForcedTextDirection } from '@/store/text-direction'
 import { $threadScrolledUpBySession } from '@/store/thread-scroll'
 import { $autoSpeakReplies } from '@/store/voice-prefs'
@@ -47,6 +54,7 @@ import { useTheme } from '@/themes'
 import { AttachmentList } from './attachments'
 import { deriveBusySubmitState } from './busy-submit-state'
 import { ComposerDockGlow, QueuedEditBanner } from './chat-bar-parts'
+import { ComposerChrome, ComposerDisplayControls } from './chrome'
 import {
   acceptsTriggerCompletion,
   COMPOSER_FADE_BACKGROUND,
@@ -59,7 +67,7 @@ import {
 } from './composer-utils'
 import { ContextMenu } from './context-menu'
 import { COMPOSER_AREAS } from './contrib'
-import { ComposerControls } from './controls'
+import { ComposerControls, ComposerModelControls } from './controls'
 import { ComposerDirectiveActions } from './directive-actions'
 import { COMPOSER_DROP_ACTIVE_CLASS, COMPOSER_DROP_FADE_CLASS } from './drop-affordance'
 import { markActiveComposer, onComposerAttachImagesRequest } from './focus'
@@ -102,7 +110,7 @@ import {
 import { useComposerScope, useComposerSurfaceId } from './scope'
 import { ComposerStatusStack } from './status-stack'
 import { CodingStatusRow } from './status-stack/coding-row'
-import { StatusDrawerContent, StatusDrawerToggle } from './status-stack/drawer'
+import { StatusDrawerContent } from './status-stack/drawer'
 import { extractClipboardImageBlobs, openDirectiveScope } from './text-utils'
 import { composerTextEntryProps, touchTapFocusHandlers } from './touch-text-entry'
 import { ComposerTriggerPopover } from './trigger-popover'
@@ -159,6 +167,7 @@ export function ChatBar({
   onTranscribeAudio
 }: ChatBarProps) {
   const hudMode = useStore($hudMode)
+  const composerHeight = useStore($composerHeight)
   const touchPointer = useStore($touchPointer)
   const tapFocus = useMemo(() => (touchPointer ? touchTapFocusHandlers() : undefined), [touchPointer])
   const hudWindowing = window.hermesDesktop?.hud?.windowing
@@ -193,9 +202,16 @@ export function ChatBar({
   const awaitingInput = useStore(scope.$awaitingInput)
   const blockingPrompt = useStore(useMemo(() => sessionBlockingPrompt(sessionId ?? null), [sessionId]))
   const activeQueueSessionKey = useComposerQueueScopeKey(queueSessionKey, sessionId, freshDraftKey)
-  const { collapsed: statusDrawerCollapsed, toggle: toggleStatusDrawer } = useStatusDrawer(activeQueueSessionKey)
-  const statusDrawerId = useId()
-  const codingDrawerId = useId()
+  const sessionOwner = knownOwnerForSession(sessionId) ?? knownOwnerForSession(queueSessionKey)
+
+  const currentAgentProfile = isSessionOwnerRoute(sessionOwner)
+    ? sessionOwner.profile
+    : typeof sessionOwner === 'string'
+      ? sessionOwner
+      : profile
+
+  const statusDrawer = useStatusDrawer(activeQueueSessionKey)
+  const { codingDrawerId, collapsed: statusDrawerCollapsed, statusDrawerId, toggle: toggleStatusDrawer } = statusDrawer
 
   const requestBusyConfig = useCallback<GatewayRequester>(
     (method, params) => (gateway ? gateway.request(method, params) : Promise.reject(new Error('Gateway unavailable'))),
@@ -411,6 +427,11 @@ export function ChatBar({
     editorRef,
     poppedOut
   })
+
+  const stackedLayout = stacked || (!hudMode && !poppedOut)
+
+  const desktopLayout =
+    !hudMode && !poppedOut && !guidedChat && !chatOnboardingSolo && !singleColumn && !foldVoice && !minimal
 
   const hasComposerPayload = hasText || attachments.length > 0
   const { cardWaiting } = useCardWaitingSubmit(sessionId ?? null, busy, hasComposerPayload)
@@ -1133,7 +1154,7 @@ export function ChatBar({
       busyAction={busyAction}
       canSubmit={canSubmit}
       cardWaiting={cardWaiting}
-      compactModelPill={poppedOut || compactPill}
+      compactModelPill={poppedOut || (compactPill && (hudMode || foldVoice))}
       conversation={{
         active: voiceConversationActive,
         level: conversation.level,
@@ -1144,10 +1165,11 @@ export function ChatBar({
         onToggleMute: conversation.toggleMute,
         status: conversation.status
       }}
+      desktopLayout={desktopLayout}
       disabled={disabled}
       foldVoice={foldVoice}
       hasComposerPayload={hasComposerPayload}
-      hideModelPill={guidedChat}
+      hideModelPill={guidedChat || desktopLayout}
       minimal={minimal || chatOnboardingSolo}
       onDictate={dictate}
       onQueue={() => {
@@ -1162,7 +1184,7 @@ export function ChatBar({
     />
   )
 
-  const inputWidthClass = composerInputWidthClass(stacked)
+  const inputWidthClass = composerInputWidthClass(stackedLayout)
 
   const input = (
     <div className={cn('relative', inputWidthClass)}>
@@ -1174,7 +1196,7 @@ export function ChatBar({
         className={cn(
           'min-h-[1.625rem] min-h-(--composer-input-min-height) max-h-(--composer-input-max-height) cursor-text overflow-y-auto whitespace-pre-wrap break-words [overflow-wrap:anywhere] bg-transparent pb-1 pr-1 pt-1 leading-normal text-foreground outline-none disabled:cursor-not-allowed',
           '**:data-ref-text:cursor-default',
-          stacked && 'pl-3',
+          stackedLayout && 'pl-3',
           inputWidthClass,
           // Inside the native Wayland HUD drag region: a drag region swallows
           // the page's mouse input whole, so the input must opt back out or it
@@ -1182,7 +1204,15 @@ export function ChatBar({
           hudNativeDrag && '[-webkit-app-region:no-drag]'
         )}
         contentEditable={!inputDisabled}
-        data-placeholder={placeholder}
+        data-placeholder={
+          desktopLayout && !disabled && !reconnecting
+            ? t.composer.writeToAgent(
+                currentAgentProfile && currentAgentProfile !== 'default'
+                  ? currentAgentProfile.charAt(0).toUpperCase() + currentAgentProfile.slice(1)
+                  : 'Hermes'
+              )
+            : placeholder
+        }
         data-slot={RICH_INPUT_SLOT}
         dir={textDirection}
         onBeforeInput={handleEditorBeforeInput}
@@ -1345,7 +1375,8 @@ export function ChatBar({
           </StatusDrawerContent>
           <ComposerPrimitive.Root
             className={cn(
-              'group/composer relative w-full overflow-visible rounded-2xl',
+              'group/composer relative w-full overflow-visible rounded-xl',
+              desktopLayout && 'rounded-[0.6875rem]',
               poppedOut && 'bg-transparent',
               dragging && 'cursor-grabbing select-none touch-none',
               // Native Wayland HUD: setBounds cannot position a top-level
@@ -1354,7 +1385,9 @@ export function ChatBar({
               // Ctrl+primary-button drag. pt-4 is the carved-out grab band.
               hudNativeDrag && 'hud-native-drag pt-4 [-webkit-app-region:drag]'
             )}
+            data-desktop-layout={desktopLayout ? '' : undefined}
             data-drag-active={dragActive ? '' : undefined}
+            data-height-mode={!hudMode && !poppedOut ? composerHeight : undefined}
             data-hud-grabbing={hudGrabbing ? '' : undefined}
             data-popped-out={poppedOut ? '' : undefined}
             data-slot="composer-root"
@@ -1441,10 +1474,14 @@ export function ChatBar({
             )}
             <div className="relative w-full rounded-[inherit]">
               {!hudMode && !guidedChat && (
-                <StatusDrawerToggle
+                <ComposerChrome
+                  activity={statusStackVisible}
                   collapsed={statusDrawerCollapsed}
                   controls={`${statusDrawerId} ${codingDrawerId}`}
-                  onToggle={toggleStatusDrawer}
+                  desktopLayout={desktopLayout}
+                  onToggleActivity={toggleStatusDrawer}
+                  profile={currentAgentProfile}
+                  sessionId={sessionId ?? null}
                 />
               )}
               {hudMode && busy && <span aria-hidden className="arc-border arc-composer" />}
@@ -1505,10 +1542,34 @@ export function ChatBar({
                   <VoicePlaybackActivity />
                   {queueEdit && editingQueuedPrompt && <QueuedEditBanner onExit={exitQueuedEdit} />}
                   {attachments.length > 0 && <AttachmentList attachments={attachments} onRemove={onRemoveAttachment} />}
-                  <div className={cn('grid w-full', controlRowGridClass(singleColumn, stacked))}>
-                    <div className="flex translate-y-[3px] items-start gap-(--composer-control-gap) self-start [grid-area:menu]">
+                  <div
+                    className={cn(
+                      'grid w-full',
+                      controlRowGridClass(singleColumn, stackedLayout),
+                      desktopLayout && 'grid-cols-[minmax(0,1fr)_auto]'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'flex min-w-0 items-center gap-(--composer-control-gap) self-start [grid-area:menu]',
+                        desktopLayout && 'flex-wrap',
+                        !desktopLayout && 'translate-y-[3px]'
+                      )}
+                    >
                       {contextMenu}
+                      {desktopLayout && !voiceConversationActive && (
+                        <ComposerModelControls disabled={disabled} iconOnly model={state.model} />
+                      )}
                       <ContribSlot area={COMPOSER_AREAS.leading} />
+                      {desktopLayout && !hudMode && !guidedChat && (
+                        <ComposerDisplayControls
+                          activity={statusStackVisible}
+                          collapsed={statusDrawerCollapsed}
+                          controls={`${statusDrawerId} ${codingDrawerId}`}
+                          desktopLayout
+                          onToggleActivity={toggleStatusDrawer}
+                        />
+                      )}
                     </div>
                     <div className="min-w-0 [grid-area:input]">{input}</div>
                     {/* `justify-end` packs contributed actions and the send cluster

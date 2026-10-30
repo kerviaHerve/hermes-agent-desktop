@@ -151,7 +151,7 @@ export function ProviderConfigModal({
             </Button>
           </DialogClose>
           <Button disabled={saving} onClick={() => void save()} size="sm">
-            {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Save />}
+            {saving ? <Loader2 className="size-4 animate-spin" /> : <Save />}
             Save changes
           </Button>
         </DialogFooter>

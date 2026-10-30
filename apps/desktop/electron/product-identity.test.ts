@@ -32,11 +32,40 @@ beforeEach((): void => {
 })
 
 afterEach((): void => {
+  delete process.env.KERVIA_DESKTOP_EDITION
   delete process.env.HERMES_DESKTOP_VARIANT
   delete process.env.HERMES_PAYLOAD_TAG
   delete process.env.HERMES_BUILD_COMMIT
   delete process.env.HERMES_PAYLOAD_VERSION
   vi.resetModules()
+})
+
+test('Kervia Edition is a separate remote-only app with its own release feed', async (): Promise<void> => {
+  const official: ProductIdentity = await identityForVariant('light')
+  process.env.KERVIA_DESKTOP_EDITION = '1'
+  const edition: ProductIdentity = await identityForVariant('light')
+
+  assert.equal(edition.displayName, 'Hermes Desktop · Kervia Edition')
+  assert.equal(edition.appId, 'ch.kervia.hermes-desktop')
+  assert.equal(edition.light, true)
+  assert.equal(edition.kerviaEdition, true)
+  assert.equal(edition.channel, 'stable')
+  assert.equal(edition.updateFeedUrl, 'https://github.com/kerviaHerve/hermes-agent-desktop/releases/latest/download/')
+  assert.notEqual(edition.appId, official.appId)
+
+  const root: string = fs.mkdtempSync(path.join(os.tmpdir(), 'kervia-identity-'))
+  try {
+    const paths: Record<string, string> = { appData: root, userData: path.join(root, 'Hermes') }
+    const runtime: { applyDesktopIdentity: typeof applyDesktopIdentity } = await import('./product-identity')
+    runtime.applyDesktopIdentity({
+      getPath: (): string => root,
+      setPath: (_key: 'userData', value: string): void => { paths.userData = value },
+      setName: (): void => {}
+    }, edition)
+    assert.equal(paths.userData, path.join(root, edition.appNamePascal))
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true })
+  }
 })
 
 async function identityForVariant(variant: string | undefined): Promise<ProductIdentity> {

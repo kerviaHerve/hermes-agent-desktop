@@ -352,4 +352,14 @@ describe('searchSessions profile scope', () => {
       profile: 'research'
     })
   })
+
+  it('can exclude internal child sessions at the search endpoint', async () => {
+    hermesApi.mockResolvedValue({ results: [] } as never)
+
+    await searchSessions('zebra', 'research', { excludeSources: ['subagent'] })
+
+    expect(hermesApi.mock.calls[0][0]).toMatchObject({
+      path: '/api/sessions/search?q=zebra&profile=research&exclude_sources=subagent'
+    })
+  })
 })

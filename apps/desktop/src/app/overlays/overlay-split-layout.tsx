@@ -150,7 +150,7 @@ export const OverlayNavItem = memo(function OverlayNavItem({
         <Icon
           className={cn(
             'shrink-0',
-            nested ? 'size-3.5' : 'size-4',
+            nested ? 'size-4' : 'size-4',
             active ? 'text-foreground/80' : 'text-muted-foreground/80'
           )}
         />

@@ -261,7 +261,7 @@ describe('ProfileRail overflow', () => {
     mask = observeMask()
   })
 
-  it('marks only clipped edges and leaves create/import outside the scrolling profiles', () => {
+  it('marks only clipped edges and keeps the actions menu outside the scrolling profiles', () => {
     profiles.set(
       Array.from({ length: 8 }, (_, index) => ({ is_default: index === 0, name: index ? `agent${index}` : 'default' }))
     )
@@ -276,8 +276,12 @@ describe('ProfileRail overflow', () => {
     fireEvent.scroll(scroller)
     expect(mask.mock.calls.at(-1)?.[0]).toContain('to right, black,')
     expect(mask.mock.calls.at(-1)?.[0]).toContain('transparent)')
-    expect(scroller.contains(screen.getByRole('button', { name: 'New profile' }))).toBe(false)
-    expect(scroller.contains(screen.getByRole('button', { name: 'Import profile…' }))).toBe(false)
+    const actions = screen.getByRole('button', { name: 'Manage profiles…' })
+    expect(scroller.contains(actions)).toBe(false)
+    fireEvent.pointerDown(actions, { button: 0, pointerType: 'mouse' })
+    expect(screen.getByRole('menuitem', { name: 'New profile' })).toBeTruthy()
+    expect(screen.getByRole('menuitem', { name: 'Import profile…' })).toBeTruthy()
+    fireEvent.keyDown(screen.getByRole('menu'), { key: 'Escape' })
 
     scroller.scrollLeft = 50
     fireEvent.scroll(scroller)
@@ -431,7 +435,8 @@ describe('ProfileRail fleet mode', () => {
     expect(getAgentRoster).not.toHaveBeenCalled()
     expect(screen.queryByRole('group', { name: /^Profiles on/ })).toBeNull()
     expect(container.querySelector('[data-slot="profile-rail-divider"]')).toBeNull()
-    expect(screen.getByRole('button', { name: 'Manage gateways…' })).toBeTruthy()
+    fireEvent.pointerDown(screen.getByRole('button', { name: 'Manage profiles…' }), { button: 0, pointerType: 'mouse' })
+    expect(screen.getByRole('menuitem', { name: 'Manage gateways…' })).toBeTruthy()
   })
 
   it('lays every other gateway on the strip as an at-rest group, in switcher order', async () => {

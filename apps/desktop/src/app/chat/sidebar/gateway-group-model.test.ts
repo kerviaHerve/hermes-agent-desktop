@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { DesktopConnectionsRegistry } from '@/global'
 import { makeSessionInfo } from '@/test/session-info'
 
-import { buildGatewaySessionGroups, scopeGatewaySessionGroups } from './gateway-group-model'
+import { buildGatewaySessionGroups, coalesceSoleLocalGroups, scopeGatewaySessionGroups, withEmptyProfileGroups } from './gateway-group-model'
 
 const registry = {
   version: 2,
@@ -58,5 +58,35 @@ describe('scopeGatewaySessionGroups', () => {
     expect(new Set(mixed.map(group => group.label)).size).toBe(mixed.length)
     expect(single[0].label).toBe(single[0].profile)
     expect(mixed.map(group => group.sessions)).toEqual(recents.map(group => group.sessions))
+  })
+})
+
+describe('coalesceSoleLocalGroups', () => {
+  it('shows local and untagged conversations under one section per agent in the native local view', () => {
+    const localRows = [
+      makeSessionInfo({ id: 'a', connection_id: 'local', profile: 'default' }),
+      makeSessionInfo({ id: 'b', profile: 'default' }),
+      makeSessionInfo({ id: 'c', connection_id: 'local', profile: 'forky' })
+    ]
+
+    const groups = coalesceSoleLocalGroups(buildGatewaySessionGroups(localRows, registry, {}), registry, null, false, {})
+    const visible = withEmptyProfileGroups(groups, ['default', 'forky'], null, registry, {})
+
+    expect(members(visible)).toEqual({
+      [JSON.stringify([null, 'default'])]: ['b', 'a'],
+      [JSON.stringify([null, 'forky'])]: ['c']
+    })
+    expect(visible.flatMap(group => group.sessions.map(session => session.connection_id || null))).toEqual([
+      null,
+      'local',
+      'local'
+    ])
+  })
+
+  it('keeps owner groups separate when a remote conversation is present', () => {
+    const groups = buildGatewaySessionGroups(rows, registry, {})
+
+    expect(coalesceSoleLocalGroups(groups, registry, null, false, {})).toBe(groups)
+    expect(coalesceSoleLocalGroups(groups, registry, null, true, {})).toBe(groups)
   })
 })

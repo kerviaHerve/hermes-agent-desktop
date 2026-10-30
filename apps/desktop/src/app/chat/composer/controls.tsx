@@ -6,7 +6,7 @@ import { Tip, TipKeybindLabel } from '@/components/ui/tooltip'
 import { useI18n } from '@/i18n'
 import { triggerHaptic } from '@/lib/haptics'
 import { hostHas } from '@/lib/host-capabilities'
-import { Ear, EarOff, iconSize, Layers3, Loader2, Square } from '@/lib/icons'
+import { Ear, EarOff, iconSize, Layers3, Loader2, SendFilled, Square } from '@/lib/icons'
 import { cn } from '@/lib/utils'
 import { recordAction } from '@/store/desktop-metrics'
 import { $hudMode, closeHud, resetHudLayout } from '@/store/hud'
@@ -55,6 +55,7 @@ export function ComposerControls({
   compactModelPill = false,
   conversation,
   disabled,
+  desktopLayout = false,
   foldVoice = false,
   hasComposerPayload,
   hideModelPill = false,
@@ -75,6 +76,7 @@ export function ComposerControls({
   compactModelPill?: boolean
   conversation: ConversationProps
   disabled: boolean
+  desktopLayout?: boolean
   foldVoice?: boolean
   hasComposerPayload: boolean
   hideModelPill?: boolean
@@ -167,38 +169,44 @@ export function ComposerControls({
             type="button"
             variant="ghost"
           >
-            <Layers3 className={iconSize.sm} />
+            <Layers3 className={iconSize.md} />
           </Button>
         </Tip>
       ) : null}
-      {showVoicePrimary ? (
+      {showVoicePrimary && !desktopLayout ? (
         <StartVoiceButton disabled={disabled} label={c.startVoice} onStart={conversation.onStart} />
       ) : (
-        <Tip
-          label={
-            showStop ? (
-              <TipKeybindLabel actionId="composer.send" text={c.stop} />
-            ) : (
-              <TipKeybindLabel actionId="composer.send" text={sendLabel} />
-            )
-          }
-          placement="control"
-        >
-          <Button
-            aria-label={showStop ? c.stop : sendLabel}
-            className={PRIMARY_ICON_BTN}
-            disabled={disabled || !canSubmit}
-            onClick={() => recordAction(showStop ? 'composer.cancel' : 'composer.send', 'click')}
-            onMouseDown={keepEditorFocus}
-            type="submit"
+        <>
+          {desktopLayout && !busy && !minimal ? (
+            <StartVoiceButton disabled={disabled} label={c.startVoice} onStart={conversation.onStart} quiet />
+          ) : null}
+          <Tip
+            label={
+              showStop ? (
+                <TipKeybindLabel actionId="composer.send" text={c.stop} />
+              ) : (
+                <TipKeybindLabel actionId="composer.send" text={sendLabel} />
+              )
+            }
+            placement="control"
           >
-            {showStop ? (
-              <span className="block size-2.5 rounded-[0.1875rem] bg-current" />
-            ) : (
-              <Codicon name="arrow-up" size="0.875rem" />
-            )}
-          </Button>
-        </Tip>
+            <Button
+              aria-label={showStop ? c.stop : sendLabel}
+              className={cn(PRIMARY_ICON_BTN, desktopLayout && 'composer-desktop-send')}
+              data-slot="composer-send"
+              disabled={disabled || !canSubmit}
+              onClick={() => recordAction(showStop ? 'composer.cancel' : 'composer.send', 'click')}
+              onMouseDown={keepEditorFocus}
+              type="submit"
+            >
+              {showStop ? (
+                <span className="block size-2.5 rounded-[0.1875rem] bg-current" />
+              ) : (
+                <SendFilled className={iconSize.lg} />
+              )}
+            </Button>
+          </Tip>
+        </>
       )}
       {/* The way out of HUD mode, riding the controls row rather than floating
           above the bar. The old chip lived in a 26px transparent strip reserved
@@ -208,6 +216,23 @@ export function ComposerControls({
           until hovered. Here it costs no reserved space and sits with the other
           things you can press. */}
       {hudMode ? <HudWindowButtons /> : null}
+    </div>
+  )
+}
+
+export function ComposerModelControls({
+  disabled,
+  iconOnly = false,
+  model
+}: {
+  disabled: boolean
+  iconOnly?: boolean
+  model: ChatBarState['model']
+}) {
+  return (
+    <div className="flex min-w-0 items-center gap-1" data-slot="composer-model-controls">
+      <ModelPill disabled={disabled} iconOnly={iconOnly} model={model} />
+      <ReasoningPill disabled={disabled} model={model} />
     </div>
   )
 }
@@ -249,7 +274,7 @@ function renderSteerButton(
         type="button"
         variant="ghost"
       >
-        <Codicon name="debug-step-over" size="0.875rem" />
+        <Codicon name="debug-step-over" size="1rem" />
       </Button>
     </Tip>
   ) : null
@@ -269,7 +294,7 @@ function HudWindowButtons() {
           type="button"
           variant="ghost"
         >
-          <Codicon name="discard" size="0.875rem" />
+          <Codicon name="discard" size="1rem" />
         </Button>
       </Tip>
       <Tip label={t.titlebar.exitHud} placement="toolbar">
@@ -281,7 +306,7 @@ function HudWindowButtons() {
           type="button"
           variant="ghost"
         >
-          <Codicon name="screen-normal" size="0.875rem" />
+          <Codicon name="screen-normal" size="1rem" />
         </Button>
       </Tip>
     </>
@@ -437,7 +462,7 @@ function WakeWordButton({ disabled, pausedForVoice = false }: { disabled: boolea
         type="button"
         variant="ghost"
       >
-        {wake.listening && !pausedForVoice ? <Ear className={iconSize.sm} /> : <EarOff className={iconSize.sm} />}
+        {wake.listening && !pausedForVoice ? <Ear className={iconSize.md} /> : <EarOff className={iconSize.md} />}
       </Button>
     </Tip>
   )

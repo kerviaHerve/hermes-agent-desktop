@@ -41,7 +41,7 @@ export function RowValue({ onAction, row }: { onAction?: () => void; row: Billin
           variant="outline"
         >
           {action.label}
-          {!action.disabled && action.url && <ExternalLink className="size-3.5" />}
+          {!action.disabled && action.url && <ExternalLink className="size-4" />}
         </Button>
       )}
     </>

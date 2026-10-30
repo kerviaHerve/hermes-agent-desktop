@@ -198,7 +198,7 @@ export function MaintenancePanel() {
     <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto pb-2">
       {error && (
         <span className="inline-flex items-center gap-1 text-[length:var(--conversation-caption-font-size)] text-destructive">
-          <AlertCircle className="size-3.5" />
+          <AlertCircle className="size-4" />
           {error}
         </span>
       )}

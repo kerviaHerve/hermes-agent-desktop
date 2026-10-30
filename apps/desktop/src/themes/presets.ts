@@ -418,6 +418,68 @@ export const monoTheme: DesktopTheme = {
   ...THEME_PRESET_PALETTES.mono
 }
 
+/** Graphite and citron in dark mode; quiet paper and readable citron in light mode. */
+export const citronTheme: DesktopTheme = {
+  name: 'citron',
+  label: 'Graphite Citron',
+  description: 'Quiet graphite with a citron accent',
+  colors: {
+    ...THEME_PRESET_PALETTES.github.colors,
+    background: '#fafbf8',
+    foreground: '#20241d',
+    card: '#ffffff',
+    cardForeground: '#20241d',
+    muted: '#eef0e8',
+    mutedForeground: '#636b60',
+    popover: '#ffffff',
+    popoverForeground: '#20241d',
+    primary: '#607300',
+    primaryForeground: '#ffffff',
+    secondary: '#e7ecd7',
+    secondaryForeground: '#2f3d13',
+    accent: '#eef2df',
+    accentForeground: '#364700',
+    border: '#d7dcd2',
+    input: '#d7dcd2',
+    ring: '#607300',
+    midground: '#607300',
+    midgroundForeground: '#ffffff',
+    composerRing: '#607300',
+    destructive: '#b84032',
+    destructiveForeground: '#ffffff',
+    sidebarBackground: '#f4f5f0',
+    sidebarBorder: '#d7dcd2',
+    userBubble: '#edf1e5',
+    userBubbleBorder: '#d6dfc4'
+  },
+  darkColors: {
+    ...THEME_PRESET_PALETTES.mono.colors,
+    background: '#191c1d',
+    foreground: '#eef0e8',
+    card: '#222627',
+    cardForeground: '#eef0e8',
+    muted: '#282d2e',
+    mutedForeground: '#a2aaa3',
+    popover: '#222627',
+    popoverForeground: '#eef0e8',
+    primary: '#d7ff00',
+    primaryForeground: '#171b16',
+    secondary: '#303435',
+    secondaryForeground: '#d4dcd2',
+    accent: '#343b30',
+    accentForeground: '#ecf8b1',
+    border: '#353a39',
+    input: '#353a39',
+    ring: '#d7ff00',
+    midground: '#d7ff00',
+    midgroundForeground: '#171b16',
+    sidebarBackground: '#141718',
+    sidebarBorder: '#353a39',
+    userBubble: '#2a2f2c',
+    userBubbleBorder: '#414a40'
+  }
+}
+
 /** Neon green on black. Matches the CLI cyberpunk skin and dashboard theme. */
 export const cyberpunkTheme: DesktopTheme = {
   name: 'cyberpunk',
@@ -452,6 +514,7 @@ export const BUILTIN_THEMES: Record<string, DesktopTheme> = {
   midnight: midnightTheme,
   ember: emberTheme,
   mono: monoTheme,
+  citron: citronTheme,
   slate: slateTheme,
   cyberpunk: cyberpunkTheme
 }

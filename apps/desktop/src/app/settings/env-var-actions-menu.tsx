@@ -56,7 +56,7 @@ function useEnvVarItems({
 
     if (hasDocs) {
       rows.push({
-        iconNode: <ExternalLink className="size-3.5" />,
+        iconNode: <ExternalLink className="size-4" />,
         key: 'docs',
         label: copy.docs,
         onSelect: event => {
@@ -69,7 +69,7 @@ function useEnvVarItems({
 
     if (hasReveal) {
       rows.push({
-        iconNode: isRevealed ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />,
+        iconNode: isRevealed ? <EyeOff className="size-4" /> : <Eye className="size-4" />,
         key: 'reveal',
         label: isRevealed ? copy.hideValue : copy.revealValue,
         onSelect: () => {
@@ -91,7 +91,7 @@ function useEnvVarItems({
 
     if (hasManageKeys) {
       rows.push({
-        iconNode: <KeyRound className="size-3.5" />,
+        iconNode: <KeyRound className="size-4" />,
         key: 'manage-keys',
         label: copy.manageInKeys,
         onSelect: () => {
@@ -109,7 +109,7 @@ function useEnvVarItems({
             <kit.Separator />
             {renderActionItem(kit, {
               disabled: clearDisabled,
-              iconNode: <Trash2 className="size-3.5" />,
+              iconNode: <Trash2 className="size-4" />,
               key: 'clear',
               label: copy.clear,
               onSelect: () => {
@@ -174,7 +174,7 @@ export function EnvVarActionsTrigger({
       variant="ghost"
       {...props}
     >
-      <Codicon name="ellipsis" size="0.875rem" />
+      <Codicon name="ellipsis" size="1rem" />
     </Button>
   )
 }

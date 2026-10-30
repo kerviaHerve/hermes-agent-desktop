@@ -80,7 +80,7 @@ export function StatusRow({
         </span>
       )}
       {leading !== undefined && (
-        <span className="status-row-icon flex size-3.5 shrink-0 items-center justify-center">{leading}</span>
+        <span className="status-row-icon flex size-4 shrink-0 items-center justify-center">{leading}</span>
       )}
       <div className="status-row-content flex min-w-0 flex-1 items-center gap-2">{children}</div>
       {trailing && (

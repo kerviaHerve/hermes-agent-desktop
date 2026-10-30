@@ -12,6 +12,8 @@ import { MacStrategy, type MacStrategyDeps, prepareMacInstall } from './mac'
 export interface MacClientDeps extends Omit<MacStrategyDeps, 'updater' | 'prepareInstall'> {
   light: boolean
   feedBaseUrl: string
+  /** Fixed GitHub Releases feed for an independently published desktop edition. */
+  editionFeedUrl?: string
   /** Exact per-build metadata, not a moving channel directory. */
   feed?: { url: string; channel: string }
   log: (message: string) => void
@@ -68,6 +70,8 @@ export function createMacStrategy(deps: MacClientDeps): MacStrategy {
     }
 
     updater.setFeedURL({ provider: 'generic', url: new URL('./', url).href, channel })
+  } else if (deps.editionFeedUrl) {
+    updater.setFeedURL({ provider: 'generic', url: deps.editionFeedUrl, channel })
   } else if (deps.feedBaseUrl) {
     const base = channelPublicBase(deps.feedBaseUrl)
     updater.setFeedURL({ provider: 'generic', url: `${base}/${legacy.directory}/`, channel })

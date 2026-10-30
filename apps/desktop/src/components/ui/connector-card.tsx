@@ -62,7 +62,7 @@ export function ConnectorRow({ action, connector, cue, mark, markLabel }: Connec
     <div className="grid gap-1" data-connector-row={connector.name} data-slot="connector-row" tabIndex={-1}>
       <div className="flex h-8 items-center gap-2.5">
         <span aria-live="polite" className="grid size-4 shrink-0 place-items-center" role="status">
-          <Icon aria-hidden className={cn('size-3.5', className)} />
+          <Icon aria-hidden className={cn('size-4', className)} />
           <span className="sr-only">{announcement}</span>
         </span>
         <ConnectorLogo className="size-6 rounded-md text-[0.6875rem]" connector={connector} />

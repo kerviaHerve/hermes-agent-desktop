@@ -140,7 +140,7 @@ export function SessionStatusDot({ storedSessionId, session, branchStem, classNa
   const variant = DOT_VARIANTS[dotState]
 
   return (
-    <span className={cn('flex items-center gap-0.5', className)}>
+    <span className={cn('flex items-center gap-0.5', className)} data-dot-state={dotState}>
       {branchStem ? (
         <span aria-hidden className="shrink-0 font-mono text-[0.625rem] leading-none text-(--ui-text-quaternary)">
           {branchStem}

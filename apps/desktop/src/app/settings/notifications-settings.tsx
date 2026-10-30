@@ -125,7 +125,7 @@ export function NotificationsSettings({ subpage }: NotificationsSettingsProps = 
                   type="button"
                   variant="outline"
                 >
-                  <Play className="size-3.5" />
+                  <Play className="size-4" />
                   {copy.completionSoundPreview}
                 </Button>
               </>
