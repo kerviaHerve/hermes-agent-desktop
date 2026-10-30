@@ -221,9 +221,11 @@ module.exports = {
     // frames to 72 dpi and silently drops the 2x representation. A .tiff is
     // handed to dmgbuild untouched (dmg-builder/dist/dmgUtil.js), and living
     // outside assets/ keeps it out of the app bundle via the `files` whitelist.
-    ...(kerviaEdition ? { backgroundColor: '#171B19' } : { background: 'packaging/nous-dmg-2b.tiff' }),
+    // Finder renders the names beneath both icons in dark text. Give the
+    // Kervia installer a pale surface so those labels stay legible.
+    ...(kerviaEdition ? { backgroundColor: '#F3F5F0' } : { background: 'packaging/nous-dmg-2b.tiff' }),
     iconSize: 96,
-    iconTextSize: 11,
+    iconTextSize: kerviaEdition ? 13 : 11,
     window: {
       width: 660,
       height: 400
