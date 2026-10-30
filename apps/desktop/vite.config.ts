@@ -137,6 +137,9 @@ const emojibaseAssets = () => ({
 
 export default defineConfig(({ command }) => ({
   base: './',
+  define: {
+    'import.meta.env.VITE_KERVIA_DESKTOP_EDITION': JSON.stringify(process.env.KERVIA_DESKTOP_EDITION === '1' ? '1' : '0')
+  },
   plugins: [react(), cachedCompilerPass(command), tailwindcss(), emojibaseAssets()],
   css: {
     // Pin an explicit (empty) PostCSS config. Tailwind is handled entirely by

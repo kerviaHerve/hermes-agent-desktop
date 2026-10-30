@@ -79,7 +79,8 @@ import {
 } from '@/store/updates'
 import type { FreeTierStatus, StatusResponse, UsageStats } from '@/types/hermes'
 
-import kerviaChevron from '../../../../assets/kervia/chevron-original.svg'
+import kerviaChevronDark from '../../../../assets/kervia/chevron-wing-dark.svg'
+import kerviaChevronLight from '../../../../assets/kervia/chevron-wing-light.svg'
 import { CRON_ROUTE, SETTINGS_ROUTE, WEBHOOKS_ROUTE } from '../../routes'
 import type { StatusbarItem } from '../statusbar-controls'
 
@@ -757,7 +758,10 @@ export function useStatusbarItems({
       systemResourcesItem,
       {
         id: 'fork-credit',
-        icon: <img alt="" className="h-3 w-2.5 shrink-0" src={kerviaChevron} />,
+        icon: <>
+          <img alt="" className="hidden h-3 w-3 shrink-0 dark:block" src={kerviaChevronDark} />
+          <img alt="" className="h-3 w-3 shrink-0 dark:hidden" src={kerviaChevronLight} />
+        </>,
         label: 'Hermes Desktop · Kervia Edition',
         title: 'Hermes Desktop · Kervia Edition',
         variant: 'text'

@@ -8,6 +8,8 @@ import { ExternalLink } from '@/lib/external-link'
 import { shortVersion } from '@/lib/version-label'
 import { $updateStatus, sourceUpdateTrack } from '@/store/updates'
 
+import kerviaRelease from '../../kervia-release.json'
+
 /**
  * Human label for an external build's runtime source: the resolution rung
  * plus the location it resolved from, when there is one.
@@ -63,8 +65,9 @@ function SideVersionRow({ label, value }: { label: string; value?: string }) {
  * from one source of truth.
  */
 export function VersionDetails({ version, channelAction }: { version: DesktopVersionInfo; channelAction?: ReactNode }) {
-  const { t } = useI18n()
+  const { locale, t } = useI18n()
   const u = t.updates
+  const kerviaEdition = import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1'
 
   const source =
     version.source === 'ci' ? 'CI' : version.source ? version.source[0].toUpperCase() + version.source.slice(1) : null
@@ -109,12 +112,26 @@ export function VersionDetails({ version, channelAction }: { version: DesktopVer
           <dd className="break-all text-right">
             <ExternalLink
               className="break-all font-mono text-xs"
-              href={`https://github.com/NousResearch/hermes-agent/commit/${version.commit}`}
+              href={`https://github.com/${kerviaEdition ? 'kerviaHerve/hermes-agent-desktop' : 'NousResearch/hermes-agent'}/commit/${version.commit}`}
               native
             >
               {version.commit.slice(0, 14)}
             </ExternalLink>
             {version.dirty && <span className="text-warning"> {u.versionDetailsUncommittedChanges}</span>}
+          </dd>
+        </div>
+      )}
+      {kerviaEdition && (
+        <div className="flex justify-between gap-4">
+          <dt className="text-muted-foreground">{locale === 'fr' ? 'Source Hermes' : 'Hermes source'}</dt>
+          <dd className="break-all text-right">
+            <ExternalLink
+              className="font-mono text-xs"
+              href={`https://github.com/NousResearch/hermes-agent/commit/${kerviaRelease.hermesSourceCommit}`}
+              native
+            >
+              {kerviaRelease.hermesSourceCommit.slice(0, 14)}
+            </ExternalLink>
           </dd>
         </div>
       )}

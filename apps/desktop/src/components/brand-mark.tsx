@@ -1,6 +1,9 @@
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/themes'
 
+import kerviaDark from '../../assets/kervia/chevron-wing-dark.svg'
+import kerviaLight from '../../assets/kervia/chevron-wing-light.svg'
+
 const assetPath = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
 
 // Brand badge: the nous-girl mark in the app-icon squircle, theme-aware —
@@ -15,7 +18,13 @@ export function BrandMark({ className, ...props }: React.ComponentProps<'span'>)
 
   return (
     <span className={cn('inline-flex size-14 shrink-0 items-center justify-center', className)} {...props}>
-      <img alt="" className="size-full object-contain" src={assetPath(dark ? 'nous-girl-dark.png' : 'nous-girl.png')} />
+      <img
+        alt=""
+        className="size-full object-contain"
+        src={import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1'
+          ? dark ? kerviaDark : kerviaLight
+          : assetPath(dark ? 'nous-girl-dark.png' : 'nous-girl.png')}
+      />
     </span>
   )
 }
