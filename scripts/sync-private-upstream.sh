@@ -8,7 +8,7 @@ snapshot_branch=upstream-snapshot
 
 case "$(git -C "$repo_root" remote get-url origin)" in
   git@github.com:kerviaHerve/hermes-agent-desktop.git|https://github.com/kerviaHerve/hermes-agent-desktop.git) ;;
-  *) echo "origin is not the expected private repository" >&2; exit 1 ;;
+  *) echo "origin is not the expected Kervia repository" >&2; exit 1 ;;
 esac
 case "$(git -C "$repo_root" remote get-url upstream)" in
   git@github.com:NousResearch/hermes-agent.git|https://github.com/NousResearch/hermes-agent.git) ;;
