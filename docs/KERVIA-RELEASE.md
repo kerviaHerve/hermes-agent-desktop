@@ -33,10 +33,24 @@ Le fichier de mot de passe P12 et le P12 ne doivent jamais être ajoutés au dé
 
 ## Synchroniser l'amont
 
-Le dépôt garde deux remotes : `origin` pour Kervia et `upstream` pour Nous Research, dont le push est désactivé. Noter pour chaque version le SHA officiel importé. Comparer les changements de `apps/desktop`, `apps/shared` et des contrats de passerelle avant de reporter les correctifs. Les choix d'interface restent dans des modules et styles Desktop ; les adaptations de protocole sont testées avec une passerelle locale isolée et une connexion distante de test. Ne jamais mettre à niveau un serveur distant à partir de ce processus.
+Le dépôt garde deux remotes : `origin` pour Kervia et `upstream` pour Nous Research, dont le push est désactivé. La révision intégrée est inscrite dans `apps/desktop/kervia-release.json`. Pour vérifier l'amont depuis ce Mac :
 
-Base officielle intégrée pour les versions 0.1.0 à 0.1.2 : `b1d7c5b296d46f75d870583362640acc0cf8d6cb` (30 octobre 2026).
+```sh
+scripts/kervia-sync-upstream.sh --check
+```
 
-Le numéro de l'application (`0.1.2` pour cette correction) est celui de Kervia. La révision Hermes intégrée est déclarée dans `apps/desktop/kervia-release.json`, affichée dans « À propos » et consignée dans `CHANGELOG-KERVIA.md`. Ne pas confondre ce SHA avec une étiquette de version Hermes : le `package.json` officiel du Desktop indique `0.0.0`.
+La commande lit `upstream/main` et énumère les changements depuis la révision intégrée. Elle n'altère ni le code Kervia ni le serveur Hermes. Si l'amont a changé, partir du dernier commit Kervia validé avec un arbre de travail propre, puis lancer :
+
+```sh
+scripts/kervia-sync-upstream.sh --apply
+```
+
+Cette deuxième commande crée une branche locale `sync/hermes-AAAA-MM-JJ-SHA`, applique les différences officielles en fusionnant les fichiers touchés par Kervia et les laisse indexées pour révision. Elle ne pousse rien et ne publie pas de binaire. En cas de conflit, résoudre et tester dans cette branche ; ne pas remplacer la version diffusée. Comparer `apps/desktop`, `apps/shared` et les contrats de passerelle. Les choix d'interface restent dans des modules et styles Desktop ; les adaptations de protocole sont testées avec une passerelle locale isolée et une connexion distante de test. Ne jamais mettre à niveau un serveur distant à partir de ce processus.
+
+Avant de publier un client seul, vérifier les nouvelles fonctions dont le serveur doit disposer. Une API apparue dans l'amont peut manquer sur un serveur Hermes déjà installé : l'interface doit rester utilisable et les fonctions non prises en charge doivent être masquées ou expliquées. Passer les tests Desktop, les tests des contrats partagés, une compilation, puis les parcours de connexion et de conversation sur la passerelle de test. Après ces validations, augmenter la version Kervia, inscrire le nouveau SHA dans `kervia-release.json` et `CHANGELOG-KERVIA.md`, puis suivre le circuit de signature et de publication ci-dessus. Garder le DMG installé en production sur sa version actuelle jusqu'à la publication d'une version vérifiée.
+
+Base officielle des versions publiques 0.1.0 à 0.1.2 : `b1d7c5b296d46f75d870583362640acc0cf8d6cb` (30 octobre 2026). La branche de synchronisation de la version 0.1.3 en préparation intègre `2d2808ee84549f9836b0056750265058e5488a8a` (30 octobre 2026).
+
+Le numéro de l'application est celui de Kervia. La révision Hermes intégrée est déclarée dans `apps/desktop/kervia-release.json`, affichée dans « À propos » et consignée dans `CHANGELOG-KERVIA.md`. Ne pas confondre ce SHA avec une étiquette de version Hermes : le `package.json` officiel du Desktop indique `0.0.0`.
 
 Le dépôt initial a été importé comme instantané ; son historique Git n'a pas le même ancêtre que celui d'`upstream/main`. Une synchronisation doit appliquer ou intégrer explicitement les différences entre l'ancien SHA officiel et le nouveau, puis enregistrer le nouveau SHA dans le journal de version. Un `git pull upstream main` direct n'est donc pas une procédure de mise à jour fiable pour ce fork.

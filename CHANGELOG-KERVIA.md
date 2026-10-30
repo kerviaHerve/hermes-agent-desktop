@@ -4,6 +4,12 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
+## Kervia 0.1.3 (en préparation / unreleased) · Hermes source `2d2808ee84549f9836b0056750265058e5488a8a`
+
+**FR** — Synchronise les 31 commits Hermes publiés depuis la base de Kervia 0.1.2. Le Desktop bénéficie des corrections de reconnexion, de stabilité de la connexion et de lecture des médias. Le code amont ajoute aussi l'arrêt et le rattrapage des tâches planifiées ; ces commandes dépendent d'un serveur Hermes compatible et restent à valider avec une passerelle de test avant publication. L'interface Kervia, le dossier de données séparé et le mécanisme de mise à jour restent conservés. Le suivi de l'amont et l'application en branche locale sont désormais reproductibles avec `scripts/kervia-sync-upstream.sh`.
+
+**EN** — Syncs the 31 Hermes commits since the Kervia 0.1.2 base. Desktop picks up reconnect, connection stability and media playback fixes. Upstream also adds stopping and catch-up policies for scheduled jobs; those commands require a compatible Hermes server and must be validated against a test gateway before release. The Kervia interface, separate data directory and update mechanism remain intact. `scripts/kervia-sync-upstream.sh` now provides a repeatable upstream check and local branch integration.
+
 ## Kervia 0.1.2 · Hermes source `b1d7c5b296d46f75d870583362640acc0cf8d6cb`
 
 **FR** — Rend la barre latérale utilisable avec de nombreuses conversations épinglées : quatre sont affichées au départ, ainsi que la conversation active si elle est épinglée plus bas. Un bouton permet d'afficher toutes les autres, puis de réduire la liste. Le nombre total reste visible et l'ordre des épinglées est conservé. Les discussions et les groupes d'agents ne sont pas supprimés ni modifiés sur le serveur.
