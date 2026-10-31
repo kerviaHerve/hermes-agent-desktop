@@ -224,9 +224,12 @@ async def test_native_http_preserves_gated_auth_and_actual_socket_boundary(tmp_p
             # Real non-loopback local interface, not a forged ASGI scope or testclient IP.
             import ipaddress
             import psutil
+            # Point-to-point VPN interfaces can have an IPv4 address but refuse
+            # inbound connections from this host; use a real local interface.
             addresses = {info.address for entries in psutil.net_if_addrs().values()
                          for info in entries if info.family == socket.AF_INET
-                         and not ipaddress.ip_address(info.address).is_loopback}
+                         and not ipaddress.ip_address(info.address).is_loopback
+                         and not info.ptp}
             assert addresses, 'real non-loopback interface required for this invariant'
             address = sorted(addresses)[0]
             async with httpx.AsyncClient(base_url=f'http://{address}:{port}', trust_env=False) as remote:
