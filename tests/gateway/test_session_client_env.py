@@ -424,6 +424,9 @@ def test_auto_started_gateway_does_not_inherit_client_behaviour_env(tmp_path, mo
         captured.update(kwargs['env'])
         return SimpleNamespace(pid=1)
     monkeypatch.setattr(gateway_runtime_start.subprocess, 'Popen', popen)
+    # Exercise the direct-spawn fallback; macOS launchd uses subprocess.run
+    # before Popen and is covered by its own launcher tests.
+    monkeypatch.setattr(gateway_runtime_start, 'start_gateway_job', lambda *args, **kwargs: None)
     for name in ('HERMES_EPHEMERAL_SYSTEM_PROMPT', 'HERMES_PREFILL_MESSAGES_FILE', 'HERMES_INFERENCE_PROVIDER',
                  'HERMES_ENABLE_PROJECT_PLUGINS', 'HERMES_TUI_CLIENT_ENV'):
         monkeypatch.setenv(name, 'from-the-first-client')
