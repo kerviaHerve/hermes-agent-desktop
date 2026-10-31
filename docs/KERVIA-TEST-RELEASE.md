@@ -36,10 +36,12 @@ cd ../desktop && npm run typecheck && npm run lint
 npm run test:ui && npm run test:desktop:platforms
 KERVIA_DESKTOP_EDITION=1 HERMES_DESKTOP_VARIANT=light npm run build
 cd ../..
-scripts/run_tests.sh
+scripts/run_tests.sh tests/desktop tests/tui_gateway tests/scripts/desktop_update
 ```
 
-Le dernier appel utilise le lanceur Python canonique du dépôt. Pour une branche de synchronisation, commencer par les tests ciblés du diff, puis lancer la suite complète avant publication. Un test ignoré de façon inattendue, une erreur, une sortie interrompue ou un avertissement nouveau non expliqué n'est pas un succès. Noter les tests ignorés prévus pour une autre plateforme. Sur macOS, les tests de chemins sensibles à la casse doivent tourner sur un volume APFS sensible à la casse, avec un `TMPDIR` isolé ; ne pas les neutraliser pour obtenir un résultat vert. Conserver les commandes, le commit testé, les résultats et les écarts dans le compte rendu de version. Vérifier ensuite que l'arbre suivi est propre.
+Ajouter à cette sélection **tous les tests Python modifiés par la synchronisation**, les tests des chemins Desktop/passerelle affectés même s'ils n'ont pas changé, et les tests d'authentification HTTP native et de mise à jour du client. Inscrire la liste exacte et la raison de chaque sélection dans le compte rendu. Exécuter cette sélection avec `HERMES_TEST_FILE_RETRIES=0` : une réussite au second essai signale une instabilité à corriger. Le dernier appel utilise le lanceur Python canonique du dépôt.
+
+La suite Python générale peut servir de diagnostic supplémentaire, mais elle comprend aussi le moteur non livré et des relectures de CI prévues pour Linux ou Windows. Un échec général ne se transforme jamais silencieusement en succès : reproduire, identifier la plateforme et le composant, puis classer **avec preuve** son rapport avec le client livré. Tout échec touchant le Desktop, `apps/shared`, l'authentification, la passerelle utilisée ou l'installation/mise à jour bloque la publication. Un test ignoré de façon inattendue, une erreur, une sortie interrompue ou un avertissement nouveau non expliqué dans la sélection obligatoire n'est pas un succès. Noter les tests ignorés prévus pour une autre plateforme. Sur macOS, les tests de chemins sensibles à la casse doivent tourner sur un volume APFS sensible à la casse, avec un `TMPDIR` isolé ; ne pas les neutraliser pour obtenir un résultat vert. Conserver les commandes, le commit testé, les résultats et les écarts dans le compte rendu de version. Vérifier ensuite que l'arbre suivi est propre.
 
 ## Porte 3 · Parcours réels avant publication
 
