@@ -4,11 +4,11 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
-## Kervia 0.1.6 · Hermes source `c419cf7c864ac0ee511dbd9f7091a8bba0b567ee` (candidate, non publiée)
+## Kervia 0.1.6 · Hermes source `c419cf7c864ac0ee511dbd9f7091a8bba0b567ee`
 
-**FR** — Candidate de synchronisation avec les 52 commits Hermes officiels depuis `5057eaa`. Elle inclut les changements amont du Desktop, du contrat partagé et de la passerelle. La compatibilité est ciblée sur une passerelle Hermes de même révision. Tests automatisés en cours ; aucun DMG ni mise à jour publiée.
+**FR** — Synchronise les 52 commits Hermes officiels depuis `5057eaa`. Elle inclut les changements amont du Desktop, du contrat partagé et de la passerelle, tout en conservant l'interface et les données séparées de Kervia. La compatibilité cible une passerelle Hermes de même révision.
 
-**EN** — Candidate synced with 52 official Hermes commits since `5057eaa`. It includes upstream Desktop, shared contract, and gateway changes. Compatibility targets a Hermes gateway at the same revision. Automated validation is in progress; no DMG or update has been published.
+**EN** — Syncs the 52 official Hermes commits since `5057eaa`. It includes upstream Desktop, shared contract, and gateway changes while preserving Kervia's interface and separate app data. Compatibility targets a Hermes gateway at the same revision.
 
 ## Kervia 0.1.5 · Hermes source `5057eaa3a4d0cbef0e30078418a5115faa62889e`
 
