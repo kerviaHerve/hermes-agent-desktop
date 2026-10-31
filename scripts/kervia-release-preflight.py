@@ -25,7 +25,7 @@ def git(*args: str) -> str:
 
 
 def check() -> None:
-    metadata = json.loads(RELEASE.read_text())
+    metadata = json.loads(RELEASE.read_text(encoding="utf-8-sig"))
     version = metadata["kerviaVersion"]
     source = metadata["hermesSourceCommit"]
     if not re.fullmatch(r"\d+\.\d+\.\d+", version):
@@ -46,8 +46,8 @@ def check() -> None:
     if not git("cat-file", "-t", source) == "commit":
         raise RuntimeError("Pinned Hermes source is not a commit")
 
-    readme = (REPO / "README.md").read_text()
-    changelog = (REPO / "CHANGELOG-KERVIA.md").read_text()
+    readme = (REPO / "README.md").read_text(encoding="utf-8-sig")
+    changelog = (REPO / "CHANGELOG-KERVIA.md").read_text(encoding="utf-8-sig")
     if f"**Version {version}**" not in readme or source[:7] not in readme:
         raise RuntimeError("README version or Hermes source is not updated")
     if f"## Kervia {version} · Hermes source `{source}`" not in changelog:

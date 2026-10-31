@@ -29,11 +29,16 @@ async def test_kanban_wake_is_admitted_into_a_local_chat(tmp_path, monkeypatch):
     assert len(_admissions(authority, ref, 'card t1 done')) == 1
 
 
-def _overdue_heartbeat(session_id):
+def _save_overdue_heartbeat(session_id):
     from hermes_cli.heartbeat import HeartbeatManager, save_heartbeat
     state = HeartbeatManager(session_id).set('status tick', 60)
     state.created_at = time.time() - 120  # one interval overdue
     save_heartbeat(session_id, state)
+
+
+async def _overdue_heartbeat(session_id):
+    # A cold SessionDB bootstrap must finish before the test starts racing its readers.
+    await asyncio.to_thread(_save_overdue_heartbeat, session_id)
 
 
 def _heartbeat_admissions(authority, ref):
@@ -46,7 +51,7 @@ def _heartbeat_admissions(authority, ref):
 async def test_due_heartbeat_is_admitted_into_a_local_chat(tmp_path, monkeypatch):
     from gateway.run_heartbeat_restore import restore_heartbeat_watches
     runner, authority, ref, _ = await _local(tmp_path, monkeypatch)
-    _overdue_heartbeat(ref.session_id)
+    await _overdue_heartbeat(ref.session_id)
     await restore_heartbeat_watches(runner)
     await runner._heartbeat_poll_once(runner._heartbeat_watch)
     assert _heartbeat_admissions(authority, ref)
@@ -58,7 +63,7 @@ async def test_overdue_heartbeat_fires_once_with_a_classic_cli_also_polling(tmp_
     from gateway.session_viewer_automation import invoke
     from hermes_cli.heartbeat import HeartbeatManager
     runner, authority, ref, _ = await _local(tmp_path, monkeypatch)
-    _overdue_heartbeat(ref.session_id)
+    await _overdue_heartbeat(ref.session_id)
     await restore_heartbeat_watches(runner)
     loop, claim, polled = asyncio.get_running_loop(), HeartbeatManager.due_prompt, []
 
@@ -100,7 +105,7 @@ async def test_a_classic_cli_driving_its_heartbeat_keeps_the_tick(tmp_path, monk
     from gateway.run_heartbeat_restore import restore_heartbeat_watches
     runner, authority, ref, automation = await _attached_cli(tmp_path, monkeypatch)
     await automation('heartbeat', 'set', 'status tick', 60)  # /heartbeat set starts the CLI's watchdog
-    _overdue_heartbeat(ref.session_id)
+    await _overdue_heartbeat(ref.session_id)
     await restore_heartbeat_watches(runner)
     await runner._heartbeat_poll_once(runner._heartbeat_watch)
     assert not _heartbeat_admissions(authority, ref)
@@ -112,7 +117,7 @@ async def test_a_classic_cli_without_a_heartbeat_watchdog_leaves_the_tick_to_the
     """A CLI reopening a chat runs goal/loop reads but starts its watchdog only on /heartbeat set or resume."""
     from gateway.run_heartbeat_restore import restore_heartbeat_watches
     runner, authority, ref, automation = await _attached_cli(tmp_path, monkeypatch)
-    _overdue_heartbeat(ref.session_id)
+    await _overdue_heartbeat(ref.session_id)
     await restore_heartbeat_watches(runner)
     await automation('goal', 'state')
     await automation('loop', 'state')
@@ -126,7 +131,7 @@ async def test_a_classic_cli_resume_with_no_heartbeat_leaves_the_tick_to_the_pol
     from gateway.run_heartbeat_restore import restore_heartbeat_watches
     runner, authority, ref, automation = await _attached_cli(tmp_path, monkeypatch)
     assert (await automation('heartbeat', 'resume'))['value'] is None
-    _overdue_heartbeat(ref.session_id)  # Desktop sets it
+    await _overdue_heartbeat(ref.session_id)  # Desktop sets it
     await restore_heartbeat_watches(runner)
     await runner._heartbeat_poll_once(runner._heartbeat_watch)
     assert _heartbeat_admissions(authority, ref)

@@ -1101,8 +1101,7 @@ def test_unadmitted_peer_failure_does_not_block_next_healthy_member(
             event["kind"] == "message.member"
             and event["payload"]["member_id"] == "local"
             for event in service._events("room-1")
-        ),
-        timeout=5.0,
+        ), timeout=5.0,
     )
     assert service.stop(timeout=5.0)
 

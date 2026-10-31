@@ -525,7 +525,6 @@ export function ChatSidebar({
     }
   }, [])
 
-  // The active marker follows the focused chat pane; overlay navigation owns its own marker.
   const activeSidebarSessionId = currentView === 'chat' ? selectedSessionId : null
   const profileRailVisible = useStore($profileRailVisible)
 

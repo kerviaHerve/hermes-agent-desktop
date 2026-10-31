@@ -24,7 +24,8 @@ def control(home, verb, params=None):
         pointer = home / 'gateway.sock.path'
         path = pointer.read_text(encoding='utf-8').strip() if pointer.exists() else str(home / 'gateway.sock')
         with socket.socket(socket.AF_UNIX) as peer:
-            peer.settimeout(2)
+            # A busy parallel suite may delay the live daemon's control reply.
+            peer.settimeout(5)
             peer.connect(path)
             peer.sendall(request)
             with peer.makefile('rb') as stream:
