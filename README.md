@@ -13,6 +13,10 @@
 
 **Version 0.1.5** · Hermes source [`5057eaa`](https://github.com/NousResearch/hermes-agent/commit/5057eaa3a4d0cbef0e30078418a5115faa62889e) · [Journal des changements / Changelog](CHANGELOG-KERVIA.md)
 
+**Compatibilité / Compatibility** — Cette édition suit les versions récentes du code officiel Hermes. Chaque version Kervia est testée avec une passerelle Hermes issue de la révision source indiquée ci-dessus ; les anciennes passerelles ne sont pas prises en charge ni validées. Une nouvelle révision Hermes nécessite une nouvelle validation du client. Le client ne met jamais à jour ton serveur. [Protocole de test et de publication](docs/KERVIA-TEST-RELEASE.md).
+
+**EN** — This edition targets recent official Hermes source. Each Kervia release is tested with a Hermes gateway built from the source revision shown above; older gateways are unsupported and untested. Newer Hermes revisions require renewed client validation. The client never upgrades your server. [Test and release protocol](docs/KERVIA-TEST-RELEASE.md).
+
 ## Fonctionnalités / Features
 
 | Domaine / Area | Français | English |

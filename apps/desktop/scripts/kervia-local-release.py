@@ -161,9 +161,13 @@ def main() -> None:
     release_info = json.loads((DESKTOP / "kervia-release.json").read_text())
     if args.version != release_info["kerviaVersion"]:
         raise RuntimeError("Release version differs from kervia-release.json")
-    if not args.verify_only and run("git", "-C", str(REPO), "status", "--porcelain",
-                                    "--untracked-files=no"):
-        raise RuntimeError("Commit tracked source changes before a release build")
+    if not args.verify_only:
+        preflight = subprocess.run(
+            [sys.executable, str(REPO / "scripts/kervia-release-preflight.py")],
+            capture_output=True, text=True, check=False, timeout=90,
+        )
+        if preflight.returncode:
+            raise RuntimeError(preflight.stderr.strip() or "Release preflight failed")
     with signing_identity(args.kit, args.password_file) as sha1:
         if not args.verify_only:
             sandbox = REPO / ".hermes-local-sandbox"
