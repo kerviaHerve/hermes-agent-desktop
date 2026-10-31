@@ -27,6 +27,8 @@ vi.mock('@/i18n', () => ({
         }
       },
       sidebar: {
+        filter: { project: 'Project' },
+        searchFilters: { agent: 'Agent' },
         messageCount: (count: number) => `${count} messages`,
         toolCallCount: (count: number) => `${count} tool calls`,
         projects: {

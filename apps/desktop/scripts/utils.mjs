@@ -1,11 +1,16 @@
-
+import { realpathSync } from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
-// returns true if the passsed file is being invoked from node,
-// not imported. `node -e` / stdin runs have no argv[1]: nothing is main.
+// Returns true only when this file is invoked by Node, not imported.
+// Resolve aliases such as macOS /var -> /private/var before comparing paths.
 /** @param {string} importMetaUrl @returns {boolean} */
 export function isMain(importMetaUrl) {
     const entry = process.argv[1];
-    return entry !== undefined && importMetaUrl === pathToFileURL(path.resolve(entry)).href;
+    if (entry === undefined) return false;
+    try {
+        return realpathSync(fileURLToPath(importMetaUrl)) === realpathSync(path.resolve(entry));
+    } catch {
+        return false;
+    }
 }

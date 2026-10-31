@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { StrictMode } from 'react'
+import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
@@ -29,6 +30,7 @@ vi.mock('@/store/profile', async () => {
   return {
     $activeGatewayProfile: atom('alpha'),
     $profileScope: atom('__all__'),
+    $showAllProfiles: atom(true),
     normalizeProfileKey: (value: string | null | undefined) => String(value ?? '').trim() || 'default'
   }
 })
@@ -57,9 +59,11 @@ function renderView({ strictMode = false }: { strictMode?: boolean } = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
 
   const view = (
-    <QueryClientProvider client={client}>
-      <WebhooksView onClose={() => undefined} />
-    </QueryClientProvider>
+    <MemoryRouter>
+      <QueryClientProvider client={client}>
+        <WebhooksView onClose={() => undefined} />
+      </QueryClientProvider>
+    </MemoryRouter>
   )
 
   return render(strictMode ? <StrictMode>{view}</StrictMode> : view)

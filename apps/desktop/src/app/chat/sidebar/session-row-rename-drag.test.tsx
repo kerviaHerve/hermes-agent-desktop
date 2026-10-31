@@ -81,6 +81,8 @@ vi.mock('@/i18n', () => ({
       },
       errors: { genericFailure: 'Something went wrong' },
       sidebar: {
+        filter: { project: 'Project' },
+        searchFilters: { agent: 'Agent' },
         messageCount: (count: number) => `${count} messages`,
         projects: {
           home: 'Home',

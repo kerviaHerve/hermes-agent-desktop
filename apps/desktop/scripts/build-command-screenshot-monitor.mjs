@@ -33,7 +33,7 @@ export function buildCommandScreenshotMonitor({
       '-fobjc-arc', '-fblocks', '-O2', '-Wall', '-Wextra',
       '-framework', 'Cocoa', '-framework', 'CoreGraphics',
       resolve(source, 'apps/desktop/electron/native/command-screenshot-monitor.m'), '-o', staging,
-    ], { stdio: 'inherit', timeout: 120_000 })
+    ], { stdio: 'inherit', timeout: 120_000, env: { ...process.env, SDKROOT: '' } })
     chmodSync(staging, 0o755)
     renameSync(staging, output)
     // electron-builder signs this Mach-O with the app; dist/** is already asarUnpack.

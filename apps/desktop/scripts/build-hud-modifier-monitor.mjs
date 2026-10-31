@@ -69,7 +69,7 @@ export function buildHudModifierMonitor({
           '-o',
           staging
         ],
-        { stdio: 'pipe', timeout: 120_000 }
+        { stdio: 'pipe', timeout: 120_000, env: { ...process.env, SDKROOT: '' } }
       )
     } else if (platform === 'win32') {
       execFileSync(resolveWindowsFrameworkCompiler(), [

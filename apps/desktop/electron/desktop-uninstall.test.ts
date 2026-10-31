@@ -224,7 +224,7 @@ test.skipIf(process.platform === 'win32').each(['gui', 'lite', 'full'] as const)
         argv: ['-m', 'hermes_cli.uninstall', '--mode', mode],
         home: root,
         pythonPath: mode === 'gui' ? 'inherited' : `${root}:inherited`,
-        cwd: root
+        cwd: fs.realpathSync(root)
       })
       assert.equal(fs.existsSync(app), mode === 'lite')
       assert.equal(fs.existsSync(sibling), true)

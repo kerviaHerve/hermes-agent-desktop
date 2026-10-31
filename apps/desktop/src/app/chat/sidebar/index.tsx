@@ -155,7 +155,6 @@ import {
   ARTIFACTS_ROUTE,
   CAPABILITIES_ROUTE,
   CRON_ROUTE,
-  isOverlayView,
   MESSAGING_ROUTE,
   SIDEBAR_NAV_AREA,
   type SidebarNavContribution
@@ -526,7 +525,8 @@ export function ChatSidebar({
     }
   }, [])
 
-  const activeSidebarSessionId = currentView === 'chat' || isOverlayView(currentView) ? selectedSessionId : null
+  // The active marker follows the focused chat pane; overlay navigation owns its own marker.
+  const activeSidebarSessionId = currentView === 'chat' ? selectedSessionId : null
   const profileRailVisible = useStore($profileRailVisible)
 
   const dndSensors = useSensors(
