@@ -32,7 +32,7 @@ import {
 import { writeBootPalette } from './boot-palette'
 import { $chatFontFamily, resolveChatFontFamily } from './chat-font'
 import { harmonize, normalizeHex, readableInk } from './color'
-import { BUILTIN_THEME_LIST, DEFAULT_SKIN_NAME, DEFAULT_TYPOGRAPHY, nousTheme, RETIRED_SKINS } from './presets'
+import { BUILTIN_THEME_LIST, citronTheme, DEFAULT_SKIN_NAME, DEFAULT_TYPOGRAPHY, nousTheme, RETIRED_SKINS } from './presets'
 import { $pendingModeApply } from './request'
 import { retintTheme } from './retint'
 import type { DesktopTheme, DesktopThemeColors, DesktopThemeTypography } from './types'
@@ -41,6 +41,8 @@ import { $userThemes, listAllThemes, resolveTheme } from './user-themes'
 // Legacy global skin (pre per-profile themes). Still the inheritance fallback
 // for any profile without its own assignment, so single-profile users and old
 // installs are unaffected.
+const EDITION_DEFAULT_SKIN_NAME = import.meta.env.VITE_KERVIA_DESKTOP_EDITION === '1' ? citronTheme.name : DEFAULT_SKIN_NAME
+
 const SKIN_KEY = 'hermes-desktop-theme-v2'
 const MODE_KEY = 'hermes-desktop-mode-v1'
 // Per-profile skin + light/dark mode assignments: { [profileKey]: value }. A
@@ -59,7 +61,7 @@ const resolveMode = (mode: ThemeMode, systemDark = matchesQuery('(prefers-color-
   mode === 'system' ? (systemDark ? 'dark' : 'light') : mode
 
 const normalizeSkin = (name: string | null): string =>
-  name && resolveTheme(name) && !RETIRED_SKINS.has(name) ? name : DEFAULT_SKIN_NAME
+  name && resolveTheme(name) && !RETIRED_SKINS.has(name) ? name : EDITION_DEFAULT_SKIN_NAME
 
 /**
  * A stored mode, or `system` when there isn't one.
@@ -134,7 +136,7 @@ const BOOT_PROFILE_KEY = typeof window === 'undefined' ? 'default' : (localDispl
 // for the rest of the session — it paints as soon as the registry can resolve it.
 const storedSkin = (profile: string): string =>
   skinPref.stored(profile) ??
-  (profile === BOOT_PROFILE_KEY ? (localDisplaySkinName ?? DEFAULT_SKIN_NAME) : DEFAULT_SKIN_NAME)
+  (profile === BOOT_PROFILE_KEY ? (localDisplaySkinName ?? EDITION_DEFAULT_SKIN_NAME) : EDITION_DEFAULT_SKIN_NAME)
 
 /** The live profile's committed theme: what the ThemeProvider paints without a preview. */
 export const committedTheme = (): DesktopTheme =>
@@ -498,8 +500,8 @@ interface ThemeContextValue {
 const SKIN_LIST = BUILTIN_THEME_LIST.map(({ name, label, description }) => ({ name, label, description }))
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: nousTheme,
-  themeName: DEFAULT_SKIN_NAME,
+  theme: EDITION_DEFAULT_SKIN_NAME === citronTheme.name ? citronTheme : nousTheme,
+  themeName: EDITION_DEFAULT_SKIN_NAME,
   mode: 'light',
   resolvedMode: 'light',
   renderedMode: 'light',
@@ -541,7 +543,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   )
 
   const [themeName, setThemeNameState] = useState(() =>
-    typeof window === 'undefined' ? DEFAULT_SKIN_NAME : storedSkin(BOOT_PROFILE_KEY)
+    typeof window === 'undefined' ? EDITION_DEFAULT_SKIN_NAME : storedSkin(BOOT_PROFILE_KEY)
   )
 
   const [mode, setModeState] = useState<ThemeMode>(() =>
