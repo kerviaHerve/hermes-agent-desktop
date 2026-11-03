@@ -191,7 +191,7 @@ test('remote backend: first chat, image bytes not client paths, rename across a 
       await expect(row).toBeVisible({ timeout: 60_000 })
       await row.click({ button: 'right' })
       await page
-        .getByRole('menuitem', { name: /rename/i })
+        .getByRole('menuitem', { name: /rename|renommer/i })
         .first()
         .click()
       const input = page.getByRole('dialog').getByRole('textbox').first()

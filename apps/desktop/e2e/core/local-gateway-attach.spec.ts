@@ -140,6 +140,21 @@ test(`Desktop${PACKAGED_EXE ? ' (packaged)' : ''} attaches to the gateway alread
           expect(facts.isPackaged, 'launched the packaged build').toBe(true)
         }
 
+        // The Kervia client-only build asks which existing Hermes to use on a fresh profile.
+        // Choosing this Mac must attach to the gateway started before Desktop opened.
+        const localChoice = page.getByRole('button', {
+          name: /Use Hermes on this computer|Utiliser Hermes sur cet ordinateur/i
+        })
+
+        const needsChoice = await localChoice.waitFor({ state: 'visible', timeout: 5_000 }).then(
+          () => true,
+          () => false
+        )
+
+        if (needsChoice) {
+          await localChoice.click()
+        }
+
         const ws = recordWebSockets(page)
         await waitForInteractive(app, page)
         await installDuplicateSampler(page)

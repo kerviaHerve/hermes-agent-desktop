@@ -56,6 +56,8 @@ Installer le **client candidat** dans un emplacement distinct des applications H
 | Fonctions Hermes | Profils, modèle, pièces jointes, outils, paramètres et présentation simple/avancée accessibles selon les droits de la passerelle testée. |
 | Erreurs | Déconnexion, erreur d'authentification et fonction absente expliquées sans perte de conversation ni boucle de relance. |
 
+Pour le paquet `light`, les scénarios E2E de l'amont qui installent ou démarrent eux-mêmes un moteur Hermes ne valident pas ce produit. Exécuter les scénarios de connexion à une passerelle **déjà démarrée**, locale et distante, avec le client Kervia et la révision déclarée. Le fournisseur simulé de ces scénarios vérifie le transport et la persistance ; il ne remplace pas le court échange obligatoire avec un vrai modèle dans un profil temporaire. Noter explicitement les scénarios de paquet complet écartés et leur raison.
+
 Faire une capture ou un court enregistrement des états importants et noter les fonctions non vérifiées. Un parcours contre le Hermes de production peut être réalisé **en lecture seule et avec l'accord de son propriétaire**, mais il ne remplace pas le test sur la passerelle locale de même révision et n'autorise jamais une mise à niveau du serveur.
 
 ## Porte 4 · Binaire signé et publication
