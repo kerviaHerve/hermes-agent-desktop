@@ -4,6 +4,12 @@ La version **Kervia** et la révision **Hermes source** sont suivies séparémen
 
 The **Kervia** version and **Hermes source** revision are tracked separately. The Kervia number identifies the Desktop client distributed here. The Hermes SHA identifies the exact integrated upstream source, without implying it is the latest upstream commit.
 
+## Kervia 0.1.7 · Hermes v0.22.6 · Hermes source `f0d94882e89ab8d4098b5bb2f166adfb9ee0a0ab`
+
+**FR** — Intègre le tag officiel Hermes v0.22.6 (349 commits depuis la source de Kervia 0.1.6) dans le client Desktop. Cette base apporte notamment les corrections de routage des profils et des projets entre passerelles, du démarrage local et distant et du contrat de passerelle. Les sections réorganisables, la confirmation avant de quitter une conversation pour Hermes local et l'identité Kervia sont conservées. Le client distribué ne contient toujours pas le moteur Hermes et ne met pas à jour les serveurs des utilisateurs.
+
+**EN** — Integrates the official Hermes v0.22.6 tag (349 commits since Kervia 0.1.6's source) into the Desktop client. This source includes fixes for profile and project routing across gateways, local and remote startup, and the gateway contract. Reorderable sections, confirmation before leaving a conversation for local Hermes, and the Kervia identity remain. The distributed client still excludes the Hermes engine and does not update users' servers.
+
 ## Kervia 0.1.6 · Hermes source `c419cf7c864ac0ee511dbd9f7091a8bba0b567ee`
 
 **FR** — Synchronise les 52 commits Hermes officiels depuis `5057eaa`. Elle inclut les changements amont du Desktop, du contrat partagé et de la passerelle, tout en conservant l'interface et les données séparées de Kervia. La compatibilité cible une passerelle Hermes de même révision.

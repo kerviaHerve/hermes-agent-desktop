@@ -277,6 +277,22 @@ def test_backpressure_never_blocks_later_frames_or_other_subscribers(slow_first,
         assert not fan.write({"after": "close"})
 
 
+def test_send_deadline_and_abort_close_socket_once(monkeypatch):
+    """A delayed send and a fanout overflow can notice the same stalled peer."""
+    monkeypatch.setattr("tui_gateway.ws._WS_SEND_DEADLINE_S", 0.01)
+
+    async def scenario():
+        stalled_ws = _SocketWS()
+        transport = WSTransport(stalled_ws, asyncio.get_running_loop(), peer="slow")
+        assert await transport.write_async({"jsonrpc": "2.0", "method": "event"}) is False
+        await asyncio.sleep(0)
+        transport.abort()
+        await asyncio.sleep(0)
+        assert stalled_ws.close_codes == [1011]
+
+    asyncio.run(scenario())
+
+
 def test_overflow_closes_only_the_slow_peer_and_healthy_keeps_streaming():
     loop = asyncio.new_event_loop()
     loop_thread = threading.Thread(target=loop.run_forever, daemon=True)

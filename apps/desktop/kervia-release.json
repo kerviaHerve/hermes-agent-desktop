@@ -1,4 +1,5 @@
 {
-  "kerviaVersion": "0.1.6",
-  "hermesSourceCommit": "c419cf7c864ac0ee511dbd9f7091a8bba0b567ee"
+  "kerviaVersion": "0.1.7",
+  "hermesVersion": "0.22.6",
+  "hermesSourceCommit": "f0d94882e89ab8d4098b5bb2f166adfb9ee0a0ab"
 }

@@ -123,6 +123,19 @@ export function VersionDetails({ version, channelAction }: { version: DesktopVer
       )}
       {kerviaEdition && (
         <div className="flex justify-between gap-4">
+          <dt className="text-muted-foreground">{locale === 'fr' ? 'Version Hermes' : 'Hermes version'}</dt>
+          <dd>
+            <ExternalLink
+              href={`https://github.com/NousResearch/hermes-agent/releases/tag/v${kerviaRelease.hermesVersion}`}
+              native
+            >
+              v{kerviaRelease.hermesVersion}
+            </ExternalLink>
+          </dd>
+        </div>
+      )}
+      {kerviaEdition && (
+        <div className="flex justify-between gap-4">
           <dt className="text-muted-foreground">{locale === 'fr' ? 'Source Hermes' : 'Hermes source'}</dt>
           <dd className="break-all text-right">
             <ExternalLink
