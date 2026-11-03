@@ -40,8 +40,7 @@ def run(*args: str, env: dict[str, str] | None = None) -> str:
 
 @contextmanager
 def signing_identity(kit: Path, password_file: Path):
-    password = password_file.read_text().rstrip("\r\n")
-    if not password:
+    if not password_file.read_text().rstrip("\r\n"):
         raise RuntimeError("P12 password file is empty")
     os.umask(0o077)
     with tempfile.TemporaryDirectory(prefix="kervia-signing-") as directory:
@@ -49,6 +48,9 @@ def signing_identity(kit: Path, password_file: Path):
         original = work / "original.p12"
         pem = work / "identity.pem"
         compatible = work / "compatible.p12"
+        import_password_file = work / "import-password.txt"
+        import_password = secrets.token_urlsafe(32)
+        import_password_file.write_text(import_password)
         keychain = work / "signing.keychain-db"
         with ZipFile(kit) as archive:
             original.write_bytes(archive.read(
@@ -61,15 +63,16 @@ def signing_identity(kit: Path, password_file: Path):
                 f"file:{password_file}", "-nodes", "-out", str(pem))
             run("/usr/bin/openssl", "pkcs12", "-export", "-certpbe", "PBE-SHA1-3DES",
                 "-keypbe", "PBE-SHA1-3DES", "-in", str(pem), "-passout",
-                f"file:{password_file}", "-out", str(compatible))
+                f"file:{import_password_file}", "-out", str(compatible))
             original.unlink()
             pem.unlink()
             run("security", "create-keychain", "-p", keychain_password, str(keychain))
             run("security", "unlock-keychain", "-p", keychain_password, str(keychain))
             run("security", "set-keychain-settings", str(keychain))
-            run("security", "import", str(compatible), "-k", str(keychain), "-P", password,
+            run("security", "import", str(compatible), "-k", str(keychain), "-P", import_password,
                 "-T", "/usr/bin/codesign", "-T", "/usr/bin/productbuild")
             compatible.unlink()
+            import_password_file.unlink()
             run("security", "set-key-partition-list", "-S", "apple-tool:,apple:", "-s",
                 "-k", keychain_password, str(keychain))
             identities = run("security", "find-identity", "-v", "-p", "codesigning", str(keychain))
